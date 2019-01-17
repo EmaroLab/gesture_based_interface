@@ -50,10 +50,13 @@
   <!--   <doc_depend>doxygen</doc_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>roscpp</build_depend>
+  <build_depend>rosmaster</build_depend>
   <build_depend>std_msgs</build_depend>
+  <build_depend>BaxterGBI_input_msgs</build_depend>
   <build_export_depend>roscpp</build_export_depend>
   <build_export_depend>std_msgs</build_export_depend>
   <exec_depend>roscpp</exec_depend>
+  <exec_depend>rosmaster</exec_depend>
   <exec_depend>std_msgs</exec_depend>
 
 
