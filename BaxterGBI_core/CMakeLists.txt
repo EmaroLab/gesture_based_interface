@@ -10,6 +10,8 @@ project(BaxterGBI_core)
 find_package(catkin REQUIRED COMPONENTS
   rospy
   smach
+  smach_ros
+  roslib
   std_msgs
   BaxterGBI_core_srvs
 )

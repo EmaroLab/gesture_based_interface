@@ -1,13 +1,72 @@
 #!/usr/bin/env python
-
+import roslib
 import rospy
+import smach
+import smach_ros
+from std_msgs.msg import Empty
+import threading
 
+trigger=threading.Event()
 
-def main():
-	rospy.init_node('bgi_core');
+def callback(data):
+	global trigger
+	trigger.set()
+
+def sub():
+	# choose an anonymous unique name
+	rospy.init_node('bgi_core',anonymous=True)
 	# do something here
-	rospy.spin()
 
+	rospy.Subscriber("/SM",Empty, callback)
+	sm = smach.StateMachine(outcomes=['out1','out2'])
+	with sm:
+		smach.StateMachine.add('STATE', state(trigger), 
+								transitions={'invalid':'STATE', 
+											'valid':'STATE'})
+	sis = smach_ros.IntrospectionServer('smach_server', sm, '/SM_ROOT')
+	sis.start()
+	sm.execute()
+	rospy.spin()
+	sis.stop()
+
+class state(smach.State):
+	
+	def __init__(self, trigger_event ,input_keys = [],output_keys=[]):
+		smach.State.__init__(
+			self,
+			outcomes = ['valid','invalid'],
+			input_keys = input_keys,
+			output_keys = output_keys)
+
+		self._trigger_event = trigger_event
+
+	def execute(self, userdata):
+		rospy.loginfo('Executing the state')
+		self._trigger_event.clear()
+		self._trigger_event.wait()
+		return 'valid'
 
 if __name__ == '__main__':
-	main()
+	try:
+		sub()
+	except rospy.ROSInterruptException:
+		pass
+
+
+
+# class MonitorState(smach.State):
+ 
+#     def __init__(self, trigger_event ,outcomes = [],input_keys = [],output_keys=[]):
+#        smach.State.__init__(
+#             self,
+#             outcomes=outcomes,
+#             input_keys = input_keys,
+#             output_keys = output_keys)
+
+#         self._trigger_event = trigger_event
+'''
+		def execute(self, ud):
+
+			self._trigger_event.clear()
+			self._trigger_event.wait()
+'''
