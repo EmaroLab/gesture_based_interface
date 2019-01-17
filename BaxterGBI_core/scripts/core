@@ -1,13 +1,43 @@
 #!/usr/bin/env python
 
 import rospy
+from BaxterGBI_core_srvs.srv import *
+import BaxterGBI_input_msgs.msg as bgi_io
+
+subscribers = []
+
+def callback(msg, params):
+	rospy.loginfo("Action %d triggered by the %s:\n%s\n", params["code"], params["topic"], msg)
+
+def handle_config(req):
+	global subscribers
+	
+	#TODO: check if we have at least one topic per action
+	
+	for subscriber in subscribers:
+		subscriber.unregister()
+	subscribers = []
+
+	for i in range(1,7):	
+		#print("key_" + str(i) + "_topics")	
+		#print(getattr(req, "key_" + str(i) + "_topics"))
+		for topic in getattr(req, "key_" + str(i) + "_topics"):
+			sub = rospy.Subscriber(	topic, 
+											bgi_io.signal, 
+											callback, 
+											{"topic": topic, "code": i}
+			)
+			subscribers.append(sub)
 
 
-def main():
-	rospy.init_node('bgi_core');
-	# do something here
+	resp = configurationResponse(success = True)
+
+	return resp
+
+def config_server():
+	rospy.init_node('config_server')
+	serv = rospy.Service('config', configuration, handle_config)
 	rospy.spin()
 
-
-if __name__ == '__main__':
-	main()
+if __name__ == "__main__":
+	config_server()
