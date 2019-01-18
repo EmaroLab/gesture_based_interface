@@ -3,25 +3,20 @@ import rospy
 from BaxterGBI_core_srvs.srv import *
 import BaxterGBI_input_msgs.msg as bgi_io
 import smach
-import smach_ros
-from std_msgs.msg import Empty
 import threading
 from collections import namedtuple
-import sys
-import signal
 
 MenuContext=namedtuple('MenuContext', ['title','options','fixed_options','selction'])
 ActionContext=namedtuple('ActionContext',['action','status'])
 
-class FsmEvent():
-	def __init__(self):
+class FsmEvent:
+	def __init__(self, fsm):
 		self.trigger = threading.Event()
 		self.event_id = None
+		self.fsm = fsm
 	def wait(self):
 		self.trigger.clear()
 		self.trigger.wait()
-		if self.event_id == 'exit':
-			sys.exit()
 	def signal(self, event_id):
 		self.event_id = event_id
 		print "Received event " + self.event_id
@@ -37,43 +32,42 @@ def handle_config():
 
 def publish_state(type,context=None):
 	pass
-	
-config_available = False
-event_id=None
 
 class InitState(smach.State):
-	def __init__(self,input_keys = [],output_keys=[]):
+	def __init__(self, input_keys = [],output_keys=[]):
 		smach.State.__init__(
 			self,
-			outcomes = ['config_available','config_missing'],
+			outcomes = ['config_available','config_missing', 'preempted'],
 			input_keys = input_keys,
 			output_keys = output_keys)
 
 	def execute(self, userdata):
-		global config_available
+		if self.preempt_requested(): return 'preempted'
 		for i in range(1,7):
-			if not rospy.get_param("key_" + str(i) + "_topics"):
-				return 'config_missing' 
+			key = "key_" + str(i) + "_topics"
+			if not rospy.has_param(key) or not rospy.get_param(key):
+				return 'config_missing'
 		return 'config_available'
+
+	def request_preempt(self):
+		smach.State.request_preempt(self)
 
 class ConfigState(smach.State):
 	def __init__(self, msg_type, callback, input_keys = [],output_keys=[]):
 		smach.State.__init__(
 			self,
-			outcomes = ['invalid','success'],
+			outcomes = ['invalid','success', 'preempted'],
 			input_keys = input_keys,
 			output_keys = output_keys)
 		self._callback = callback
-		print msg_type
 		self._msg_type = msg_type
-		print self._msg_type		
 		self.subscribers=[]
 
 	def execute(self, userdata):
-		rospy.loginfo('Executing the state')
-
+		if self.preempt_requested(): return 'preempted'
 		for i in range(1,7):
-			if not rospy.get_param("key_" + str(i) + "_topics"):
+			key = "key_" + str(i) + "_topics"
+			if not rospy.has_param(key) or not rospy.get_param(key):
 				return 'invalid' 
 	
 		for subscriber in self.subscribers:
@@ -91,11 +85,14 @@ class ConfigState(smach.State):
 
 		return 'success'
 
+	def request_preempt(self):
+		smach.State.request_preempt(self)
+
 class WaitConfigState(smach.State):
 	def __init__(self, trigger_event, input_keys = [],output_keys=[]):
 		smach.State.__init__(
 			self,
-			outcomes = ['config_available'],
+			outcomes = ['config_available', 'preempted'],
 			input_keys = input_keys,
 			output_keys = output_keys)
 
@@ -103,21 +100,24 @@ class WaitConfigState(smach.State):
 		self.type='config_wait'
 
 	def execute(self, userdata):
-		rospy.loginfo('Executing the state')
 		publish_state(self.type)
-		while(True):
+		while True:
+			if self.preempt_requested(): return 'preempted'
 			self._trigger_event.wait()
-
-			print self._trigger_event.event_id
+			if self.preempt_requested(): return 'preempted'
 			if self._trigger_event.event_id == 'config':
 				return 'config_available'
+
+	def request_preempt(self):
+		smach.State.request_preempt(self)
+		self._trigger_event.signal('preempt')
 
 
 class WaitUserState(smach.State):
 	def __init__(self, trigger_event ,input_keys = [],output_keys=[]):
 		smach.State.__init__(
 			self,
-			outcomes = ['reconf_requested','user_detected','out'],
+			outcomes = ['reconf_requested','user_detected', 'preempted'],
 			input_keys = input_keys,
 			output_keys = output_keys)
 
@@ -125,13 +125,16 @@ class WaitUserState(smach.State):
 		self.type='wait_user'
 
 	def execute(self, userdata):
-		rospy.loginfo('Executing the state')
 		publish_state(self.type)
-		while(True):
+		while True:
+			if self.preempt_requested(): return 'preempted'
 			self._trigger_event.wait()
+			if self.preempt_requested(): return 'preempted'
 			if self._trigger_event.event_id == 'user_detected':
 				return 'user_dected'
 			elif self._trigger_event.event_id == 'config':
 				return 'reconf_requested'
-			elif self._trigger_event.event_id == 'close':
-				return 'out'
+
+	def request_preempt(self):
+		smach.State.request_preempt(self)
+		self._trigger_event.signal('preempt')
