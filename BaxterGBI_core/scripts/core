@@ -7,18 +7,37 @@ import smach
 import smach_ros
 from std_msgs.msg import Empty
 import threading
+from collections import namedtuple
+
+
 trigger=threading.Event()
 
+MenuContext=namedtuple('MenuContext', ['title','options','fixed_options','selction'])
+ActionContext=namedtuple('ActionContext',['action','status'])
+
+def publish_state(type,context=None):
+	pass
 
 subscribers = []
+config_available = False
+event_id=None
 
-def callback(msg, params):
+def presence_cb(msg, params):
+	global trigger_user
+	event_id='user_detected'
+	trigger.set()
+	#rospy.loginfo("Action %d triggered by the %s:\n%s\n", params["code"], params["topic"], msg)
+
+def action_cb(msg, params):
 	global trigger
+	event_id='action_' + str(params["code"])
 	trigger.set()
 	rospy.loginfo("Action %d triggered by the %s:\n%s\n", params["code"], params["topic"], msg)
 
+def handle_config():
+	return True
 
-def handle_config(req):
+def config_cb(req):
 	global subscribers
 
 	for i in range(1,7):
@@ -46,39 +65,96 @@ def handle_config(req):
 
 	return resp
 
+class InitState(smach.State):
+	def __init__(self,input_keys = [],output_keys=[]):
+		smach.State.__init__(
+			self,
+			outcomes = ['config_available','config_missing'],
+			input_keys = input_keys,
+			output_keys = output_keys)
+
+	def execute(self, userdata):
+		global config_available
+		return 'config_available' if config_available else 'config_missing'
+
+class ConfigState(smach.State):
+	def __init__(self,input_keys = [],output_keys=[]):
+		smach.State.__init__(
+			self,
+			outcomes = ['invalid','success'],
+			input_keys = input_keys,
+			output_keys = output_keys)
+
+	def execute(self, userdata):
+		rospy.loginfo('Executing the state')
+		return 'success' if handle_config() else 'invalid'
+
+
+
+class WaitConfigState(smach.State):
+	def __init__(self, trigger_event ,input_keys = [],output_keys=[]):
+		smach.State.__init__(
+			self,
+			outcomes = ['config_available'],
+			input_keys = input_keys,
+			output_keys = output_keys)
+
+		self._trigger_event = trigger_event
+		self.type='config_wait'
+
+	def execute(self, userdata):
+		rospy.loginfo('Executing the state')
+		publish_state(self.type)
+		self._trigger_event.clear()
+		self._trigger_event.wait()
+		return 'config_available'
+
+
+class WaitUserState(smach.State):
+	def __init__(self, trigger_event ,input_keys = [],output_keys=[]):
+		smach.State.__init__(
+			self,
+			outcomes = ['reconf_requested','user_detected'],
+			input_keys = input_keys,
+			output_keys = output_keys)
+
+		self._trigger_event = trigger_event
+		self.type='wait_user'
+
+	def execute(self, userdata):
+		rospy.loginfo('Executing the state')
+		publish_state(self.type)
+		while(True)
+			self._trigger_event.clear()
+			self._trigger_event.wait()
+			if event_id == 'user_detected'
+				return 'user_dected'
+			elif event_id == 'config'
+				return 'reconf_requested'
+
 def config_server():
 	rospy.init_node('config_server')
 	serv = rospy.Service('config', configuration, handle_config)
 
-	sm = smach.StateMachine(outcomes=['out1','out2'])
+	sm = smach.StateMachine(outcomes=['MAIN_MENU','out2'])
 	with sm:
-		smach.StateMachine.add('STATE', state(trigger), 
-								transitions={'invalid':'STATE', 
-											'valid':'STATE'})
+		smach.StateMachine.add('INIT', InitState(), 
+								transitions={'config_available':'CONFIG', 
+											'config_missing':'WAIT_CONFIG'})
+		smach.StateMachine.add('CONFIG', ConfigState(), 
+								transitions={'invalid':'WAIT_CONFIG', 
+											'success':'WAIT_USER'})
+		smach.StateMachine.add('WAIT_CONFIG', WaitConfigState(trigger), 
+								transitions={'config_available':'CONFIG'})
+		smach.StateMachine.add('WAIT_USER', WaitUserState(trigger), 
+								transitions={'reconf_requested':'CONFIG', 
+											'user_detected':'MAIN_MENU'})
+	
 	sis = smach_ros.IntrospectionServer('smach_server', sm, '/SM_ROOT')
 	sis.start()
 	sm.execute()
 	rospy.spin()
 	sis.stop()
-
-
-
-class state(smach.State):
-	def __init__(self, trigger_event ,input_keys = [],output_keys=[]):
-		smach.State.__init__(
-			self,
-			outcomes = ['valid','invalid'],
-			input_keys = input_keys,
-			output_keys = output_keys)
-
-		self._trigger_event = trigger_event
-
-	def execute(self, userdata):
-		rospy.loginfo('Executing the state')
-		self._trigger_event.clear()
-		self._trigger_event.wait()
-		return 'valid'
-
 
 if __name__ == "__main__":
 	try:
