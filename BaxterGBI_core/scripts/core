@@ -20,8 +20,11 @@ def callback(msg, params):
 
 def handle_config(req):
 	global subscribers
-	
-	#TODO: check if we have at least one topic per action
+
+	for i in range(1,7):
+		tmp = getattr(req, "key_" + str(i) + "_topics")
+		if not tmp: 
+			return False
 	
 	for subscriber in subscribers:
 		subscriber.unregister()
