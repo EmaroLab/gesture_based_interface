@@ -7,6 +7,8 @@ import smach_ros
 from std_msgs.msg import Empty
 import threading
 from collections import namedtuple
+import sys
+import signal
 
 MenuContext=namedtuple('MenuContext', ['title','options','fixed_options','selction'])
 ActionContext=namedtuple('ActionContext',['action','status'])
@@ -15,7 +17,21 @@ class FsmEvent():
 	def __init__(self):
 		self.trigger = threading.Event()
 		self.event_id = None
-
+	def wait(self):
+		self.trigger.clear()
+		self.trigger.wait()
+		if self.event_id == 'exit':
+			sys.exit()
+	def signal(self, event_id):
+		self.event_id = event_id
+		print "Received event " + self.event_id
+		self.trigger.set()
+"""
+class FsmEvent():
+	def __init__(self):
+		self.trigger = threading.Event()
+		self.event_id = None
+"""
 def handle_config():
 	return True
 
@@ -35,7 +51,10 @@ class InitState(smach.State):
 
 	def execute(self, userdata):
 		global config_available
-		return 'config_available' if config_available else 'config_missing'
+		for i in range(1,7):
+			if not rospy.get_param("key_" + str(i) + "_topics"):
+				return 'config_missing' 
+		return 'config_available'
 
 class ConfigState(smach.State):
 	def __init__(self, msg_type, callback, input_keys = [],output_keys=[]):
@@ -87,8 +106,8 @@ class WaitConfigState(smach.State):
 		rospy.loginfo('Executing the state')
 		publish_state(self.type)
 		while(True):
-			self._trigger_event.trigger.clear()
-			self._trigger_event.trigger.wait()
+			self._trigger_event.wait()
+
 			print self._trigger_event.event_id
 			if self._trigger_event.event_id == 'config':
 				return 'config_available'
@@ -98,7 +117,7 @@ class WaitUserState(smach.State):
 	def __init__(self, trigger_event ,input_keys = [],output_keys=[]):
 		smach.State.__init__(
 			self,
-			outcomes = ['reconf_requested','user_detected'],
+			outcomes = ['reconf_requested','user_detected','out'],
 			input_keys = input_keys,
 			output_keys = output_keys)
 
@@ -109,9 +128,10 @@ class WaitUserState(smach.State):
 		rospy.loginfo('Executing the state')
 		publish_state(self.type)
 		while(True):
-			self._trigger_event.trigger.clear()
-			self._trigger_event.trigger.wait()
+			self._trigger_event.wait()
 			if self._trigger_event.event_id == 'user_detected':
 				return 'user_dected'
 			elif self._trigger_event.event_id == 'config':
 				return 'reconf_requested'
+			elif self._trigger_event.event_id == 'close':
+				return 'out'
