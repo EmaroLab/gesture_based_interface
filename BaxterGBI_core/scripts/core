@@ -6,76 +6,50 @@ import BaxterGBI_input_msgs.msg as bgi_io
 import smach
 import smach_ros
 from std_msgs.msg import Empty
+from std_srvs.srv import Trigger, TriggerResponse
 import threading
 from collections import namedtuple
 from gbi_states import *
 
-trigger=threading.Event()
-
-
+event = FsmEvent()
 
 subscribers = []
 
-
 def presence_cb(msg, params):
-	global trigger_user
-	event_id='user_detected'
-	trigger.set()
+	global event
+	event.event_id='user_detected'
+	event.trigger.set()
 	#rospy.loginfo("Action %d triggered by the %s:\n%s\n", params["code"], params["topic"], msg)
 
 def action_cb(msg, params):
-	global trigger
-	event_id='action_' + str(params["code"])
-	trigger.set()
-	rospy.loginfo("Action %d triggered by the %s:\n%s\n", params["code"], params["topic"], msg)
-
-def handle_config():
-	return True
+	global event
+	event.event_id='action_' + str(params["code"])
+	event.trigger.set()
+	#rospy.loginfo("Action %d triggered by the %s:\n%s\n", params["code"], params["topic"], msg)
 
 def config_cb(req):
-	global subscribers
-
-	for i in range(1,7):
-		tmp = getattr(req, "key_" + str(i) + "_topics")
-		if not tmp: 
-			return False
-	
-	for subscriber in subscribers:
-		subscriber.unregister()
-	subscribers = []
-
-	for i in range(1,7):	
-		#print("key_" + str(i) + "_topics")	
-		#print(getattr(req, "key_" + str(i) + "_topics"))
-		for topic in getattr(req, "key_" + str(i) + "_topics"):
-			sub = rospy.Subscriber(	topic, 
-											bgi_io.signal, 
-											callback, 
-											{"topic": topic, "code": i}
-			)
-			subscribers.append(sub)
-
-
-	resp = configurationResponse(success = True)
-
-	return resp
-
+	global event
+	event.event_id='config'
+	event.trigger.set()
+	#FIXME wait for state machine transition outcome
+	return TriggerResponse(success = True, message = "ciao")
 
 def config_server():
 	rospy.init_node('config_server')
-	serv = rospy.Service('config', configuration, handle_config)
+	serv = rospy.Service('config', Trigger, config_cb)
 
 	sm = smach.StateMachine(outcomes=['MAIN_MENU','out2'])
 	with sm:
+		print bgi_io
 		smach.StateMachine.add('INIT', InitState(), 
-								transitions={'config_available':'CONFIG', 
+								transitions={'config_available':'CONFIG',
 											'config_missing':'WAIT_CONFIG'})
-		smach.StateMachine.add('CONFIG', ConfigState(), 
+		smach.StateMachine.add('CONFIG', ConfigState(bgi_io.signal, action_cb), 
 								transitions={'invalid':'WAIT_CONFIG', 
 											'success':'WAIT_USER'})
-		smach.StateMachine.add('WAIT_CONFIG', WaitConfigState(trigger), 
+		smach.StateMachine.add('WAIT_CONFIG', WaitConfigState(event), 
 								transitions={'config_available':'CONFIG'})
-		smach.StateMachine.add('WAIT_USER', WaitUserState(trigger), 
+		smach.StateMachine.add('WAIT_USER', WaitUserState(event), 
 								transitions={'reconf_requested':'CONFIG', 
 											'user_detected':'MAIN_MENU'})
 	

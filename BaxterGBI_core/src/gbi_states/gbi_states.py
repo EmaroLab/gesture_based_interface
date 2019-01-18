@@ -11,6 +11,13 @@ from collections import namedtuple
 MenuContext=namedtuple('MenuContext', ['title','options','fixed_options','selction'])
 ActionContext=namedtuple('ActionContext',['action','status'])
 
+class FsmEvent():
+	def __init__(self):
+		self.trigger = threading.Event()
+		self.event_id = None
+
+def handle_config():
+	return True
 
 def publish_state(type,context=None):
 	pass
@@ -31,19 +38,42 @@ class InitState(smach.State):
 		return 'config_available' if config_available else 'config_missing'
 
 class ConfigState(smach.State):
-	def __init__(self,input_keys = [],output_keys=[]):
+	def __init__(self, msg_type, callback, input_keys = [],output_keys=[]):
 		smach.State.__init__(
 			self,
 			outcomes = ['invalid','success'],
 			input_keys = input_keys,
 			output_keys = output_keys)
+		self._callback = callback
+		print msg_type
+		self._msg_type = msg_type
+		print self._msg_type		
+		self.subscribers=[]
 
 	def execute(self, userdata):
 		rospy.loginfo('Executing the state')
-		return 'success' if handle_config() else 'invalid'
+
+		for i in range(1,7):
+			if not rospy.get_param("key_" + str(i) + "_topics"):
+				return 'invalid' 
+	
+		for subscriber in self.subscribers:
+			subscriber.unregister()
+		self.subscribers = []
+
+		for i in range(1,7):	
+			for topic in rospy.get_param("key_" + str(i) + "_topics"):
+				sub = rospy.Subscriber(	topic, 
+												self._msg_type,
+												self._callback, 
+												{"topic": topic, "code": i}
+				)
+				self.subscribers.append(sub)
+
+		return 'success'
 
 class WaitConfigState(smach.State):
-	def __init__(self, trigger_event ,input_keys = [],output_keys=[]):
+	def __init__(self, trigger_event, input_keys = [],output_keys=[]):
 		smach.State.__init__(
 			self,
 			outcomes = ['config_available'],
@@ -56,9 +86,12 @@ class WaitConfigState(smach.State):
 	def execute(self, userdata):
 		rospy.loginfo('Executing the state')
 		publish_state(self.type)
-		self._trigger_event.clear()
-		self._trigger_event.wait()
-		return 'config_available'
+		while(True):
+			self._trigger_event.trigger.clear()
+			self._trigger_event.trigger.wait()
+			print self._trigger_event.event_id
+			if self._trigger_event.event_id == 'config':
+				return 'config_available'
 
 
 class WaitUserState(smach.State):
@@ -76,9 +109,9 @@ class WaitUserState(smach.State):
 		rospy.loginfo('Executing the state')
 		publish_state(self.type)
 		while(True):
-			self._trigger_event.clear()
-			self._trigger_event.wait()
-			if event_id == 'user_detected':
+			self._trigger_event.trigger.clear()
+			self._trigger_event.trigger.wait()
+			if self._trigger_event.event_id == 'user_detected':
 				return 'user_dected'
-			elif event_id == 'config':
+			elif self._trigger_event.event_id == 'config':
 				return 'reconf_requested'
