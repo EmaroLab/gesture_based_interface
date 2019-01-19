@@ -1,3 +1,11 @@
+#include "BaxterGBI_gui/mainwindow.h" //include our header
+#include "ui_mainwindow.h" //required by the generated class Ui::MainWindow
+
+#include <QDebug>
+#include <QInputDialog>
+
+#include "BaxterGBI_gui/tabcontent.h"
+
 #include <string>
 #include <map>
 #include <vector>
@@ -6,22 +14,22 @@
 #include "ros/ros.h"
 #include "ros/master.h"
 
-/* test with 
-rostopic pub /example/1 BaxterGBI_input_msgs/signal '{header: auto, device_id: "1", device_type: "smartwatch", device_model: "Huawei watch 2", action_descr: "wrist up", confidence: 1.0}' -r 1
-
-*/
-
-int main(int argc, char **argv)
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow)  //initialize private member variable
 {
-  ros::init(argc, argv, "topic_scanner");
-  ros::NodeHandle n;
+    ui->setupUi(this); //initialize all widgets used by the MainWindow.ui design file
+    ui->tabWidget->clear();
+    for (int i = 1; i<=6; i++)
+        ui->tabWidget->addTab(new TabContent(), QString("Action %1").arg(i));
+}
 
+void MainWindow::scan(){
   ROS_INFO("Ready to scan.");
-
 
   ros::master::V_TopicInfo topicMap;
   std::map<std::string, std::vector<std::string>> compatibleSubtopics;
-  std::regex regex("^\\/([a-zA-Z][0-9a-zA-Z_]+)\\/([0-9a-zA-Z_]+)$");
+  std::regex regex("^\\/([a-zA-Z][0-9a-zA-Z_]*)\\/([0-9a-zA-Z_]+)$");
   std::smatch match;
   ros::master::getTopics(topicMap);
 
@@ -49,6 +57,9 @@ int main(int argc, char **argv)
       ROS_INFO("\t%s", s.c_str());  
     }
   }
+}
 
-  return 0;
+MainWindow::~MainWindow()
+{
+    delete ui; //this will bring down the whole QObject hierarchy
 }
