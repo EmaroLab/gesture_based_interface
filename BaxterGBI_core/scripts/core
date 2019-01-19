@@ -1,89 +1,65 @@
 #!/usr/bin/env python
-import roslib
 import rospy
-from BaxterGBI_core_srvs.srv import *
+import signal
 import BaxterGBI_input_msgs.msg as bgi_io
 import smach
-import smach_ros
-from std_msgs.msg import Empty
+from std_srvs.srv import Trigger, TriggerResponse
 import threading
-trigger=threading.Event()
+from gbi_states import *
 
 
-subscribers = []
+class FSMThread(threading.Thread):
+	def __init__(self):
+		threading.Thread.__init__(self)
 
-def callback(msg, params):
-	global trigger
-	trigger.set()
-	rospy.loginfo("Action %d triggered by the %s:\n%s\n", params["code"], params["topic"], msg)
+		self.sm = smach.StateMachine(outcomes=['MAIN_MENU', 'EXIT'])
+		self.event = FsmEvent(self.sm)
+		with self.sm:
+			smach.StateMachine.add('INIT', InitState(),
+									transitions={'config_available':'CONFIG',
+												'config_missing':'WAIT_CONFIG',
+												 'preempted':'EXIT'})
+			smach.StateMachine.add('CONFIG', ConfigState(bgi_io.signal, self.action_cb),
+									transitions={'invalid':'WAIT_CONFIG',
+												'success':'WAIT_USER',
+												 'preempted':'EXIT'})
+			smach.StateMachine.add('WAIT_CONFIG', WaitConfigState(self.event),
+									transitions={'config_available':'CONFIG',
+												 'preempted':'EXIT'})
+			smach.StateMachine.add('WAIT_USER', WaitUserState(self.event),
+									transitions={'reconf_requested':'CONFIG',
+												'user_detected':'MAIN_MENU',
+												'preempted':'EXIT'})
 
+	def presence_cb(self, msg, params):
+		self.event.signal('user_detected')
+		#rospy.loginfo("Action %d triggered by the %s:\n%s\n", params["code"], params["topic"], msg)
 
-def handle_config(req):
-	global subscribers
+	def action_cb(self, msg, params):
+		self.event.signal('action_' + str(params["code"]))
+		#rospy.loginfo("Action %d triggered by the %s:\n%s\n", params["code"], params["topic"], msg)
 
-	for i in range(1,7):
-		tmp = getattr(req, "key_" + str(i) + "_topics")
-		if not tmp: 
-			return False
+	def config_cb(self, req):
+		self.event.signal('config')
+		#FIXME wait for state machine transition outcome
+		return TriggerResponse(success = True, message = "ciao")
+
+	def run(self):
+		rospy.Service('config', Trigger, self.config_cb)
+		self.sm.execute()
 	
-	for subscriber in subscribers:
-		subscriber.unregister()
-	subscribers = []
-
-	for i in range(1,7):	
-		#print("key_" + str(i) + "_topics")	
-		#print(getattr(req, "key_" + str(i) + "_topics"))
-		for topic in getattr(req, "key_" + str(i) + "_topics"):
-			sub = rospy.Subscriber(	topic, 
-											bgi_io.signal, 
-											callback, 
-											{"topic": topic, "code": i}
-			)
-			subscribers.append(sub)
-
-
-	resp = configurationResponse(success = True)
-
-	return resp
+	def stop(self):
+		self.sm.request_preempt()
+		while self.sm.is_running(): pass
 
 def config_server():
 	rospy.init_node('config_server')
-	serv = rospy.Service('config', configuration, handle_config)
-
-	sm = smach.StateMachine(outcomes=['out1','out2'])
-	with sm:
-		smach.StateMachine.add('STATE', state(trigger), 
-								transitions={'invalid':'STATE', 
-											'valid':'STATE'})
-	sis = smach_ros.IntrospectionServer('smach_server', sm, '/SM_ROOT')
-	sis.start()
-	sm.execute()
+	t = FSMThread()
+	t.start()
+	rospy.on_shutdown(t.stop)
 	rospy.spin()
-	sis.stop()
-
-
-
-class state(smach.State):
-	def __init__(self, trigger_event ,input_keys = [],output_keys=[]):
-		smach.State.__init__(
-			self,
-			outcomes = ['valid','invalid'],
-			input_keys = input_keys,
-			output_keys = output_keys)
-
-		self._trigger_event = trigger_event
-
-	def execute(self, userdata):
-		rospy.loginfo('Executing the state')
-		self._trigger_event.clear()
-		self._trigger_event.wait()
-		return 'valid'
-
 
 if __name__ == "__main__":
-	try:
-		config_server()
-	except rospy.ROSInterruptException:
-		pass
+	config_server()
 
 
