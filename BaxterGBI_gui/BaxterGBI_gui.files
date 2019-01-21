@@ -1,0 +1,12 @@
+CMakeLists.txt
+include/BaxterGBI_gui/mainwindow.h
+include/BaxterGBI_gui/mapping.h
+include/BaxterGBI_gui/tabcontent.h
+package.xml
+src/main.cpp
+src/mainwindow.cpp
+src/mainwindow.ui
+src/mapping.cpp
+src/mapping.ui
+src/tabcontent.cpp
+src/tabcontent.ui

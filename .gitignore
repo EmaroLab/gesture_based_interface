@@ -1,3 +1,4 @@
 /CMakeLists.txt
 *.pyc
 .idea
+*.user

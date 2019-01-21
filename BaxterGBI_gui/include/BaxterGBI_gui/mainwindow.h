@@ -20,6 +20,8 @@ public:
 
 private:
     Ui::MainWindow* ui; //forward declaration
+
+private slots:
     void scan();
 };
 

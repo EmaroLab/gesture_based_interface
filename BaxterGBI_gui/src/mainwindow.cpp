@@ -22,6 +22,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tabWidget->clear();
     for (int i = 1; i<=6; i++)
         ui->tabWidget->addTab(new TabContent(), QString("Action %1").arg(i));
+
+    connect(ui->scanButton, &QPushButton::clicked, this, &MainWindow::scan);
 }
 
 void MainWindow::scan(){
