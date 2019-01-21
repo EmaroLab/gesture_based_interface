@@ -1,3 +1,3 @@
-string filename
-uint8 loops
+playback_msg msg
 ---
+uint8 isError

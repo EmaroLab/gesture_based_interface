@@ -18,16 +18,17 @@ find_package(catkin
 
 catkin_python_setup()
  
-#add_message_files(
-#   FILES
-#   playback_msg.msg
-#)
+add_message_files(
+   FILES
+   playback_msg.msg
+)
 
 add_service_files(
   FILES
   Playback.srv
   Record.srv
   ListFiles.srv
+  DeleteFile.srv
 )
 
 generate_messages(

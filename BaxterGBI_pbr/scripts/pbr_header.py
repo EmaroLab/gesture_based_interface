@@ -42,7 +42,7 @@ def clean_line(line, names):
 
 
 #function copied from the examples -> take info and playback from file
-def map_file(filename, loops=1):
+def map_file(filename, loops=1, scale_vel=100):
     """
     Loops through csv file
 
@@ -98,7 +98,7 @@ def map_file(filename, loops=1):
 
             cmd, lcmd, rcmd, values = clean_line(values, keys)
             #command this set of commands until the next frame
-            while (rospy.get_time() - start_time) < values[0]:
+            while (rospy.get_time() - start_time) < values[0]*(100.0/scale_vel):
                 if rospy.is_shutdown():
                     print("\n Aborting - ROS shutdown")
                     return False
@@ -113,11 +113,12 @@ def map_file(filename, loops=1):
                     grip_right.type() != 'custom'):
                     grip_right.command_position(cmd['right_gripper'])
                 rate.sleep()
+            print("-- "+str(rospy.get_time()))	
         print
     return True
 
 def record_function(filename,record_rate):
     """When called use the os.sysyem function to execute a new node, joint_recorder_node, passing the filename and record_rate.
     """
-    string = "rosrun baxter_pbr joint_recorder_node.py "+filename+" "+str(record_rate)
+    string = "rosrun BaxterGBI_pbr joint_recorder_node.py "+filename+" "+str(record_rate)
     os.system(string)
