@@ -1,5 +1,5 @@
-#include "BaxterGBI_gui/configpanel.h" //include our header
-#include "ui_configpanel.h" //required by the generated class Ui::MainWindow
+#include "BaxterGBI_gui/configpanel.h"
+#include "ui_configpanel.h"
 
 #include <QDebug>
 #include <QInputDialog>
@@ -15,10 +15,10 @@
 #include "ros/master.h"
 
 ConfigPanel::ConfigPanel(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::ConfigPanel)  //initialize private member variable
+    QWidget(parent),
+    ui(new Ui::ConfigPanel)
 {
-    ui->setupUi(this); //initialize all widgets used by the MainWindow.ui design file
+    ui->setupUi(this);
     ui->tabWidget->clear();
     for (int i = 1; i<=6; i++)
         ui->tabWidget->addTab(new TabContent(), QString("Action %1").arg(i));
@@ -27,8 +27,6 @@ ConfigPanel::ConfigPanel(QWidget *parent) :
 }
 
 void ConfigPanel::scan(){
-  ROS_INFO("Ready to scan.");
-
   ros::master::V_TopicInfo topicMap;
   std::map<std::string, std::vector<std::string>> compatibleSubtopics;
   std::regex regex("^\\/([a-zA-Z][0-9a-zA-Z_]*)\\/([0-9a-zA-Z_]+)$");
@@ -61,7 +59,6 @@ void ConfigPanel::scan(){
   }
 }
 
-ConfigPanel::~ConfigPanel()
-{
-    delete ui; //this will bring down the whole QObject hierarchy
+ConfigPanel::~ConfigPanel(){
+    delete ui;
 }

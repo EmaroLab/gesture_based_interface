@@ -1,8 +1,8 @@
 #ifndef CONFIGPANEL_H
 #define CONFIGPANEL_H
 
-#include <QMainWindow> //our MainWindow object inherits from QMainWindow class
-#include <QVector> //Qt container class providing a dynamic array (e.g std::vector)
+#include <QWidget>
+#include <QVector>
 
 #include "mapping.h"
 
@@ -10,16 +10,16 @@ namespace Ui {
 class ConfigPanel;
 }
 
-class ConfigPanel : public QMainWindow
+class ConfigPanel : public QWidget
 {
-    Q_OBJECT //allows the class to define its own signals/slots
+    Q_OBJECT
 
 public:
-    explicit ConfigPanel(QWidget* parent = nullptr); //QWidget is a UI component
+    explicit ConfigPanel(QWidget* parent = nullptr);
     ~ConfigPanel();
 
 private:
-    Ui::ConfigPanel* ui; //forward declaration
+    Ui::ConfigPanel* ui;
 
 private slots:
     void scan();
