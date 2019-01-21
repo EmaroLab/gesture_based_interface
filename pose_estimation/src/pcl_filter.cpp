@@ -8,8 +8,6 @@
 #include <pcl/filters/passthrough.h>
 #include <pcl/filters/voxel_grid.h>
 
-//Use this class to contain a public member that is used in the callback function
-
 bool use_downsampling = true;
 bool use_filter_z = true;
 bool use_filter_y = true;
@@ -34,21 +32,43 @@ double max_x = 0.5;
 int sor_k = 40;
 double sor_stddev = 1.0;
 
-
+/**
+ *  Class to filter the /camera/pcl_background_segmentation point cloud, with different filters:
+ * 		- Downsampling (with VoxelGrid)
+ * 		- XYZ axes range filter
+ * 		- Statistical Outlier Removal Filter
+ *  and publish the filtered point cloud in /camera/pcl_filtered
+ */
 class cloudHandler
 {
 private:
+
+	/** 
+     * Input Point Cloud
+     */
     pcl::PointCloud<pcl::PointXYZ> cloud;
+    /** 
+     * Output Point Cloud
+     */
     pcl::PointCloud<pcl::PointXYZ> cloud_filtered;
+    /** 
+     * SOR Filter
+     */
     pcl::StatisticalOutlierRemoval<pcl::PointXYZ> statFilter;
 
 public:
+	/** Handler:
+     * - subscribe to /camera/pcl_background_segmentation, sent by plc_background_segmentation
+     * - publish filtered data to /camera/pcl_filtered 
+     */
     cloudHandler()
     {
         pcl_sub = nh.subscribe("/camera/pcl_background_segmentation", 100, &cloudHandler::cloudCB, this);
         pcl_pub = nh.advertise<sensor_msgs::PointCloud2>("/camera/pcl_filtered", 100);
     }
-
+    /** 
+     * Callback function
+     */
     void cloudCB(const boost::shared_ptr<const sensor_msgs::PointCloud2>& input)
     {
 		pcl::PCLPointCloud2::Ptr input_pcl (new pcl::PCLPointCloud2 ());
@@ -56,9 +76,9 @@ public:
 		
 		pcl::PCLPointCloud2::Ptr input_pcl_filtered (new pcl::PCLPointCloud2 ());
 		
+		// Downsampling filter with parameter leaf_size
 		if(use_downsampling)
 		{
-			// Create the filtering object
 			pcl::VoxelGrid<pcl::PCLPointCloud2> sor;
 			sor.setInputCloud (input_pcl);
 			sor.setLeafSize (leaf_size, leaf_size, leaf_size);
@@ -72,28 +92,29 @@ public:
 		pcl::fromPCLPointCloud2(*input_pcl_filtered, cloud);
         sensor_msgs::PointCloud2 output;
 		
-		if(!cloud.empty()){			
+		if(!cloud.empty()){	
+			// Filter on z axis in range (min_z, max_z)		
 			if(use_filter_z)
 			{
-				//passThrough Filter 
 				pcl::PassThrough<pcl::PointXYZ> pass;
 				pass.setInputCloud (cloud.makeShared());
 				pass.setFilterFieldName ("z");
 				pass.setFilterLimits (min_z, max_z);
-				
+				// To use the complementar range
 				if(revert_filter_z)
 					pass.setFilterLimitsNegative (true);
 					
 				pass.filter (cloud_filtered);
 			}
 			if(!cloud_filtered.empty()){
+				// Filter on x axis in range (min_x, max_x)
 				if(use_filter_x)
 				{
 					pcl::PassThrough<pcl::PointXYZ> pass2;
 					pass2.setInputCloud (cloud_filtered.makeShared());
 					pass2.setFilterFieldName ("x");
 					pass2.setFilterLimits (min_x, max_x);
-					
+					// To use the complementar range
 					if(revert_filter_x)
 						pass2.setFilterLimitsNegative (true);
 					
@@ -101,23 +122,22 @@ public:
 				}
 				
 				if(!cloud_filtered.empty()){
+					// Filter on y axis in range (min_y, max_y)
 					if(use_filter_y)
 					{
 						pcl::PassThrough<pcl::PointXYZ> pass3;
 						pass3.setInputCloud (cloud_filtered.makeShared());
 						pass3.setFilterFieldName ("y");
 						pass3.setFilterLimits (min_y, max_y);
-						
+						// To use the complementar range
 						if(revert_filter_y)
 							pass3.setFilterLimitsNegative (true);
 					
 						pass3.filter (cloud_filtered);
 					}
 					if(!cloud_filtered.empty()){
-						
+						// Removing outliers using a StatisticalOutlierRemoval filter
 						if(use_filter_sor){
-							// Create the filtering object
-							// Removing outliers using a StatisticalOutlierRemoval filter
 							pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor2;
 							sor2.setInputCloud (cloud_filtered.makeShared());
 							sor2.setMeanK (sor_k);
@@ -142,8 +162,30 @@ protected:
     ros::Publisher pcl_pub;
 };
 
+/**
+ * Main:
+ * Initialization of the parameters and of the handler
+ * @param[in]  use_downsampling  Enable downsampling filter
+ * @param[in]  downsampling_leaf_size    Downsampling granularity
+ * @param[in]  use_filter_z    Enable z axis filter
+ * @param[in]  min_z    left limit of z range
+ * @param[in]  max_z    right limit of z range
+ * @param[in]  revert_filter_z    if true use the complementar range 
+ * @param[in]  use_filter_y    Enable y axis filter
+ * @param[in]  min_y    left limit of y range
+ * @param[in]  max_y    right limit of y range
+ * @param[in]  revert_filter_y    if true use the complementar range  
+ * @param[in]  use_filter_x    Enable x axis filter
+ * @param[in]  min_x    left limit of x range
+ * @param[in]  max_x    right limit of x range
+ * @param[in]  revert_filter_x    If true use the complementar range 
+ * @param[in]  use_filter_sor    Enable SOR filter
+ * @param[in]  sor_k    Parameter of SOR filter
+ * @param[in]  sor_stddev    Parameter of SOR filter
+ */
 main(int argc, char** argv)
 {
+	
     ros::init(argc, argv, "pcl_filter");
 	ros::NodeHandle n("~");
     n.param<double>("min_z", min_z, 0.1);

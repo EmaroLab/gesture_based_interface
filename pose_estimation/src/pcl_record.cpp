@@ -15,14 +15,24 @@
 
 float angle = -30.0;
 int go = 0;
-
+/**
+ *  Class to record all the environments for each possible orientation of the Kinect
+ * 		the range of the Kinect tilt is [-30,30]
+ * 		with a given granularity
+ */
 class cloudHandler{
+	
 	public:
-    	cloudHandler(){
+	/** Handler:
+     * - subscribe to /camera/depth/points raw data from the Kinect
+     * - save environments in ~/.kinect_environments
+     */
+    cloudHandler(){
         pcl_sub = nh.subscribe("/camera/depth/points", 10, &cloudHandler::cloudCB, this);
-    }
-
-    
+	}
+    /** 
+     * Callback function
+     */
 	void cloudCB (const sensor_msgs::PointCloud2ConstPtr& cloud)
 	{
 		if ((cloud->width * cloud->height) == 0)
@@ -51,49 +61,51 @@ class cloudHandler{
 		ros::Subscriber pcl_sub;
 		ros::Subscriber angle_sub;
 		
-
 };
 
-
+/**
+ * Main:
+ * Initialization of the parameter granularity and the handler
+ * @param[in]  granularity  angle step between two consecutive records 
+ */
 int main(int argc, char **argv)
 {
-ros::init(argc, argv, "recorder");
+	ros::init(argc, argv, "recorder");
 
-system("mkdir --parents ~/.kinect_environments/");
+	system("mkdir --parents ~/.kinect_environments/");
 
-cloudHandler handler;
+	cloudHandler handler;
 
-ros::NodeHandle n;
+	ros::NodeHandle n;
 
-ros::Publisher rec_pub = n.advertise<std_msgs::Float64>("tilt_angle", 1000);
+	ros::Publisher rec_pub = n.advertise<std_msgs::Float64>("tilt_angle", 1000);
 
-ros::Rate loop_rate(0.3);
-ros::Rate sleep1(0.2);
+	ros::Rate loop_rate(0.3);
+	ros::Rate sleep1(0.2);
 
-angle = -30.0;
-std_msgs::Float64 msg;
-msg.data = angle;
-rec_pub.publish(msg);
-ros::spinOnce();
-sleep1.sleep();
-ROS_INFO ("Ready to start");
-while (ros::ok())
-{
+	angle = -30.0;
+	std_msgs::Float64 msg;
 	msg.data = angle;
 	rec_pub.publish(msg);
-	go = 1;
-	
-	ROS_INFO ("Cur Angle %lf", angle);
-
 	ros::spinOnce();
-	loop_rate.sleep();
-	
-	angle = angle + 1.0;
-	
-	if(angle >= 31.0)
-		exit(0);
-}
+	sleep1.sleep();
+	ROS_INFO ("Ready to start");
+	while (ros::ok())
+	{
+		msg.data = angle;
+		rec_pub.publish(msg);
+		go = 1;
+		
+		ROS_INFO ("Cur Angle %lf", angle);
 
+		ros::spinOnce();
+		loop_rate.sleep();
+		
+		angle = angle + 1.0;
+		
+		if(angle >= 31.0)
+			exit(0);
+	}
 
-return 0;
+	return 0;
 }

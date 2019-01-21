@@ -10,8 +10,18 @@
 #include <pcl/filters/voxel_grid.h>
 #include "pose_estimation/MoveKinect.h"
 
+/** 
+ * Publisher, to control the tilt angle of the Kinect
+*/
 ros::Publisher rec_pub;
 
+/** 
+ * Callback of the /move_kinect service
+ * @param[in]  req  Request Message
+	* @param[in]  req.angle Desired Orientation angle of the Kinect
+ * @param[out]  res    Response of the service
+	* @param[out]  res.result If the operation is completed successfully
+ */
 bool move(pose_estimation::MoveKinect::Request  &req,
          pose_estimation::MoveKinect::Response &res)
 {
@@ -29,7 +39,10 @@ bool move(pose_estimation::MoveKinect::Request  &req,
 	res.result = true;
 	return true;
 }
-
+/**
+ * Main:
+ * Initialization of the service
+ */
 main(int argc, char** argv)
 {
     ros::init(argc, argv, "kinect_move_server");

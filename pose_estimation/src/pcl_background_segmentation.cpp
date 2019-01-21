@@ -13,23 +13,33 @@
 #include <pwd.h>
 
 using namespace std;
-//Use this class to contain a public member that is used in the callback function
 
-double delta = 0.08;
 std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr> backgrounds (61); 
 pcl::PointCloud<pcl::PointXYZ>::Ptr actualImage(new pcl::PointCloud<pcl::PointXYZ>);
 
+/**
+ *  Class to implement Background Segmentation
+ * 		remove the background associated to the current Kinect angle from the /camera/depth/points
+ * 		publish filtered points cloud in /camera/pcl_background_segmentation
+ */
+double delta = 0.08;
 int angle = 0;
 
-
 class cloudHandler{
+	/** Handler:
+     * - subscribe to /camera/depth/points, raw data acquired by the Kinect
+     * - subscribe to /cur_tilt_angle to acquire the current tilt angle of the Kinect
+     * - publish to /camera/pcl_background_segmentation the filtered point cloud
+     */
 	public:
     	cloudHandler(){
         pcl_sub = nh.subscribe("/camera/depth/points", 10, &cloudHandler::cloudCB, this);
         angle_sub = nh.subscribe("/cur_tilt_angle", 10, &cloudHandler::angleCB, this);
         pcl_pub = nh.advertise<sensor_msgs::PointCloud2>("/camera/pcl_background_segmentation", 1);
     }
-
+    /** 
+     * Point cloud callback function
+     */
     void cloudCB(const sensor_msgs::PointCloud2& input){  //or const sensor_msgs::PointCloud2ConstPtr& input
         
         sensor_msgs::PointCloud2 output;
@@ -46,7 +56,9 @@ class cloudHandler{
         pcl::toROSMsg(*actualImage, output);
         pcl_pub.publish(output);
     }
-    
+    /** 
+     * Angle callback function
+     */
     void angleCB(const std_msgs::Float64& angle_msg){  
 		if(angle_msg.data <= 30.0 && angle_msg.data >= -30.0)
 		{
@@ -61,7 +73,11 @@ protected:
     ros::Publisher pcl_pub;
 
 };
-
+/**
+ * Main:
+ * Initialization of the parameter delta and of the handler
+ * @param[in]  delta	sensitivity of the segmentation
+ */
 main(int argc, char** argv)
 {
     ros::init(argc, argv, "pcl_background_segmentation");
