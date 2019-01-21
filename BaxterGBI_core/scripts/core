@@ -9,57 +9,76 @@ from gbi_states import *
 
 
 class FSMThread(threading.Thread):
-	def __init__(self):
-		threading.Thread.__init__(self)
+    def __init__(self):
+        threading.Thread.__init__(self)
 
-		self.sm = smach.StateMachine(outcomes=['MAIN_MENU', 'EXIT'])
-		self.event = FsmEvent(self.sm)
-		with self.sm:
-			smach.StateMachine.add('INIT', InitState(),
-									transitions={'config_available':'CONFIG',
-												'config_missing':'WAIT_CONFIG',
-												 'preempted':'EXIT'})
-			smach.StateMachine.add('CONFIG', ConfigState(bgi_io.signal, self.action_cb),
-									transitions={'invalid':'WAIT_CONFIG',
-												'success':'WAIT_USER',
-												 'preempted':'EXIT'})
-			smach.StateMachine.add('WAIT_CONFIG', WaitConfigState(self.event),
-									transitions={'config_available':'CONFIG',
-												 'preempted':'EXIT'})
-			smach.StateMachine.add('WAIT_USER', WaitUserState(self.event),
-									transitions={'reconf_requested':'CONFIG',
-												'user_detected':'MAIN_MENU',
-												'preempted':'EXIT'})
+        self.sm = smach.StateMachine(outcomes=['MAIN_MENU', 'EXIT'])
+        self.event = FsmEvent(self.sm)
+        with self.sm:
+            smach.StateMachine.add('INIT', InitState(),
+                                    transitions={'config_available':'CONFIG',
+                                                'config_missing':'WAIT_CONFIG',
+                                                 'preempted':'EXIT'})
+            smach.StateMachine.add('CONFIG', ConfigState(bgi_io.signal, self.action_cb),
+                                    transitions={'invalid':'WAIT_CONFIG',
+                                                'success':'WAIT_USER',
+                                                 'preempted':'EXIT'})
+            smach.StateMachine.add('WAIT_CONFIG', WaitConfigState(self.event),
+                                    transitions={'config_available':'CONFIG',
+                                                 'preempted':'EXIT'})
+            smach.StateMachine.add('WAIT_USER', WaitUserState(self.event),
+                                    transitions={'reconf_requested':'CONFIG',
+                                                'user_detected':'MAIN_MENU',
+                                                'preempted':'EXIT'})
+            smach.StateMachine.add('MAIN_MENU', ManuState(self.event),
+                                    transitions={'user_missed':'WAIT_USER'
+                                                 'play_selected':'PLAY',
+                                                 'record_selected':'RECORD',
+                                                 'macro_selected':'MACRO',
+                                                 'sequence_selected':'SEQUENCE',
+                                                 'preempted':'EXIT'})
+            smach.StateMachine.add('PLAY', PlayState(self.event),
+                                    transitions={'done':'MAIN_MENU',
+                                                 'preempted':'EXIT'})
+            smach.StateMachine.add('RECORD', RecordState(self.event),
+                                    transitions={'done':'MAIN_MENU',
+                                                'preempted':'EXIT'})
+            smach.StateMachine.add('MACRO', MacroState(self.event),
+                                    transitions={'done':'MAIN_MENU',
+                                                'preempted':'EXIT'})
+            smach.StateMachine.add('SEQUENCE', SequenceState(self.event),
+                                    transitions={'done':'MAIN_MENU',
+                                                'preempted':'EXIT'})
 
-	def presence_cb(self, msg, params):
-		self.event.signal('user_detected')
-		#rospy.loginfo("Action %d triggered by the %s:\n%s\n", params["code"], params["topic"], msg)
+    def presence_cb(self, msg, params):
+        self.event.signal('user_detected')
+        #rospy.loginfo("Action %d triggered by the %s:\n%s\n", params["code"], params["topic"], msg)
 
-	def action_cb(self, msg, params):
-		self.event.signal('action_' + str(params["code"]))
-		#rospy.loginfo("Action %d triggered by the %s:\n%s\n", params["code"], params["topic"], msg)
+    def action_cb(self, msg, params):
+        self.event.signal('action_' + str(params["code"]))
+        #rospy.loginfo("Action %d triggered by the %s:\n%s\n", params["code"], params["topic"], msg)
 
-	def config_cb(self, req):
-		self.event.signal('config')
-		#FIXME wait for state machine transition outcome
-		return TriggerResponse(success = True, message = "ciao")
+    def config_cb(self, req):
+        self.event.signal('config')
+        #FIXME wait for state machine transition outcome
+        return TriggerResponse(success = True, message = "ciao")
 
-	def run(self):
-		rospy.Service('config', Trigger, self.config_cb)
-		self.sm.execute()
-	
-	def stop(self):
-		self.sm.request_preempt()
-		while self.sm.is_running(): pass
+    def run(self):
+        rospy.Service('config', Trigger, self.config_cb)
+        self.sm.execute()
+    
+    def stop(self):
+        self.sm.request_preempt()
+        while self.sm.is_running(): pass
 
 def config_server():
-	rospy.init_node('config_server')
-	t = FSMThread()
-	t.start()
-	rospy.on_shutdown(t.stop)
-	rospy.spin()
+    rospy.init_node('config_server')
+    t = FSMThread()
+    t.start()
+    rospy.on_shutdown(t.stop)
+    rospy.spin()
 
 if __name__ == "__main__":
-	config_server()
+    config_server()
 
 
