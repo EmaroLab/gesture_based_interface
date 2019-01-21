@@ -12,7 +12,7 @@ class FSMThread(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
 
-        self.sm = smach.StateMachine(outcomes=['MAIN_MENU', 'EXIT'])
+        self.sm = smach.StateMachine(outcomes=['EXIT'])
         self.event = FsmEvent(self.sm)
         with self.sm:
             smach.StateMachine.add('INIT', InitState(),
@@ -30,16 +30,33 @@ class FSMThread(threading.Thread):
                                     transitions={'reconf_requested':'CONFIG',
                                                 'user_detected':'MAIN_MENU',
                                                 'preempted':'EXIT'})
-            smach.StateMachine.add('MAIN_MENU', ManuState(self.event),
-                                    transitions={'user_missed':'WAIT_USER'
-                                                 'play_selected':'PLAY',
-                                                 'record_selected':'RECORD',
-                                                 'macro_selected':'MACRO',
-                                                 'sequence_selected':'SEQUENCE',
-                                                 'preempted':'EXIT'})
+            smach.StateMachine.add('MAIN_MENU', MenuState(self.event),
+                                    transitions={'user_missed':'WAIT_USER',
+                                                'play_selected':'MENU_PLAY',
+                                                'record_selected':'MENU_RECORD',
+                                                'macro_selected':'MENU_MACRO',
+                                                'sequence_selected':'MENU_SEQUENCE',
+                                                'preempted':'EXIT'})
+            smach.StateMachine.add('MENU_PLAY', PlayMenuState(self.event),
+                                    transitions={'user_missed':'WAIT_USER',
+                                                'play_selected':'PLAY',
+                                                'sequence_selected':'SEQUENCE',
+                                                'preempted':'EXIT'})
+            smach.StateMachine.add('MENU_RECORD', RecordMenuState(self.event),
+                                    transitions={'user_missed':'WAIT_USER',
+                                                'record_selected':'RECORD',
+                                                'preempted':'EXIT'})
+            smach.StateMachine.add('MENU_MACRO', MacroMenuState(self.event),
+                                    transitions={'user_missed':'WAIT_USER',
+                                                'macro_selected':'MACRO',
+                                                'preempted':'EXIT'})
+            smach.StateMachine.add('MENU_SEQUENCE',SequenceMenuState(self.event),
+                                    transitions={'user_missed':'WAIT_USER',
+                                                'sequence_selected':'SEQUENCE',
+                                                'preempted':'EXIT'})
             smach.StateMachine.add('PLAY', PlayState(self.event),
                                     transitions={'done':'MAIN_MENU',
-                                                 'preempted':'EXIT'})
+                                                'preempted':'EXIT'})
             smach.StateMachine.add('RECORD', RecordState(self.event),
                                     transitions={'done':'MAIN_MENU',
                                                 'preempted':'EXIT'})
