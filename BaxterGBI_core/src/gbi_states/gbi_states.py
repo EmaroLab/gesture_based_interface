@@ -10,6 +10,8 @@ import BaxterGBI_core_msgs.msg as pub_status
 MenuContext=namedtuple('MenuContext', ['title','options','fixed_options','selection'])
 ActionContext=namedtuple('ActionContext',['action','status'])
 
+play_option=[]
+macro_option=[]
 
 class FsmEvent:
     def __init__(self, fsm):
@@ -168,8 +170,9 @@ class MenuState(smach.State):
         self._trigger_event = trigger_event
         self.type='menu'
         self.status=MenuContext(title='Menu',options=['play_selected','record_selected',
-                             'macro_selected','sequence_selected'],fixed_options='',selection=0)
-        self.MaxSelection=4
+                             'macro_selected','sequence_selected'],fixed_options=[],selection=0)
+        self.options = play_option + self.status.fixed_options
+        self.MaxSelection=len(self.options)
 
     def execute(self, userdata):
         ''' choose from the possible option of the user and the return the proper outcome'''
@@ -180,12 +183,12 @@ class MenuState(smach.State):
             if self.preempt_requested(): return 'preempted'
             if self._trigger_event.event_id == 'action_1': #up
                 if self.status.selection==self.MaxSelection : self.status.selection=self.MaxSelection 
-                else self.status.selection=self.status.selection-1
+                else: self.status.selection=self.status.selection+1
             elif self._trigger_event.event_id == 'action_2': # down
                 if self.status.selection==0 : self.status.selection=0 
-                else self.status.selection=self.status.selection-1
+                else: self.status.selection=self.status.selection-1
             elif self._trigger_event.event_id == 'action_3': # select
-                return self.status.options[self.status.selection]
+                return self.options[self.status.selection]
             elif self._trigger_event.event_id == 'user_missed':
                  return 'user_missed'
 
@@ -198,32 +201,39 @@ class PlayMenuState(smach.State):
     def __init__(self, trigger_event, input_keys = [],output_keys=[]):
         smach.State.__init__(
             self,
-            outcomes = ['user_missed','play_selected','sequence_selected',
+            outcomes = ['user_missed','play_selected','sequence_selected','back',
                         'preempted'],
             input_keys = input_keys,
             output_keys = output_keys)
 
         self._trigger_event = trigger_event
         self.type='menu'
-        self.status=MenuContext(title='PlayMenu',options='default',fixed_options='state_conf',selection=0)
+        self.status=MenuContext(title='Menu',options=play_option,fixed_options=['back','sequence'],selection=0)
+        self.options = play_option + self.status.fixed_options
+        self.MaxSelection=len(self.options)
 
     def execute(self, userdata):
-        publish_state(self.type)
         ''' choose from the possible option of the user and the return the proper outcome'''
         while(1):
+            publish_state(self.type,self.status)
             if self.preempt_requested(): return 'preempted'
             self._trigger_event.wait()
             if self.preempt_requested(): return 'preempted'
-            if self._trigger_event.event_id == 'action_1': #up
-               ''' move up'''
-            elif self._trigger_event.event_id == 'action_2': # down
-                # move down
-            #elif self._trigger_event.event_id == 'action_3': # select
-                ''' context status '''
+            if self._trigger_event.event_id == 'action_2': #up
+                if self.status.selection==self.MaxSelection : self.status.selection=self.MaxSelection 
+                else: self.status.selection=self.status.selection+1
+            elif self._trigger_event.event_id == 'action_1': # down
+                if self.status.selection==0 : self.status.selection=0 
+                else: self.status.selection=self.status.selection-1
+            elif self._trigger_event.event_id == 'action_3': # select
+                if self.options[self.status.selection]=='back': return 'back'
+                if self.options[self.status.selection]=='sequence': return 'sequence_selected'
+                publish_state(self.type,ActionContext(
+                    action=self.status.options[self.status.selection]
+                    ,status=''))
+                return 'play_selected'
             elif self._trigger_event.event_id == 'user_missed':
                  return 'user_missed'
-                 return 'play_selected'
-                 return 'sequence'
 
 
     def request_preempt(self):
@@ -240,6 +250,9 @@ class PlayState(smach.State):
 
         self._trigger_event = trigger_event
         self.type='play'
+        self.status=MenuContext(title='play',options=play_option,fixed_options=['back'],selection=0)
+        self.options = play_option + self.status.fixed_options
+        self.MaxSelection=len(self.options)
 
     def execute(self, userdata):
         publish_state(self.type)
@@ -257,35 +270,82 @@ class RecordMenuState(smach.State):
     def __init__(self, trigger_event, input_keys = [],output_keys=[]):
         smach.State.__init__(
             self,
-            outcomes = ['user_missed','record_selected','preempted'],
+            outcomes = ['user_missed','record_selected','back','remove','preempted'],
             input_keys = input_keys,
             output_keys = output_keys)
 
         self._trigger_event = trigger_event
         self.type='menu'
-        self.status=MenuContext(title='RecordMenu',options='default',fixed_options='state_conf',selection=0)
+        self.status=MenuContext(title='Menu',options=play_option,fixed_options=['add_new','remove,back'],selection=0)
+        self.options = play_option + self.status.fixed_options
+        self.MaxSelection=len(self.options)
 
     def execute(self, userdata):
-        publish_state(self.type)
         ''' choose from the possible option of the user and the return the proper outcome'''
         while(1):
+            publish_state(self.type,self.status)
             if self.preempt_requested(): return 'preempted'
             self._trigger_event.wait()
             if self.preempt_requested(): return 'preempted'
             if self._trigger_event.event_id == 'action_1': #up
-               ''' move up'''
+                if self.status.selection==self.MaxSelection : self.status.selection=self.MaxSelection 
+                else: self.status.selection=self.status.selection+1
             elif self._trigger_event.event_id == 'action_2': # down
-                # move down
-            #elif self._trigger_event.event_id == 'action_3': # select
-                ''' context status '''
+                if self.status.selection==0 : self.status.selection=0 
+                else: self.status.selection=self.status.selection-1
+            elif self._trigger_event.event_id == 'action_3': # select
+                if self.options[self.status.selection]=='back': return 'back'
+                if self.options[self.status.selection]=='remove': return 'remove'
+                if self.options[self.status.selection]=='add_new':return 'record_selected'
             elif self._trigger_event.event_id == 'user_missed':
                  return 'user_missed'
-                 return 'record_selected'
+
 
 
     def request_preempt(self):
         smach.State.request_preempt(self)
         self._trigger_event.signal('preempt')
+
+class RemoveState(smach.State):
+    def __init__(self, trigger_event, input_keys = [],output_keys=[]):
+        smach.State.__init__(
+            self,
+            outcomes = ['done','user_missed','preempted'],
+            input_keys = input_keys,
+            output_keys = output_keys)
+
+        self._trigger_event = trigger_event
+        self.type='RemoveState'
+        self.status=MenuContext(title='Remove',options=play_option,fixed_options=['back'],selection=0)
+        self.options = play_option + self.status.fixed_options
+        self.MaxSelection=len(self.options)
+
+    def execute(self, userdata):
+        if self.preempt_requested(): return 'preempted'
+        while(1):
+            publish_state(self.type,self.status)
+            if self.preempt_requested(): return 'preempted'
+            self._trigger_event.wait()
+            if self.preempt_requested(): return 'preempted'
+            if self._trigger_event.event_id == 'action_1': #up
+                if self.status.selection==self.MaxSelection : self.status.selection=self.MaxSelection 
+                else: self.status.selection=self.status.selection+1
+            elif self._trigger_event.event_id == 'action_2': # down
+                if self.status.selection==0 : self.status.selection=0 
+                else: self.status.selection=self.status.selection-1
+            elif self._trigger_event.event_id == 'action_3': # select
+                if self.options[self.status.selection]=='back': return 'done'
+                play_option.remove[self.options[self.status.selection]]
+                self.status.options=play_option
+                self.options = play_option + fixed_options
+                self.MaxSelection=len(self.option)
+            elif self._trigger_event.event_id == 'user_missed':
+                 return 'user_missed'
+
+    def request_preempt(self):
+        smach.State.request_preempt(self)
+        self._trigger_event.signal('preempt')
+
 
 class RecordState(smach.State):
     def __init__(self, trigger_event, input_keys = [],output_keys=[]):
@@ -313,31 +373,36 @@ class MacroMenuState(smach.State):
     def __init__(self, trigger_event, input_keys = [],output_keys=[]):
         smach.State.__init__(
             self,
-            outcomes = ['user_missed','macro_selected',
+            outcomes = ['user_missed','macro_selected','back',
                         'preempted'],
             input_keys = input_keys,
             output_keys = output_keys)
 
         self._trigger_event = trigger_event
         self.type='menu'
-        self.status=MenuContext(title='MacroMenu',options='default',fixed_options='state_conf',selection=0)
+        self.status=MenuContext(title='MacroMenu',options=play_option,fixed_options=['back'],selection=0)
+        self.options = play_option + self.status.fixed_options
+        self.MaxSelection=len(self.options)
 
     def execute(self, userdata):
-        publish_state(self.type)
-        ''' choose from the possible option of the user and the return the proper outcome'''
+        if self.preempt_requested(): return 'preempted'
         while(1):
+            publish_state(self.type,self.status)
             if self.preempt_requested(): return 'preempted'
             self._trigger_event.wait()
             if self.preempt_requested(): return 'preempted'
             if self._trigger_event.event_id == 'action_1': #up
-               ''' move up'''
+                if self.status.selection==self.MaxSelection : self.status.selection=self.MaxSelection 
+                else: self.status.selection=self.status.selection+1
             elif self._trigger_event.event_id == 'action_2': # down
-                # move down
-            #elif self._trigger_event.event_id == 'action_3': # select
-                ''' context status '''
+                if self.status.selection==0 : self.status.selection=0 
+                else: self.status.selection=self.status.selection-1
+            elif self._trigger_event.event_id == 'action_3': # select
+                if self.options[self.status.selection]=='back': return 'back'
+                # pass the macro to the following state
+                return 'macro_selected'
             elif self._trigger_event.event_id == 'user_missed':
                  return 'user_missed'
-                 return ' macro_selected'
 
     def request_preempt(self):
         smach.State.request_preempt(self)
@@ -370,30 +435,37 @@ class SequenceMenuState(smach.State):
     def __init__(self, trigger_event, input_keys = [],output_keys=[]):
         smach.State.__init__(
             self,
-            outcomes = ['user_missed','sequence_selected','preempted'],
+            outcomes = ['user_missed','sequence_selected','back','preempted'],
             input_keys = input_keys,
             output_keys = output_keys)
 
         self._trigger_event = trigger_event
         self.type='menu'
-        self.status=MenuContext(title='SequenceMenu',options='default',fixed_options='state_conf',selection=0)
+        self.status=MenuContext(title='SequenceMenu',options=play_option,fixed_options=['back', 'play'],selection=0)
+        self.options = play_option + self.status.fixed_options
+        self.MaxSelection=len(self.options)
+        self.selected_option=[]
 
     def execute(self, userdata):
-        publish_state(self.type)
-        ''' choose from the possible option of the user and the return the proper outcome'''
+        if self.preempt_requested(): return 'preempted'
         while(1):
+            publish_state(self.type,self.status)
             if self.preempt_requested(): return 'preempted'
             self._trigger_event.wait()
             if self.preempt_requested(): return 'preempted'
             if self._trigger_event.event_id == 'action_1': #up
-               ''' move up'''
+                if self.status.selection==self.MaxSelection : self.status.selection=self.MaxSelection 
+                else: self.status.selection=self.status.selection+1
             elif self._trigger_event.event_id == 'action_2': # down
-                # move down
-            #elif self._trigger_event.event_id == 'action_3': # select
-                ''' context status '''
+                if self.status.selection==0 : self.status.selection=0 
+                else: self.status.selection=self.status.selection-1
+            elif self._trigger_event.event_id == 'action_3': # select
+                if self.options[self.status.selection]=='back': return 'back'
+                if self.options[self.status.selection]=='play':
+                    return 'sequence_selected' #pass the selected_option to the following state 
+                self.selected_option=self.selected_option+self.options[self.status.selection]
             elif self._trigger_event.event_id == 'user_missed':
                  return 'user_missed'
-                 return 'sequence_selected'
 
     def request_preempt(self):
         smach.State.request_preempt(self)
