@@ -9,6 +9,7 @@
 #include <string.h>
 #include "std_msgs/Float64.h"
 #include <Eigen/Geometry> 
+#include <ros/package.h>
 
 using namespace std;
 //Use this class to contain a public member that is used in the callback function
@@ -63,8 +64,9 @@ protected:
 main(int argc, char** argv)
 {
     ros::init(argc, argv, "pcl_background_segmentation");
-    
-    std::string prefix = "/home/marco/catkin_ws/src/pose_estimation/src/environments/environment";
+    ros::NodeHandle n("~");
+    n.param<double>("delta", delta, 0.08);
+    std::string prefix = "~/.kinect_environments/environment";
     std::string suffix = ".pcd";
     std::string name;
     for(int i = -30; i <= 30; i++)

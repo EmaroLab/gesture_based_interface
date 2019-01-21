@@ -108,11 +108,11 @@ void publishTransforms(const std::string& frame_id) {
     }
 }
 
-#define CHECK_RC(nRetVal, what)										
-	if (nRetVal != XN_STATUS_OK)									
-	{																
-		ROS_ERROR("%s failed: %s", what, xnGetStatusString(nRetVal));
-		return nRetVal;												
+#define CHECK_RC(nRetVal, what)										\
+	if (nRetVal != XN_STATUS_OK)									\
+	{																\
+		ROS_ERROR("%s failed: %s", what, xnGetStatusString(nRetVal));\
+		return nRetVal;												\
 	}
 
 int main(int argc, char **argv) {
@@ -168,8 +168,7 @@ int main(int argc, char **argv) {
 
         
         ros::NodeHandle pnh("~");
-        string frame_id("openni_depth_frame");
-        pnh.getParam("camera_frame_id", frame_id);
+        string frame_id("camera_link");
                 
 	while (ros::ok()) {
 		g_Context.WaitAndUpdateAll();

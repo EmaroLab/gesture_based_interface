@@ -1,0 +1,9 @@
+<launch>
+	
+	<node name="kinect_aux_node" pkg ="kinect_aux" type="kinect_aux_node" output="screen" />
+
+	<node name="pcl_record" pkg ="pose_estimation" type="pcl_record" output="screen" >
+		<param name="granularity" value="1"/>
+	</node>
+
+</launch>

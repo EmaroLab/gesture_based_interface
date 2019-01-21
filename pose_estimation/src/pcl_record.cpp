@@ -41,7 +41,7 @@ class cloudHandler{
 		ros::NodeHandle nh;
 		ros::Subscriber pcl_sub;
 		ros::Subscriber angle_sub;
-		char* prefix_ = "/home/marco/catkin_ws/src/pose_estimation/src/environments/environment";
+		char* prefix_ = "~/.kinect_environments/environment";
 
 };
 

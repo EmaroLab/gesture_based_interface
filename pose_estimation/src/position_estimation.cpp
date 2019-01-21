@@ -93,9 +93,6 @@ public:
 	msg.pose.pose.position.y= new_point.y;             // y measurement GPS.
 	msg.pose.pose.position.z= new_point.z;
 
-
-
-
 	pcl_pub.publish(msg);
 
     }

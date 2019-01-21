@@ -1,0 +1,43 @@
+#include <ros/ros.h>
+#include "std_msgs/String.h"
+#include "std_msgs/Float64.h"
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
+#include <pcl_conversions/pcl_conversions.h>
+#include <sensor_msgs/PointCloud2.h>
+#include <pcl/filters/statistical_outlier_removal.h>
+#include <pcl/filters/passthrough.h>
+#include <pcl/filters/voxel_grid.h>
+#include "pose_estimation/MoveKinect.h"
+
+ros::Publisher rec_pub;
+
+bool move(pose_estimation::MoveKinect::Request  &req,
+         pose_estimation::MoveKinect::Response &res)
+{
+	if(req.angle > 30)
+	{
+		req.angle = 30;
+	}
+	if(req.angle < -30)
+	{
+		req.angle = -30;
+	}
+	std_msgs::Float64 msg;
+	msg.data = req.angle;
+	rec_pub.publish(msg);
+	res.result = true;
+	return true;
+}
+
+main(int argc, char** argv)
+{
+    ros::init(argc, argv, "kinect_move_server");
+	ros::NodeHandle n;
+	rec_pub = n.advertise<std_msgs::Float64>("tilt_angle", 1000);
+	ros::ServiceServer service = n.advertiseService("move_kinect", move);
+
+    ros::spin();
+
+    return 0;
+}
