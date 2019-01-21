@@ -2,3 +2,5 @@
 *.pyc
 .idea
 *.user
+*.files
+*.includes
