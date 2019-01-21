@@ -1,0 +1,36 @@
+<launch>
+	
+	<node name="kinect_aux_node" pkg ="kinect_aux" type="kinect_aux_node" output="screen" />
+	
+	<node name="pcl_background_segmentation" pkg ="pose_estimation" type="pcl_background_segmentation" output="screen">
+		<param name="granularity" value="1"/>
+	</node>
+	
+	<node name="pcl_filter" pkg ="pose_estimation" type="pcl_filter" output="screen">
+		<param name="use_downsampling" value="true"/>
+		<param name="downsampling_leaf_size" value="0.01"/>
+
+		<param name="use_filter_z" value="true"/>
+		<param name="min_z" value="0.1"/>
+		<param name="max_z" value="3"/>
+		<param name="revert_filter_z" value="false"/>
+
+		<param name="use_filter_y" value="true"/>
+		<param name="min_y" value="-0.5"/>
+		<param name="max_y" value="0.5"/>
+		<param name="revert_filter_y" value="false"/>
+
+		<param name="use_filter_x" value="true"/>
+		<param name="min_x" value="-0.5"/>
+		<param name="max_x" value="0.5"/>
+		<param name="revert_filter_x" value="false"/>
+
+		<param name="use_filter_sor" value="true"/>
+		<param name="sor_k" value="40"/>
+		<param name="sor_stddev" value="1.0"/>
+
+	</node>
+
+	<node name="position_estimation" pkg="pose_estimation" type="position_estimation" output="screen"/>
+
+</launch>
