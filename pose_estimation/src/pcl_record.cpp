@@ -7,7 +7,11 @@
 #include <iostream>
 #include <pcl/filters/statistical_outlier_removal.h>
 #include <math.h>
+#include <boost/filesystem.hpp>
 #include <Eigen/Geometry> 
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
 
 float angle = -30.0;
 int go = 0;
@@ -27,13 +31,18 @@ class cloudHandler{
 		if(go == 0)
 			return;
 		go = 0;
-
+		
+		const char *homedir;
+		if ((homedir = getenv("HOME")) == NULL) {
+			homedir = getpwuid(getuid())->pw_dir;
+		}
+		
 		int print_angle = angle;
-		std::stringstream ss;
-		ss << prefix_ << print_angle << ".pcd";
-		ROS_INFO ("Data saved to %s", ss.str ().c_str ());
-
-		pcl::io::savePCDFile (ss.str (), *cloud, Eigen::Vector4f::Zero (),
+		std::stringstream ss2;
+		ss2 << homedir << "/.kinect_environments/environment" << print_angle << ".pcd";
+		
+		ROS_INFO ("Data saved to %s", ss2.str ().c_str ());
+		pcl::io::savePCDFile (ss2.str (), *cloud, Eigen::Vector4f::Zero (),
 						 Eigen::Quaternionf::Identity (), false);
 	}
 
@@ -41,7 +50,7 @@ class cloudHandler{
 		ros::NodeHandle nh;
 		ros::Subscriber pcl_sub;
 		ros::Subscriber angle_sub;
-		char* prefix_ = "~/.kinect_environments/environment";
+		
 
 };
 
@@ -49,6 +58,8 @@ class cloudHandler{
 int main(int argc, char **argv)
 {
 ros::init(argc, argv, "recorder");
+
+system("mkdir --parents ~/.kinect_environments/");
 
 cloudHandler handler;
 

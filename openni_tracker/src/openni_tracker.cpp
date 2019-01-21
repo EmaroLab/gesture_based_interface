@@ -1,5 +1,3 @@
-// openni_tracker.cpp
-
 #include <ros/ros.h>
 #include <ros/package.h>
 #include <tf/transform_broadcaster.h>
@@ -105,6 +103,16 @@ void publishTransforms(const std::string& frame_id) {
 
 
         publishTransform(user, XN_SKEL_HEAD,           frame_id, "head");
+        publishTransform(user, XN_SKEL_NECK,           frame_id, "neck");
+        publishTransform(user, XN_SKEL_TORSO,          frame_id, "torso");
+
+        publishTransform(user, XN_SKEL_LEFT_SHOULDER,  frame_id, "left_shoulder");
+        publishTransform(user, XN_SKEL_LEFT_ELBOW,     frame_id, "left_elbow");
+        publishTransform(user, XN_SKEL_LEFT_HAND,      frame_id, "left_hand");
+
+        publishTransform(user, XN_SKEL_RIGHT_SHOULDER, frame_id, "right_shoulder");
+        publishTransform(user, XN_SKEL_RIGHT_ELBOW,    frame_id, "right_elbow");
+        publishTransform(user, XN_SKEL_RIGHT_HAND,     frame_id, "right_hand");
     }
 }
 
@@ -169,6 +177,7 @@ int main(int argc, char **argv) {
         
         ros::NodeHandle pnh("~");
         string frame_id("camera_link");
+        pnh.getParam("camera_frame_id", frame_id);
                 
 	while (ros::ok()) {
 		g_Context.WaitAndUpdateAll();

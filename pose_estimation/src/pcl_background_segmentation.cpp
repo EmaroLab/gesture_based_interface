@@ -10,11 +10,12 @@
 #include "std_msgs/Float64.h"
 #include <Eigen/Geometry> 
 #include <ros/package.h>
+#include <pwd.h>
 
 using namespace std;
 //Use this class to contain a public member that is used in the callback function
 
-float delta = 0.08;
+double delta = 0.08;
 std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr> backgrounds (61); 
 pcl::PointCloud<pcl::PointXYZ>::Ptr actualImage(new pcl::PointCloud<pcl::PointXYZ>);
 
@@ -66,14 +67,19 @@ main(int argc, char** argv)
     ros::init(argc, argv, "pcl_background_segmentation");
     ros::NodeHandle n("~");
     n.param<double>("delta", delta, 0.08);
-    std::string prefix = "~/.kinect_environments/environment";
+    const char *homedir;
+	if ((homedir = getenv("HOME")) == NULL) {
+		homedir = getpwuid(getuid())->pw_dir;
+	}
+		
+    std::string prefix = "/.kinect_environments/environment";
     std::string suffix = ".pcd";
     std::string name;
     for(int i = -30; i <= 30; i++)
     {
 		pcl::PointCloud<pcl::PointXYZ>::Ptr curObj (new pcl::PointCloud<pcl::PointXYZ>);
 		backgrounds[i + 30] = curObj;
-		name = prefix + std::to_string(i) + suffix;
+		name = homedir + prefix + std::to_string(i) + suffix;
 		if (pcl::io::loadPCDFile<pcl::PointXYZ> (name, *(backgrounds[i + 30])) == -1) {
 			PCL_ERROR ("Couldn't read file \n");
 			return (-1);
