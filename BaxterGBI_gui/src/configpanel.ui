@@ -65,7 +65,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="loadconfigButton">
+        <widget class="QPushButton" name="loadConfigButton">
          <property name="text">
           <string>Load Configuration</string>
          </property>

@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include <QCloseEvent>
 
+#include <QPushButton>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -17,6 +19,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(rosThread, &QThread::finished, rosThread, &QThread::deleteLater);
     connect(worker, &Worker::newStatus, this, &MainWindow::updatePage);
     rosThread->start();
+    
+    connect(ui->configModeButton, &QPushButton::clicked, this, &MainWindow::__setConfigMode);
+    connect(ui->actionModeButton, &QPushButton::clicked, this, &MainWindow::__setActionMode);
+    connect(ui->menuModeButton, &QPushButton::clicked, this, &MainWindow::__setMenuMode);
 }
 
 MainWindow::~MainWindow(){
@@ -44,6 +50,33 @@ void MainWindow::updatePage(const boost::shared_ptr<BaxterGBI_core_msgs::status>
         }
     }
     current_page = target_page;
+}
+
+void MainWindow::__setConfigMode(){
+	 if (current_page) {
+            ui->innerLayout->removeWidget(current_page);
+            current_page->setParent(nullptr);
+        }
+      ui->innerLayout->addWidget(&conf_page);
+      current_page = &conf_page;
+}
+
+void MainWindow::__setActionMode(){
+	 if (current_page) {
+            ui->innerLayout->removeWidget(current_page);
+            current_page->setParent(nullptr);
+        }
+      ui->innerLayout->addWidget(&action_page);
+      current_page = &action_page;
+}
+
+void MainWindow::__setMenuMode(){
+	 if (current_page) {
+            ui->innerLayout->removeWidget(current_page);
+            current_page->setParent(nullptr);
+        }
+      ui->innerLayout->addWidget(&menu_page);
+      current_page = &menu_page;
 }
 
 void MainWindow::closeEvent(QCloseEvent *event){

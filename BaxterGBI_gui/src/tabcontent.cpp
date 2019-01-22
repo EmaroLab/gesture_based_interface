@@ -38,7 +38,11 @@ void TabContent::removeMapping(Mapping* mapping){
 
 void TabContent::clear(){
 	qInfo() << "aaa";
-	qDeleteAll(ui->topicsContainer->children());
+	QLayoutItem* item;
+    while ((item = ui->topicsContainer->layout()->takeAt(0)) != nullptr){
+        delete item->widget();
+        delete item;
+    }
 }
 
 void TabContent::enableAddButton(){

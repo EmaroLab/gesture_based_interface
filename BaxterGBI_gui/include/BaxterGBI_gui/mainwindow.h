@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include "BaxterGBI_gui/configpanel.h"
+#include "BaxterGBI_gui/actionpanel.h"
+#include "BaxterGBI_gui/menupanel.h"
 #include "BaxterGBI_gui/rosworker.h"
 #include "BaxterGBI_core_msgs/status.h"
 
@@ -31,10 +33,15 @@ private:
     QThread *rosThread;
     Worker *worker;
     ConfigPanel conf_page;
+    ActionPanel action_page;
+    MenuPanel menu_page;
     QWidget *current_page;
 
 private slots:
     void updatePage(const boost::shared_ptr<BaxterGBI_core_msgs::status> msg);
+    void __setConfigMode();
+    void __setActionMode();
+    void __setMenuMode();
 };
 
 #endif // MAINWINDOW_H

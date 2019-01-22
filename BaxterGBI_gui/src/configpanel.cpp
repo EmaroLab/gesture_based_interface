@@ -19,8 +19,9 @@ ConfigPanel::ConfigPanel(QWidget *parent) :
     ui(new Ui::ConfigPanel),
     model(new QStandardItemModel)
 {
-	qInfo() << "A" << model;
     ui->setupUi(this);
+    ui->loadConfigButton->setEnabled(false);
+    
     ui->tabWidget->clear();
     for (int i = 1; i <= 6; i++)
         ui->tabWidget->addTab(new TabContent(model), QString("Action %1").arg(i));

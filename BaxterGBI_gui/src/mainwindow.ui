@@ -16,6 +16,27 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
+     <widget class="QPushButton" name="configModeButton">
+      <property name="text">
+       <string>Config mode</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="menuModeButton">
+      <property name="text">
+       <string>Menu mode</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="actionModeButton">
+      <property name="text">
+       <string>Action mode</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <layout class="QVBoxLayout" name="innerLayout"/>
     </item>
    </layout>
