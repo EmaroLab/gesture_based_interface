@@ -21,12 +21,14 @@ catkin_python_setup()
 add_message_files(
    FILES
    playback_msg.msg
+   record_status.msg
 )
 
 add_service_files(
   FILES
   Playback.srv
-  Record.srv
+  RecordStart.srv
+  RecordStop.srv
   ListFiles.srv
   DeleteFile.srv
 )

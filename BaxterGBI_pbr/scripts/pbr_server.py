@@ -41,14 +41,31 @@ def playback_handler(req):
 
 
 #Record Service ->
-def record_handler(req):
-    """Function used to provide the record service.
+def record_stop_handler(req):
+    """Function used to stop the record service.
     """
     print "Called !!!"
-    path = "src/BaxterGBI_pbr/RecordedFile/"+req.filename
-    #TODO -> Add default value for rate (100)
-    record_function(path, req.record_rate)
+    msg = record_status()
+    msg.filename = " "
+    msg.mode = "stop"
+    msg.record_rate = 0
+    
+    pub.publish(msg)
     return 0
+
+def record_start_handler(req):
+    """Function used to start the record service.
+    """
+    print "Called !!!"
+     
+    msg = record_status()
+    
+    msg.filename = "src/BaxterGBI_pbr/RecordedFile/"+req.filename
+    msg.mode = "start"
+    msg.record_rate = req.record_rate
+    pub.publish(msg)
+    return 0
+
 
 
 def list_files_handler(req):
@@ -90,13 +107,18 @@ def pbr_server():
     rs = baxter_interface.RobotEnable(CHECK_VERSION)
     init_state = rs.state().enabled
 
+    #TODO -> check the queue size
+    global pub
+    pub = rospy.Publisher('recording_status', record_status, queue_size=5)
+
     print("Enabling robot... ")
     rs.enable()
 
     service1 = rospy.Service('playback', Playback, playback_handler)
-    service2 = rospy.Service('record', Record, record_handler)
-    service3 = rospy.Service('files', ListFiles, list_files_handler)
-    service4 = rospy.Service('delete_file', DeleteFile, delete_file_handler)
+    service2 = rospy.Service('record_stop', RecordStop, record_stop_handler)
+    service3 = rospy.Service('record_start', RecordStart, record_start_handler)
+    service4 = rospy.Service('files', ListFiles, list_files_handler)
+    service5 = rospy.Service('delete_file', DeleteFile, delete_file_handler)
     print "PBR node executed -> providing services."
 
     def clean_shutdown():

@@ -116,9 +116,3 @@ def map_file(filename, loops=1, scale_vel=100):
             print("-- "+str(rospy.get_time()))	
         print
     return True
-
-def record_function(filename,record_rate):
-    """When called use the os.sysyem function to execute a new node, joint_recorder_node, passing the filename and record_rate.
-    """
-    string = "rosrun BaxterGBI_pbr joint_recorder_node.py "+filename+" "+str(record_rate)
-    os.system(string)
