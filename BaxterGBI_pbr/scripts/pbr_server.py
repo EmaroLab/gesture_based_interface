@@ -19,12 +19,10 @@ from baxter_interface import CHECK_VERSION
 from BaxterGBI_pbr.srv import *
 from pbr_header import *
 
-global rs
 
-
-#Playback Service -> takes the file_name and use it for playback
 def playback_handler(req):
-    """Function used to provide the playback service.
+    """
+    Service used to activate the playback mode on the baxter.
     """
     print "Called!!!"
 
@@ -40,21 +38,8 @@ def playback_handler(req):
         return 1
 
 
-#Record Service ->
-def record_stop_handler(req):
-    """Function used to stop the record service.
-    """
-    print "Called !!!"
-    msg = record_status()
-    msg.filename = " "
-    msg.mode = "stop"
-    msg.record_rate = 0
-    
-    pub.publish(msg)
-    return 0
-
 def record_start_handler(req):
-    """Function used to start the record service.
+    """Service used to start the recording.
     """
     print "Called !!!"
      
@@ -67,9 +52,21 @@ def record_start_handler(req):
     return 0
 
 
+def record_stop_handler(req):
+    """Service used to stop the recording.
+    """
+    print "Called !!!"
+    msg = record_status()
+    msg.filename = " "
+    msg.mode = "stop"
+    msg.record_rate = 0
+    
+    pub.publish(msg)
+    return 0
+
 
 def list_files_handler(req):
-    """Function used to provide the entire list of the recorded movements.
+    """Service used to provide the entire list of the recorded files.
     """
     print("Called!!")
 
@@ -91,10 +88,27 @@ def list_files_handler(req):
     return resp
 
 def delete_file_handler(req):
+    """
+    Service used to delete a baxter file.
+    """
+    
     file_path_string = "src/BaxterGBI_pbr/RecordedFile/"+req.filename
         
     if os.path.isfile(file_path_string) :
         os.remove(file_path_string)
+    return 0
+    
+def rename_file_handler(req):
+    """
+    Service used to rename a baxter file.
+    """
+    
+    path = "src/BaxterGBI_pbr/RecordedFile/"
+    
+    if os.path.isfile(path+req.old_filename) :
+        os.rename(path+req.old_filename,path+req.new_filename)
+    else:
+        print("There is no file with this name!")
     return 0
 
 #pbr_node initialization
@@ -119,6 +133,7 @@ def pbr_server():
     service3 = rospy.Service('record_start', RecordStart, record_start_handler)
     service4 = rospy.Service('files', ListFiles, list_files_handler)
     service5 = rospy.Service('delete_file', DeleteFile, delete_file_handler)
+    service6 = rospy.Service('rename_file', RenameFile, rename_file_handler)
     print "PBR node executed -> providing services."
 
     def clean_shutdown():

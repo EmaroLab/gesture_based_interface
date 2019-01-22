@@ -31,6 +31,7 @@ add_service_files(
   RecordStop.srv
   ListFiles.srv
   DeleteFile.srv
+  RenameFile.srv
 )
 
 generate_messages(
