@@ -13,7 +13,7 @@ class TabContent : public QWidget
     Q_OBJECT
 
 public:
-    explicit TabContent(QWidget *parent = nullptr);
+    explicit TabContent(QStandardItemModel *model, QWidget *parent = nullptr);
     ~TabContent();
 
 private slots:
@@ -21,10 +21,13 @@ private slots:
 
 public slots:
     QVector<QPair<QString, QString>> getTopics();
-    void removeMapping(Mapping* mapping);
+    void removeMapping(Mapping *mapping);
+    void clear();
+    void enableAddButton();
 
 private:
     Ui::TabContent *ui;
+    QStandardItemModel *model;
 };
 
 #endif // TABCONTENT_H

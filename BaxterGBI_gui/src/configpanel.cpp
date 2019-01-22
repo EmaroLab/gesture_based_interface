@@ -16,22 +16,31 @@
 
 ConfigPanel::ConfigPanel(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::ConfigPanel)
+    ui(new Ui::ConfigPanel),
+    model(new QStandardItemModel)
 {
+	qInfo() << "A" << model;
     ui->setupUi(this);
     ui->tabWidget->clear();
-    for (int i = 1; i<=6; i++)
-        ui->tabWidget->addTab(new TabContent(), QString("Action %1").arg(i));
+    for (int i = 1; i <= 6; i++)
+        ui->tabWidget->addTab(new TabContent(model), QString("Action %1").arg(i));
 
     connect(ui->scanButton, &QPushButton::clicked, this, &ConfigPanel::scan);
 }
 
 void ConfigPanel::scan(){
-  ros::master::V_TopicInfo topicMap;
-  std::map<std::string, std::vector<std::string>> compatibleSubtopics;
-  std::regex regex("^\\/([a-zA-Z][0-9a-zA-Z_]*)\\/([0-9a-zA-Z_]+)$");
-  std::smatch match;
-  ros::master::getTopics(topicMap);
+	ros::master::V_TopicInfo topicMap;
+	std::regex regex("^\\/([a-zA-Z][0-9a-zA-Z_]*)\\/([0-9a-zA-Z_]+)$"); //to match topics
+	std::smatch match;
+	ros::master::getTopics(topicMap);
+
+	for (int i = 0; i <= 5; i++){
+		static_cast<TabContent*>(ui->tabWidget->widget(i))->clear();
+		static_cast<TabContent*>(ui->tabWidget->widget(i))->enableAddButton();
+	}
+  
+  compatibleSubtopics.clear(); //erases all elements from the container
+  model->clear();
 
   for (ros::master::TopicInfo ti: topicMap){
     if (ti.datatype == "BaxterGBI_input_msgs/signal"){
@@ -50,13 +59,29 @@ void ConfigPanel::scan(){
       }
     }
   }
-
+  
   for (auto v: compatibleSubtopics){
     ROS_INFO("Topic %s:", v.first.c_str());  
     for(auto s: v.second){
       ROS_INFO("\t%s", s.c_str());  
     }
   }
+  
+  for(auto a: compatibleSubtopics){
+	  QStandardItem* topic = new QStandardItem(a.first.c_str());
+	  model->appendRow(topic);
+	  for(auto b: a.second){
+		  QStandardItem* subtopic = new QStandardItem(b.c_str());
+		  topic->appendRow(subtopic);
+	  }
+  }
+  
+  for (int i = 0; i < model->rowCount(); i++){
+	qInfo() << model->item(i,0)->text();
+	for (int j = 0; j < model->item(i,0)->rowCount(); j++){
+		qInfo() << '\t' << model->item(i,0)->child(j,0)->text();
+	}
+  }	
 }
 
 ConfigPanel::~ConfigPanel(){

@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QString>
+#include <QStandardItemModel>
 
 namespace Ui {
 class Mapping;
@@ -13,7 +14,7 @@ class Mapping : public QWidget
     Q_OBJECT
 
 public:
-    explicit Mapping(QWidget* parent = nullptr);
+    explicit Mapping(QStandardItemModel *model, QWidget* parent = nullptr);
     ~Mapping();
 
     bool isCompleted() const;
@@ -21,8 +22,12 @@ public:
 signals:
     void removed(Mapping* mapping);
 
+private slots:
+	void updateSubtopics(int idx);
+
 private:
     Ui::Mapping* ui;
+    QStandardItemModel *model;
 };
 
 #endif // TASK_H

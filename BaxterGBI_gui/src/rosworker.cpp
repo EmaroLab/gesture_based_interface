@@ -4,6 +4,12 @@
 #include <QDebug>
 #include <QThread>
 
+Worker::Worker(QWidget* parent){
+}
+
+Worker::~Worker(){
+}
+
 void Worker::statusCb(const boost::shared_ptr<BaxterGBI_core_msgs::status> msg){
     emit newStatus(msg);
 }
@@ -17,11 +23,4 @@ void Worker::process(){
 
 void Worker::stop(){
     ros::shutdown();
-}
-
-Worker::Worker(QWidget* parent){
-}
-
-
-Worker::~Worker(){
 }

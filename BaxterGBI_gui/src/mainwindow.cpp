@@ -2,8 +2,29 @@
 #include "ui_mainwindow.h"
 #include <QCloseEvent>
 
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow),
+    current_page(nullptr),
+    rosThread(new QThread),
+    worker(new Worker)
+{
+    ui->setupUi(this);
+    worker->moveToThread(rosThread);
+    connect(rosThread, &QThread::started, worker, &Worker::process);
+    connect(worker, &Worker::finished, [&] {rosThread->quit();});
+    connect(worker, &Worker::finished, worker, &Worker::deleteLater);
+    connect(rosThread, &QThread::finished, rosThread, &QThread::deleteLater);
+    connect(worker, &Worker::newStatus, this, &MainWindow::updatePage);
+    rosThread->start();
+}
+
+MainWindow::~MainWindow(){
+    delete ui;
+}
+
 void MainWindow::updatePage(const boost::shared_ptr<BaxterGBI_core_msgs::status> msg){
-    ROS_INFO("Context type: [%s]", msg->context_type.c_str());
+    ROS_INFO("Context type: [%s]", msg->context_type.c_str()); //menu, azione, config
     qInfo() << "Context type: " << msg->context_type.c_str();
     static QWidget *target_page;
 
@@ -25,29 +46,8 @@ void MainWindow::updatePage(const boost::shared_ptr<BaxterGBI_core_msgs::status>
     current_page = target_page;
 }
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    current_page(nullptr),
-    rosThread(new QThread),
-    worker(new Worker)
-{
-    ui->setupUi(this);
-    worker->moveToThread(rosThread);
-    connect(rosThread, &QThread::started, worker, &Worker::process);
-    connect(worker, &Worker::finished, [&] {rosThread->quit();});
-    connect(worker, &Worker::finished, worker, &Worker::deleteLater);
-    connect(rosThread, &QThread::finished, rosThread, &QThread::deleteLater);
-    connect(worker, &Worker::newStatus, this, &MainWindow::updatePage);
-    rosThread->start();
-}
-
 void MainWindow::closeEvent(QCloseEvent *event){
     worker->stop();
     rosThread->wait();
     event->accept();
-}
-
-MainWindow::~MainWindow(){
-    delete ui;
 }

@@ -10,14 +10,11 @@ void updatePage(const boost::shared_ptr<BaxterGBI_core_msgs::status> msg){
   qInfo() << "Context type: " << msg->context_type.c_str();
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]){
     QApplication a(argc, argv);
     ros::init(argc, argv, "gui");
     MainWindow w; //instantiate main window
-    w.show(); // show main window
-    //ConfigPanel w; //instantiate main window
-    //w.show(); // show main window
-
+    w.show(); //show main window
+  
     return a.exec();
 }
