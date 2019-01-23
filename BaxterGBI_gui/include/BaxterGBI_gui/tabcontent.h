@@ -2,6 +2,7 @@
 #define TABCONTENT_H
 
 #include "mapping.h"
+
 #include <QWidget>
 
 namespace Ui {
@@ -28,6 +29,10 @@ public slots:
 private:
     Ui::TabContent *ui;
     QStandardItemModel *model;
+    int count;
+    
+signals:
+		void numberOfMappings(int count);
 };
 
 #endif // TABCONTENT_H

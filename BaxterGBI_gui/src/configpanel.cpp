@@ -1,10 +1,6 @@
 #include "BaxterGBI_gui/configpanel.h"
-#include "ui_configpanel.h"
-
-#include <QDebug>
-#include <QInputDialog>
-
 #include "BaxterGBI_gui/tabcontent.h"
+#include "ui_configpanel.h"
 
 #include <string>
 #include <map>
@@ -14,6 +10,9 @@
 #include "ros/ros.h"
 #include "ros/master.h"
 
+#include <QDebug>
+#include <QInputDialog>
+
 ConfigPanel::ConfigPanel(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ConfigPanel),
@@ -21,12 +20,22 @@ ConfigPanel::ConfigPanel(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->loadConfigButton->setEnabled(false);
-    
     ui->tabWidget->clear();
-    for (int i = 1; i <= 6; i++)
-        ui->tabWidget->addTab(new TabContent(model), QString("Action %1").arg(i));
-
+    
+    for (int i = 0; i < 6; i++){
+			isFilled.insert(i, 0); //inizialize elements to false
+			TabContent *tab = new TabContent(model);
+      ui->tabWidget->addTab(tab, QString("Action %1").arg(i+1));
+      connect(tab, &TabContent::numberOfMappings, 
+						[=](const int &mappings){enableLoadButton(i, mappings);
+						});
+		}
+		data = isFilled.data(); //to access and modify the elements of the array easily
     connect(ui->scanButton, &QPushButton::clicked, this, &ConfigPanel::scan);
+}
+
+ConfigPanel::~ConfigPanel(){
+    delete ui;
 }
 
 void ConfigPanel::scan(){
@@ -78,13 +87,30 @@ void ConfigPanel::scan(){
   }
   
   for (int i = 0; i < model->rowCount(); i++){
-	qInfo() << model->item(i,0)->text();
-	for (int j = 0; j < model->item(i,0)->rowCount(); j++){
-		qInfo() << '\t' << model->item(i,0)->child(j,0)->text();
-	}
+		qInfo() << model->item(i,0)->text();
+		for (int j = 0; j < model->item(i,0)->rowCount(); j++){
+			qInfo() << '\t' << model->item(i,0)->child(j,0)->text();
+		}
   }	
 }
 
-ConfigPanel::~ConfigPanel(){
-    delete ui;
+void ConfigPanel::enableLoadButton(int tab, int mappings){
+	if(mappings > 0)
+		data[tab] = 1; //set array element to true
+	else
+		data[tab] = 0;
+	
+	filledTabs = 0; //reset the variable
+	
+	for(int i = 0; i < 6; i++){
+		qInfo() << "Tab " << i << " : " << data[i];
+		if(data[i] == 1)
+			filledTabs++;
+	}
+	qInfo() << "\n";
+	
+	if(filledTabs == 6) 
+		ui->loadConfigButton->setEnabled(true);
+	else
+		ui->loadConfigButton->setEnabled(false);
 }
