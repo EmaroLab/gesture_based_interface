@@ -25,11 +25,12 @@ QVector<QPair<QString, QString>> TabContent::getTopics(){
 }
 
 void TabContent::addMapping(){
+		
     Mapping* mapping = new Mapping(model);
     ui->topicsContainer->addWidget(mapping);
     connect(mapping, &Mapping::removed, this, &TabContent::removeMapping);
     count++;
-    //qInfo() << count << "added";
+    qInfo() << count << "added";
     emit numberOfMappings(count);
 }
 
@@ -44,14 +45,14 @@ void TabContent::removeMapping(Mapping* mapping){
 
 void TabContent::clear(){
 	QLayoutItem* item;
-    while ((item = ui->topicsContainer->layout()->takeAt(0)) != nullptr){
-        delete item->widget();
-        delete item;
-    }
+	while ((item = ui->topicsContainer->layout()->takeAt(0)) != nullptr){
+		delete item->widget();
+		delete item;
+	}
   count = 0;
-  emit numberOfMappings(0);
+  emit numberOfMappings(count);
 }
 
-void TabContent::enableAddButton(){
-	ui->addMappingButton->setEnabled(true);
+void TabContent::enableAddButton(bool enable){
+	ui->addMappingButton->setEnabled(enable);
 }

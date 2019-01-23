@@ -27,9 +27,6 @@ private:
     QStandardItemModel* model;
     std::map<std::string, std::vector<std::string>> compatibleSubtopics;
     QVector<bool> isFilled;
-    bool *data;
-    int mappings;
-    int filledTabs;
 
 private slots:
     void scan();
@@ -37,6 +34,7 @@ private slots:
 
 signals:
     void scan_terminated();
+    void topicsAvailable(bool available);
 };
 
 #endif // CONFIGPANEL_H

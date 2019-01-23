@@ -24,7 +24,7 @@ public slots:
     QVector<QPair<QString, QString>> getTopics();
     void removeMapping(Mapping *mapping);
     void clear();
-    void enableAddButton();
+    void enableAddButton(bool enable);
 
 private:
     Ui::TabContent *ui;

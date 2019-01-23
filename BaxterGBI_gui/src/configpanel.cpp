@@ -16,21 +16,21 @@
 ConfigPanel::ConfigPanel(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ConfigPanel),
-    model(new QStandardItemModel)
+    model(new QStandardItemModel),
+    isFilled(6, false) //inizialize elements to false
 {
     ui->setupUi(this);
     ui->loadConfigButton->setEnabled(false);
     ui->tabWidget->clear();
     
     for (int i = 0; i < 6; i++){
-			isFilled.insert(i, 0); //inizialize elements to false
 			TabContent *tab = new TabContent(model);
       ui->tabWidget->addTab(tab, QString("Action %1").arg(i+1));
       connect(tab, &TabContent::numberOfMappings, 
 						[=](const int &mappings){enableLoadButton(i, mappings);
 						});
+			connect(this, &ConfigPanel::topicsAvailable, tab, &TabContent::enableAddButton);
 		}
-		data = isFilled.data(); //to access and modify the elements of the array easily
     connect(ui->scanButton, &QPushButton::clicked, this, &ConfigPanel::scan);
 }
 
@@ -44,10 +44,10 @@ void ConfigPanel::scan(){
 	std::smatch match;
 	ros::master::getTopics(topicMap);
 
-	for (int i = 0; i <= 5; i++){
+	for (int i = 0; i < 6; i++){
 		static_cast<TabContent*>(ui->tabWidget->widget(i))->clear();
-		static_cast<TabContent*>(ui->tabWidget->widget(i))->enableAddButton();
 	}
+  emit topicsAvailable(false);
   
   compatibleSubtopics.clear(); //erases all elements from the container
   model->clear();
@@ -63,7 +63,8 @@ void ConfigPanel::scan(){
         auto [__discard, first_sub] = compatibleSubtopics.try_emplace(topic, std::initializer_list<std::string>{subtopic});
         if (first_sub){
           ROS_INFO("This was the first subtopic of that topic");
-        } else {
+        } 
+        else{
           compatibleSubtopics[topic].push_back(subtopic);
         }
       }
@@ -92,25 +93,21 @@ void ConfigPanel::scan(){
 			qInfo() << '\t' << model->item(i,0)->child(j,0)->text();
 		}
   }	
+	emit topicsAvailable(model->rowCount());
 }
 
 void ConfigPanel::enableLoadButton(int tab, int mappings){
-	if(mappings > 0)
-		data[tab] = 1; //set array element to true
-	else
-		data[tab] = 0;
-	
-	filledTabs = 0; //reset the variable
+	qInfo() << tab << " " << mappings;
+	isFilled[tab] = mappings > 0; //set array element to true
 	
 	for(int i = 0; i < 6; i++){
-		qInfo() << "Tab " << i << " : " << data[i];
-		if(data[i] == 1)
-			filledTabs++;
+		qInfo() << "Tab " << i << " : " << isFilled[i];
+		if(not isFilled[i]){
+			ui->loadConfigButton->setEnabled(false);
+			return;
+		}
 	}
 	qInfo() << "\n";
 	
-	if(filledTabs == 6) 
-		ui->loadConfigButton->setEnabled(true);
-	else
-		ui->loadConfigButton->setEnabled(false);
+	ui->loadConfigButton->setEnabled(true);
 }
