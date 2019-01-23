@@ -12,15 +12,17 @@ ActionContext = namedtuple('ActionContext', ['action', 'status'])
 
 class BlockingState(smach.State):
     def __init__(self, outcomes, trigger_event, output_keys=[], input_keys=[]):
+        outcomes = outcomes + ['preempted']
         smach.State.__init__(self,
-                            outcomes,
-                            input_keys,
-                            output_keys)
+                             outcomes,
+                             input_keys,
+                             output_keys)
 
         self._trigger_event = trigger_event
         self.type = None
         self.context = None
         self.pub = rospy.Publisher('fsm_status', pub_status.status, queue_size=10)
+        self.msg = pub_status.status()
 
     def action_1(self, userdata):
         return None
@@ -93,19 +95,18 @@ class BlockingState(smach.State):
 
 class MenuState(BlockingState):
     # FIXME: manage properly minimum set of output_keys and outcomes
-    def __init__(self, outcomes, trigger_event, page_title, input_keys=[], fixed_options=['back', 'run']):
+    def __init__(self, outcomes, trigger_event, page_title, output_keys=[], input_keys=[], fixed_options=['back', 'run']):
         BlockingState.__init__(self,
-                               outcomes,
-                               trigger_event,
-                               output_keys=['selection'] + input_keys,
-                               input_keys = input_keys)  # TODO: implement input pass-through
+                               outcomes = ['user_missed', 'selection'] + outcomes,
+                               trigger_event = trigger_event,
+                               output_keys=['selection'] + output_keys,
+                               input_keys = input_keys)
 
         self.type = 'menu'
         self.title = page_title
         self.variable_options = []
         self.fixed_options = fixed_options
         self.selection = 0
-        self.msg = pub_status.status()
 
     def action_1(self, userdata):
         max_selection = len(self.variable_options) + len(self.fixed_options)
@@ -131,10 +132,10 @@ class MenuState(BlockingState):
 
     def execute(self, userdata):
         self.variable_options = self.update_variable_options(userdata)
-        BlockingState.execute(self, userdata)
+        return BlockingState.execute(self, userdata)
 
     def publish_state(self):
-        self.msg.context_type = 'menu'
+        self.msg.context_type = self.type
         self.msg.m_title = self.title
         self.msg.m_options = self.variable_options
         self.msg.m_fixed_options = self.fixed_options
@@ -166,7 +167,7 @@ class FsmEvent:
 
     def signal(self, event_id):
         self.event_id = event_id
-        print "Received event " + self.event_id
+        rospy.loginfo("Received event " + self.event_id)
         self.trigger.set()
 
 
@@ -187,11 +188,13 @@ def publish_state(context_type, context=None):
 
 class InitState(smach.State):
     def __init__(self):
+        outcomes = list(['config_available',
+                         'config_missing',
+                         'preempted'])
+
         smach.State.__init__(
             self,
-            outcomes=['config_available',
-                      'config_missing',
-                      'preempted'])
+            outcomes)
 
     def execute(self, userdata):
         if self.preempt_requested():
@@ -205,11 +208,13 @@ class InitState(smach.State):
 
 class ConfigState(smach.State):
     def __init__(self, msg_type, callback):
+        outcomes = ['invalid',
+                    'success',
+                    'preempted']
+
         smach.State.__init__(
             self,
-            outcomes=['invalid',
-                      'success',
-                      'preempted'])
+            outcomes)
         self._callback = callback
         self._msg_type = msg_type
         self.subscribers = []
@@ -243,11 +248,16 @@ class WaitConfigState(BlockingState):
         outcomes=['config_available',
                   'preempted']
 
-        BlockingState.__init__(self, trigger_event, outcomes)
+        BlockingState.__init__(self, outcomes, trigger_event)
         self.type = 'config_wait'
 
     def config(self, userdata):
         return 'config_available'
+
+    def publish_state(self):
+        self.msg.context_type = self.type
+        rospy.loginfo(self.msg)
+        self.pub.publish(self.msg)
 
 
 class WaitUserState(BlockingState):
@@ -256,7 +266,7 @@ class WaitUserState(BlockingState):
                   'user_detected',
                   'preempted']
 
-        BlockingState.__init__(self, trigger_event, outcomes)
+        BlockingState.__init__(self, outcomes, trigger_event)
         self.type = 'wait_user'
 
     def config(self, userdata):
@@ -264,6 +274,11 @@ class WaitUserState(BlockingState):
 
     def user_detected(self, userdata):
         return 'user_detected'
+
+    def publish_state(self):
+        self.msg.context_type = self.type
+        rospy.loginfo(self.msg)
+        self.pub.publish(self.msg)
 
 
 class MainMenuState(MenuState):
@@ -279,7 +294,6 @@ class MainMenuState(MenuState):
                            outcomes,
                            trigger_event,
                            'Main menu',
-                           input_keys=[],
                            fixed_options=[])
 
     def update_variable_options(self, userdata):
@@ -300,13 +314,13 @@ class PlayMenuState(MenuState):
         outcomes = ['user_missed',
                     'selection',
                     'back',
+                    'remove',
                     'preempted']
 
         MenuState.__init__(self,
                            outcomes,
                            trigger_event,
                            'Playback menu',
-                           input_keys=[],
                            fixed_options=['back'])
 
     def update_variable_options(self, userdata):
@@ -325,7 +339,6 @@ class RecordMenuState(MenuState):
                            outcomes,
                            trigger_event,
                            'Recording menu',
-                           input_keys=[],
                            fixed_options=['back', 'remove', 'new'])
 
     def update_variable_options(self, userdata):
@@ -459,7 +472,6 @@ class RemoveMenuState(MenuState):
     # TODO: rewire in Play/Record Menus
     def __init__(self, trigger_event):
         outcomes = ['user_missed',
-                    'selection',
                     'back',
                     'preempted']
 

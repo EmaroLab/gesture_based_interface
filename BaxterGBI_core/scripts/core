@@ -17,7 +17,7 @@ class FSMThread(threading.Thread):
             smach.StateMachine.add('INIT', InitState(),
                                     transitions={'config_available':'CONFIG',
                                                 'config_missing':'WAIT_CONFIG',
-                                                 'preempted':'EXIT'})
+                                                'preempted':'EXIT'})
             smach.StateMachine.add('CONFIG', ConfigState(bgi_io.signal, self.action_cb),
                                     transitions={'invalid':'WAIT_CONFIG',
                                                 'success':'WAIT_USER',
@@ -35,52 +35,69 @@ class FSMThread(threading.Thread):
                                                 'record_selected':'MENU_RECORD',
                                                 'macro_selected':'MENU_MACRO',
                                                 'sequence_selected':'MENU_SEQUENCE',
+                                                'selection':'MAIN_MENU',
                                                 'preempted':'EXIT'})
             smach.StateMachine.add('MENU_PLAY', PlayMenuState(self.event),
                                     transitions={'user_missed':'WAIT_USER',
                                                 'selection':'PLAY',
                                                 'back':'MAIN_MENU',
+                                                'remove': 'REMOVE_MENU_RECORD',
                                                 'preempted':'EXIT'},
                                     remapping={'filename':'sm_data'})
-            smach.StateMachine.add('REMOVE_MENU', RemoveState(self.event),
+            smach.StateMachine.add('REMOVE_MENU_PLAY', RemoveMenuState(self.event),
                                     transitions={'user_missed':'WAIT_USER',
-                                                'done':'MAIN_MENU',
-                                                'preempted':'EXIT'})
+                                                 'selection': 'MENU_PLAY',
+                                                 'back':'MENU_PLAY',
+                                                 'preempted':'EXIT'})
+            smach.StateMachine.add('REMOVE_MENU_RECORD', RemoveMenuState(self.event),
+                                    transitions={'user_missed':'WAIT_USER',
+                                                 'selection':'MENU_RECORD',
+                                                 'back':'MENU_RECORD',
+                                                 'preempted':'EXIT'})
             smach.StateMachine.add('MENU_RECORD', RecordMenuState(self.event),
                                     transitions={'user_missed':'WAIT_USER',
-                                                'record_selected':'RECORD',
+                                                'selection':'RECORD',
                                                 'back':'MAIN_MENU',
-                                                'remove':'REMOVE_MENU',
+                                                'remove':'REMOVE_MENU_RECORD',
                                                 'preempted':'EXIT'})
             smach.StateMachine.add('MENU_MACRO', MacroMenuState(self.event),
                                     transitions={'user_missed':'WAIT_USER',
-                                                'macro_selected':'SUB_MACRO',
+                                                'selection':'SUB_MACRO',
                                                 'play':'MACRO',
                                                 'back':'MAIN_MENU',
                                                 'preempted':'EXIT'})
             smach.StateMachine.add('SUB_MACRO', SubMacroMenuState(self.event),
                                     transitions={'user_missed':'WAIT_USER',
-                                                'macro_selected':'MENU_MACRO',
+                                                'selection':'MENU_MACRO',
                                                 'back':'MENU_MACRO',
                                                 'preempted':'EXIT'})
             smach.StateMachine.add('MENU_SEQUENCE',SequenceMenuState(self.event),
                                     transitions={'user_missed':'WAIT_USER',
-                                                'sequence_selected':'SEQUENCE',
+                                                'selection':'SUB_SEQUENCE',
+                                                'play': 'SEQUENCE',
                                                 'back':'MAIN_MENU',
                                                 'preempted':'EXIT'})
+            smach.StateMachine.add('SUB_SEQUENCE', SubSequenceMenuState(self.event),
+                                   transitions={'user_missed': 'WAIT_USER',
+                                                'selection': 'MENU_SEQUENCE',
+                                                'back': 'MENU_SEQUENCE',
+                                                'preempted': 'EXIT'})
             smach.StateMachine.add('PLAY', PlayState(self.event),
-                                    transitions={'done':'MAIN_MENU',
-                                                'preempted':'EXIT'},
+                                    transitions={'user_missed':'WAIT_USER',
+                                                 'done':'MAIN_MENU',
+                                                 'preempted':'EXIT'},
                                     remapping={'filename':'sm_data'})
             smach.StateMachine.add('RECORD', RecordState(self.event),
-                                    transitions={'done':'MAIN_MENU',
-                                                'preempted':'EXIT'})
+                                    transitions={'user_missed':'WAIT_USER',
+                                                 'done':'MAIN_MENU',
+                                                 'preempted':'EXIT'})
             smach.StateMachine.add('MACRO', MacroState(self.event),
-                                    transitions={'done':'MAIN_MENU',
-                                                'user_missed':'WAIT_USER',
-                                                'preempted':'EXIT'})
+                                    transitions={'user_missed':'WAIT_USER',
+                                                 'done':'MAIN_MENU',
+                                                 'preempted':'EXIT'})
             smach.StateMachine.add('SEQUENCE', SequenceState(self.event),
-                                    transitions={'done':'MAIN_MENU',
+                                    transitions={'user_missed':'WAIT_USER',
+                                                 'done':'MAIN_MENU',
                                                 'preempted':'EXIT'})
 
     def presence_cb(self, msg, params):
