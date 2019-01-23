@@ -1,5 +1,4 @@
 #include "BaxterGBI_gui/configpanel.h"
-#include "BaxterGBI_gui/tabcontent.h"
 #include "ui_configpanel.h"
 
 #include <string>
@@ -24,14 +23,15 @@ ConfigPanel::ConfigPanel(QWidget *parent) :
     ui->tabWidget->clear();
     
     for (int i = 0; i < 6; i++){
-			TabContent *tab = new TabContent(model);
-      ui->tabWidget->addTab(tab, QString("Action %1").arg(i+1));
-      connect(tab, &TabContent::numberOfMappings, 
+			tabs[i] = new TabContent(model);
+      ui->tabWidget->addTab(tabs[i], QString("Action %1").arg(i+1));
+      connect(tabs[i], &TabContent::numberOfMappings, 
 						[=](const int &mappings){enableLoadButton(i, mappings);
 						});
-			connect(this, &ConfigPanel::topicsAvailable, tab, &TabContent::enableAddButton);
+			connect(this, &ConfigPanel::topicsAvailable, tabs[i], &TabContent::enableAddButton);
 		}
     connect(ui->scanButton, &QPushButton::clicked, this, &ConfigPanel::scan);
+    connect(ui->loadConfigButton, &QPushButton::clicked, this, &ConfigPanel::sendConfig);
 }
 
 ConfigPanel::~ConfigPanel(){
@@ -45,7 +45,7 @@ void ConfigPanel::scan(){
 	ros::master::getTopics(topicMap);
 
 	for (int i = 0; i < 6; i++){
-		static_cast<TabContent*>(ui->tabWidget->widget(i))->clear();
+		tabs[i]->clear();
 	}
   emit topicsAvailable(false);
   
@@ -101,7 +101,6 @@ void ConfigPanel::enableLoadButton(int tab, int mappings){
 	isFilled[tab] = mappings > 0; //set array element to true
 	
 	for(int i = 0; i < 6; i++){
-		qInfo() << "Tab " << i << " : " << isFilled[i];
 		if(not isFilled[i]){
 			ui->loadConfigButton->setEnabled(false);
 			return;
@@ -110,4 +109,20 @@ void ConfigPanel::enableLoadButton(int tab, int mappings){
 	qInfo() << "\n";
 	
 	ui->loadConfigButton->setEnabled(true);
+}
+
+void ConfigPanel::sendConfig(){
+	for(int i = 0; i < 6; i++){
+		auto selections = tabs[i]->getSelectedTopics();
+		qInfo() << "Tab " << i << " mappings: ";
+		std::vector<std::string> serializedTopics;
+		 
+		for(auto selection : selections){
+			QString topic = QString("/%1/%2").arg(selection.first).arg(selection.second);
+			serializedTopics.push_back(topic.toStdString());
+			qInfo() << "\t" << topic;
+		}
+		ros::NodeHandle n;
+		n.setParam("key_" + std::to_string(i+1) + "_topics", serializedTopics);
+	}
 }

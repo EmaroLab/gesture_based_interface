@@ -31,6 +31,10 @@ void Mapping::updateSubtopics(int idx){
 	}
 }
 
+QPair<QString, QString> Mapping::currentSelection(){
+	return {ui->topic->currentText(), ui->subtopic->currentText()};
+}
+
 Mapping::~Mapping(){
     delete ui;
 }

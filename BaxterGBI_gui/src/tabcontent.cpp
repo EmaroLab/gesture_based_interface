@@ -20,35 +20,41 @@ TabContent::~TabContent(){
     delete ui;
 }
 
-QVector<QPair<QString, QString>> TabContent::getTopics(){
-    return {};
+QVector<QPair<QString, QString>> TabContent::getSelectedTopics(){
+	QVector<QPair<QString, QString>> selectedTopics;
+	for(auto item : mappings)
+		selectedTopics.append(item->currentSelection());
+	
+	return selectedTopics;
 }
 
 void TabContent::addMapping(){
-		
-    Mapping* mapping = new Mapping(model);
-    ui->topicsContainer->addWidget(mapping);
-    connect(mapping, &Mapping::removed, this, &TabContent::removeMapping);
-    count++;
-    qInfo() << count << "added";
-    emit numberOfMappings(count);
+	Mapping *mapping = new Mapping(model);
+	mappings.append(mapping);
+	ui->topicsContainer->addWidget(mapping);
+	connect(mapping, &Mapping::removed, this, &TabContent::removeMapping);
+	count++;
+	qInfo() << count << "added";
+	emit numberOfMappings(count);
 }
 
 void TabContent::removeMapping(Mapping* mapping){
-    ui->topicsContainer->removeWidget(mapping);
-    mapping->setParent(nullptr);
-    delete mapping;
-    count--;
-    //qInfo() << count << "deleted";
-    emit numberOfMappings(count);
+	ui->topicsContainer->removeWidget(mapping);
+	mapping->setParent(nullptr);
+	mappings.removeOne(mapping);
+	delete mapping;
+	count--;
+	//qInfo() << count << "deleted";
+	emit numberOfMappings(count);
 }
 
 void TabContent::clear(){
 	QLayoutItem* item;
-	while ((item = ui->topicsContainer->layout()->takeAt(0)) != nullptr){
-		delete item->widget();
+	for(auto item : mappings){
+		ui->topicsContainer->removeWidget(item);
 		delete item;
 	}
+	mappings.clear();
   count = 0;
   emit numberOfMappings(count);
 }

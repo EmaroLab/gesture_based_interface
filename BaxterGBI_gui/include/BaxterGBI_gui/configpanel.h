@@ -1,6 +1,7 @@
 #ifndef CONFIGPANEL_H
 #define CONFIGPANEL_H
 
+#include "BaxterGBI_gui/tabcontent.h"
 #include "mapping.h"
 #include <map>
 #include <vector>
@@ -24,6 +25,7 @@ public:
 
 private:
     Ui::ConfigPanel* ui;
+    TabContent *tabs[6];
     QStandardItemModel* model;
     std::map<std::string, std::vector<std::string>> compatibleSubtopics;
     QVector<bool> isFilled;
@@ -31,6 +33,7 @@ private:
 private slots:
     void scan();
     void enableLoadButton(int tab, int count);
+    void sendConfig();
 
 signals:
     void scan_terminated();

@@ -15,6 +15,7 @@ class Mapping : public QWidget
 
 public:
     explicit Mapping(QStandardItemModel *model, QWidget* parent = nullptr);
+    QPair<QString, QString> currentSelection();
     ~Mapping();
 
     bool isCompleted() const;

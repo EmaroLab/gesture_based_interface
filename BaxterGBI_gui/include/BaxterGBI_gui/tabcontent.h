@@ -15,19 +15,20 @@ class TabContent : public QWidget
 
 public:
     explicit TabContent(QStandardItemModel *model, QWidget *parent = nullptr);
+    QVector<QPair<QString, QString>> getSelectedTopics();
     ~TabContent();
 
 private slots:
     void addMapping();
 
 public slots:
-    QVector<QPair<QString, QString>> getTopics();
     void removeMapping(Mapping *mapping);
     void clear();
     void enableAddButton(bool enable);
 
 private:
     Ui::TabContent *ui;
+    QVector<Mapping*> mappings;
     QStandardItemModel *model;
     int count;
     
