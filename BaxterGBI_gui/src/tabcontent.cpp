@@ -6,18 +6,18 @@
 #include <QDebug>
 
 TabContent::TabContent(QStandardItemModel *model, QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::TabContent),
-    model(model)
+	QWidget(parent),
+	ui(new Ui::TabContent),
+	model(model)
 {
-    ui->setupUi(this);
-    count = 0;
-    ui->addMappingButton->setEnabled(false); //disable add button at the beginning
-    connect(ui->addMappingButton, &QPushButton::clicked, this, &TabContent::addMapping);
+	ui->setupUi(this);
+	count = 0;
+	ui->addMappingButton->setEnabled(false); //disable add button at the beginning
+	connect(ui->addMappingButton, &QPushButton::clicked, this, &TabContent::addMapping);
 }
 
 TabContent::~TabContent(){
-    delete ui;
+	delete ui;
 }
 
 QVector<QPair<QString, QString>> TabContent::getSelectedTopics(){

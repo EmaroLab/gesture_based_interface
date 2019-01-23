@@ -4,12 +4,16 @@
 #include <QDebug>
 
 ActionPanel::ActionPanel(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::ActionPanel)
+	QWidget(parent),
+	ui(new Ui::ActionPanel)
 {
-    ui->setupUi(this);
+	ui->setupUi(this);
 }
 
 ActionPanel::~ActionPanel(){
-    delete ui;
+	delete ui;
+}
+
+void ActionPanel::updateActionPanel(std::string pbr_action, std::string pbr_msg){
+	
 }

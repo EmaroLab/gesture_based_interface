@@ -11,29 +11,29 @@ class TabContent;
 
 class TabContent : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    explicit TabContent(QStandardItemModel *model, QWidget *parent = nullptr);
-    QVector<QPair<QString, QString>> getSelectedTopics();
-    ~TabContent();
+	explicit TabContent(QStandardItemModel *model, QWidget *parent = nullptr);
+	QVector<QPair<QString, QString>> getSelectedTopics();
+	~TabContent();
 
 private slots:
-    void addMapping();
+	void addMapping();
 
 public slots:
-    void removeMapping(Mapping *mapping);
-    void clear();
-    void enableAddButton(bool enable);
+	void removeMapping(Mapping *mapping);
+	void clear();
+	void enableAddButton(bool enable);
 
 private:
-    Ui::TabContent *ui;
-    QVector<Mapping*> mappings;
-    QStandardItemModel *model;
-    int count;
-    
+	Ui::TabContent *ui;
+	QVector<Mapping*> mappings;
+	QStandardItemModel *model;
+	int count;
+
 signals:
-		void numberOfMappings(int count);
+	void numberOfMappings(int count);
 };
 
 #endif // TABCONTENT_H

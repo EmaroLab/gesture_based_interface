@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(worker, &Worker::finished, [&] {rosThread->quit();});
 	connect(worker, &Worker::finished, worker, &Worker::deleteLater);
 	connect(rosThread, &QThread::finished, rosThread, &QThread::deleteLater);
-	connect(worker, &Worker::newStatus, this, &MainWindow::updatePage);
+	connect(worker, &Worker::newStatus, this, &MainWindow::updateMainWindow);
 	rosThread->start();
 
 	connect(ui->configModeButton, &QPushButton::clicked, this, &MainWindow::__setConfigMode);
@@ -29,16 +29,21 @@ MainWindow::~MainWindow(){
 	delete ui;
 }
 
-void MainWindow::updatePage(const boost::shared_ptr<BaxterGBI_core_msgs::status> msg){
+void MainWindow::updateMainWindow(const boost::shared_ptr<BaxterGBI_core_msgs::status> msg){
 	ROS_INFO("Context type: [%s]", msg->context_type.c_str()); //menu, azione, config
 	qInfo() << "Context type: " << msg->context_type.c_str();
 	static QWidget *target_page;
 
-	if (msg->context_type == "config_wait" or msg->context_type == "wait_user"){
+	if(msg->context_type == "config_wait" or msg->context_type == "wait_user"){
 		target_page = &conf_page;
 	} 
-	else{
-		target_page = nullptr;
+	else if(msg->context_type == "menu"){
+		target_page = &menu_page;
+		menu_page.updateMenuPanel(msg->m_title, msg->m_options, msg->m_fixed_options, msg->m_selection);
+	}
+	else if(msg->context_type == "action"){
+		target_page = &action_page;
+		action_page.updateActionPanel(msg->pbr_action, msg->pbr_msg);
 	}
 
 	if (current_page != target_page){

@@ -6,22 +6,26 @@
 #include <QComboBox>
 
 Mapping::Mapping(QStandardItemModel *model, QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::Mapping),
-    model(model)
-{
-    ui->setupUi(this);
-    connect(ui->deleteMapping, &QPushButton::clicked, [this] {
-        emit removed(this);
-    });
-   
-    ui->topic->setModel(model);
-   	ui->subtopic->setModel(model);
-   	updateSubtopics(0);
-    connect(ui->topic, 
-			static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), 
-			this, 
-			&Mapping::updateSubtopics);
+	QWidget(parent),
+	ui(new Ui::Mapping),
+	model(model)
+	{
+		ui->setupUi(this);
+		connect(ui->deleteMapping, &QPushButton::clicked, [this] {
+						emit removed(this);
+						});
+
+		ui->topic->setModel(model);
+		ui->subtopic->setModel(model);
+		updateSubtopics(0);
+		connect(ui->topic, 
+						static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), 
+						this, 
+						&Mapping::updateSubtopics);
+}
+
+Mapping::~Mapping(){
+   delete ui;
 }
 
 void Mapping::updateSubtopics(int idx){
@@ -33,10 +37,6 @@ void Mapping::updateSubtopics(int idx){
 
 QPair<QString, QString> Mapping::currentSelection(){
 	return {ui->topic->currentText(), ui->subtopic->currentText()};
-}
-
-Mapping::~Mapping(){
-    delete ui;
 }
 
 

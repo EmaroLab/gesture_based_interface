@@ -17,27 +17,27 @@ class ConfigPanel;
 
 class ConfigPanel : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    explicit ConfigPanel(QWidget* parent = nullptr);
-    ~ConfigPanel();
+	explicit ConfigPanel(QWidget* parent = nullptr);
+	~ConfigPanel();
 
 private:
-    Ui::ConfigPanel* ui;
-    TabContent *tabs[6];
-    QStandardItemModel* model;
-    std::map<std::string, std::vector<std::string>> compatibleSubtopics;
-    QVector<bool> isFilled;
+	Ui::ConfigPanel* ui;
+	TabContent *tabs[6];
+	QStandardItemModel* model;
+	std::map<std::string, std::vector<std::string>> compatibleSubtopics;
+	QVector<bool> isFilled;
 
 private slots:
-    void scan();
-    void enableLoadButton(int tab, int count);
-    void sendConfig();
+	void scan();
+	void enableLoadButton(int tab, int count);
+	void sendConfig();
 
 signals:
-    void scan_terminated();
-    void topicsAvailable(bool available);
+	void scan_terminated();
+	void topicsAvailable(bool available);
 };
 
 #endif // CONFIGPANEL_H

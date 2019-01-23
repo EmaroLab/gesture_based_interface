@@ -11,24 +11,24 @@ class Mapping;
 
 class Mapping : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    explicit Mapping(QStandardItemModel *model, QWidget* parent = nullptr);
-    QPair<QString, QString> currentSelection();
-    ~Mapping();
+	explicit Mapping(QStandardItemModel *model, QWidget* parent = nullptr);
+	QPair<QString, QString> currentSelection();
+	~Mapping();
 
-    bool isCompleted() const;
+	bool isCompleted() const;
 
 signals:
-    void removed(Mapping* mapping);
+	void removed(Mapping* mapping);
 
 private slots:
 	void updateSubtopics(int idx);
 
 private:
-    Ui::Mapping* ui;
-    QStandardItemModel *model;
+	Ui::Mapping* ui;
+	QStandardItemModel *model;
 };
 
 #endif // TASK_H

@@ -13,29 +13,29 @@
 #include <QInputDialog>
 
 ConfigPanel::ConfigPanel(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::ConfigPanel),
-    model(new QStandardItemModel),
-    isFilled(6, false) //inizialize elements to false
+	QWidget(parent),
+	ui(new Ui::ConfigPanel),
+	model(new QStandardItemModel),
+	isFilled(6, false) //inizialize elements to false
 {
-    ui->setupUi(this);
-    ui->loadConfigButton->setEnabled(false);
-    ui->tabWidget->clear();
-    
-    for (int i = 0; i < 6; i++){
-			tabs[i] = new TabContent(model);
-      ui->tabWidget->addTab(tabs[i], QString("Action %1").arg(i+1));
-      connect(tabs[i], &TabContent::numberOfMappings, 
+	ui->setupUi(this);
+	ui->loadConfigButton->setEnabled(false);
+	ui->tabWidget->clear();
+
+	for (int i = 0; i < 6; i++){
+		tabs[i] = new TabContent(model);
+		ui->tabWidget->addTab(tabs[i], QString("Action %1").arg(i+1));
+		connect(tabs[i], &TabContent::numberOfMappings, 
 						[=](const int &mappings){enableLoadButton(i, mappings);
 						});
-			connect(this, &ConfigPanel::topicsAvailable, tabs[i], &TabContent::enableAddButton);
-		}
-    connect(ui->scanButton, &QPushButton::clicked, this, &ConfigPanel::scan);
-    connect(ui->loadConfigButton, &QPushButton::clicked, this, &ConfigPanel::sendConfig);
+		connect(this, &ConfigPanel::topicsAvailable, tabs[i], &TabContent::enableAddButton);
+	}
+	connect(ui->scanButton, &QPushButton::clicked, this, &ConfigPanel::scan);
+	connect(ui->loadConfigButton, &QPushButton::clicked, this, &ConfigPanel::sendConfig);
 }
 
 ConfigPanel::~ConfigPanel(){
-    delete ui;
+	delete ui;
 }
 
 void ConfigPanel::scan(){
