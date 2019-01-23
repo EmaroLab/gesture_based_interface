@@ -1,10 +1,6 @@
-import roslib
 import rospy
-from BaxterGBI_core_srvs.srv import *
-import BaxterGBI_input_msgs.msg as bgi_io
 import smach
 import threading
-from collections import namedtuple
 import BaxterGBI_core_msgs.msg as pub_status
 
 ActionContext = namedtuple('ActionContext', ['action', 'status'])
@@ -94,7 +90,6 @@ class BlockingState(smach.State):
 
 
 class MenuState(BlockingState):
-    # FIXME: manage properly minimum set of output_keys and outcomes
     def __init__(self, outcomes, trigger_event, page_title, output_keys=[], input_keys=[], fixed_options=['back', 'run']):
         BlockingState.__init__(self,
                                outcomes = ['user_missed', 'selection'] + outcomes,
@@ -172,19 +167,6 @@ class FsmEvent:
 
 
 #  rostopic pub /example/1 BaxterGBI_input_msgs/signal '{header: auto, device_id: "1", device_type: "smartwatch", device_model: "Huawei watch 2", action_descr: "wrist up", confidence: 1.0}
-
-
-def publish_state(context_type, context=None):
-    pub = rospy.Publisher('fsm_status', pub_status.status, queue_size=10)
-    msg = pub_status.status()
-    msg.context_type = context_type
-    print type(context)
-    if type(context) is ActionContext:
-        msg.pbr_action = context.action
-        msg.pbr_msg = context.status
-        rospy.loginfo(msg)
-        pub.publish(msg)
-
 
 class InitState(smach.State):
     def __init__(self):
@@ -469,7 +451,6 @@ class SubSequenceMenuState(MenuState):
 
 
 class RemoveMenuState(MenuState):
-    # TODO: rewire in Play/Record Menus
     def __init__(self, trigger_event):
         outcomes = ['user_missed',
                     'back',
@@ -485,96 +466,78 @@ class RemoveMenuState(MenuState):
     def update_variable_options(self, userdata):
         return ['demo record']  # TODO: ask PBR the list of files
 
+    def on_variable_selection(self, index, item, userdata):
+        # TODO: ask PBR to delete the record
+        return 'back'
 
-# TODO: implement ActionState and refactor following classes
 
-class PlayState(BlockingState):
+class ActionState(BlockingState):
+    def __init__(self, outcomes, trigger_event, action, output_keys=[], input_keys=[]):
+        BlockingState.__init__(self,
+                               outcomes = ['done', 'user_missed', 'preempted'] + outcomes,
+                               trigger_event = trigger_event,
+                               output_keys= output_keys,
+                               input_keys=input_keys)
+        self.type = 'action'
+        self.action = action
+
+    def user_left(self, userdata):
+        return 'user_missed'
+
+    def publish_state(self):
+        self.msg.context_type = self.type
+        self.msg.pbr_action = self.action
+        self.msg.pbr_msg = self.set_status()
+        rospy.loginfo(self.msg)
+        self.pub.publish(self.msg)
+
+    def set_status(self):
+        return ""
+
+
+class PlayState(ActionState):
     def __init__(self, trigger_event):
-        outcomes = ['done',
-                    'user_missed',
-                    'preempted']
         input_keys = ['filename']
 
-        BlockingState.__init__(self,
-                               outcomes,
-                               trigger_event,
-                               output_keys=[],
-                               input_keys=input_keys)
-        self.type = 'action'
-        self.context = ActionContext(action='Playback mode',
-                                     status='')
-
-    def action_6(self, userdata):
-        return 'done'
-
-    def user_left(self, userdata):
-        return 'user_missed'
+        ActionState.__init__(self,
+                             outcomes=[],
+                             trigger_event=trigger_event,
+                             action='Playback mode',
+                             output_keys=[],
+                             input_keys=input_keys)
 
 
-class RecordState(BlockingState):
+class RecordState(ActionState):
     def __init__(self, trigger_event):
-        outcomes = ['done',
-                    'user_missed',
-                    'preempted']
         input_keys = ['filename']
 
-        BlockingState.__init__(self,
-                               outcomes,
-                               trigger_event,
-                               output_keys=[],
-                               input_keys=input_keys)
-        self.type = 'action'
-        self.context = ActionContext(action='Playback mode',
-                                     status='')
-
-    def action_6(self, userdata):
-        return 'done'
-
-    def user_left(self, userdata):
-        return 'user_missed'
+        ActionState.__init__(self,
+                             outcomes=[],
+                             trigger_event=trigger_event,
+                             action='Record mode',
+                             output_keys=[],
+                             input_keys=input_keys)
 
 
-class MacroState(BlockingState):
+class MacroState(ActionState):
     def __init__(self, trigger_event):
-        outcomes=['done',
-                  'user_missed',
-                  'preempted']
-        input_keys=['macro_conf']
+        input_keys = ['filename']
 
-        BlockingState.__init__(self,
-                               outcomes,
-                               trigger_event,
-                               output_keys=[],
-                               input_keys=input_keys)
-        self.type = 'action'
-        self.context = ActionContext(action='Macro mode',
-                                     status='')
-
-    def action_6(self, userdata):
-        return 'done'
-
-    def user_left(self, userdata):
-        return 'user_missed'
+        ActionState.__init__(self,
+                             outcomes=[],
+                             trigger_event=trigger_event,
+                             action='Record mode',
+                             output_keys=[],
+                             input_keys=input_keys)
 
 
-class SequenceState(BlockingState):
+class SequenceState(ActionState):
     def __init__(self, trigger_event):
-        outcomes = ['done',
-                    'user_missed',
-                    'preempted']
-        input_keys = ['sequence_conf']
+        input_keys = ['filename']
 
-        BlockingState.__init__(self,
-                               outcomes,
-                               trigger_event,
-                               output_keys=[],
-                               input_keys=input_keys)
-        self.type = 'action'
-        self.context = ActionContext(action='Sequence mode',
-                                     status='')
-
-    def action_6(self, userdata):
-        return 'done'
-
-    def user_left(self, userdata):
-        return 'user_missed'
+        ActionState.__init__(self,
+                             outcomes=[],
+                             trigger_event=trigger_event,
+                             action='Record mode',
+                             output_keys=[],
+                             input_keys=input_keys)
