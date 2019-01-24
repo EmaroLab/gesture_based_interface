@@ -1,6 +1,7 @@
 <launch>
 	
 	<node name="kinect_aux_node" pkg ="kinect_aux" type="kinect_aux_node" output="screen" />
+	<node name="kinect_move_server" pkg="kinect_setup" type="kinect_move_server" output="screen"/>
 
 	<node name="pcl_record" pkg ="pose_estimation" type="pcl_record" output="screen" >
 		<param name="granularity" value="1"/>

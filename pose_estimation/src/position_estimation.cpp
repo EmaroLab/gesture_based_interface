@@ -28,7 +28,7 @@ public:
      */
     PoseEstimation()
     {
-        pcl_sub = nh.subscribe("/camera/pcl_filtered", 10, &cloudHandler::poseCB, this);
+        pcl_sub = nh.subscribe("/camera/pcl_filtered", 10, &PoseEstimation::poseCB, this);
 
         pcl_pub = nh.advertise<nav_msgs::Odometry>("/odom", 10);
     }

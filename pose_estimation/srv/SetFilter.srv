@@ -1,0 +1,4 @@
+string filter_name
+bool enable
+---
+bool result

@@ -31,8 +31,8 @@ class PclBackgroundSegmentation{
      */
     public:
     PclBackgroundSegmentation(){
-        pcl_sub = nh.subscribe("/camera/depth/points", 10, &cloudHandler::backCB, this);
-        angle_sub = nh.subscribe("/cur_tilt_angle", 10, &cloudHandler::angleCB, this);
+        pcl_sub = nh.subscribe("/camera/depth/points", 10, &PclBackgroundSegmentation::backCB, this);
+        angle_sub = nh.subscribe("/cur_tilt_angle", 10, &PclBackgroundSegmentation::angleCB, this);
         pcl_pub = nh.advertise<sensor_msgs::PointCloud2>("/camera/pcl_background_segmentation", 1);
     }
     /**

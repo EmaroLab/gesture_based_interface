@@ -12,10 +12,15 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <pwd.h>
+#include "kinect_setup/MoveKinect.h"
+
+double granularity = 1.0;
 
 float angle = -30.0;
-double granularity = 1.0; //!!!
+
 int go = 0;
+int check = 0;
+
 /** @brief Class to record all the environments for each possible orientation of the Kinect
  * 		the range of the Kinect tilt is [-30,30] degree
  * 		with a given granularity
@@ -27,14 +32,15 @@ class PclRecord{
 	 * - subscribe to /camera/depth/points to get raw data from the Kinect
 	 * - save environments in ~/.kinect_environments
 	 */
-        PclRecord(){
-                pcl_sub = nh.subscribe("/camera/depth/points", 10, &cloudHandler::PclRecordCB, this);
+	PclRecord(){
+                pcl_sub = nh.subscribe("/camera/depth/points", 10, &PclRecord::PclRecordCB, this);
+                angle_sub = nh.subscribe("/cur_tilt_angle", 10, &PclRecord::AngleCB, this);
 	}
 	/** 
 	 * Callback function
          * @param[in] cloud raw point cloud data from Kinect
 	 */
-        void PclRecordCB (const sensor_msgs::PointCloud2ConstPtr& cloud)
+	void PclRecordCB (const sensor_msgs::PointCloud2ConstPtr& cloud)
 	{
 		if ((cloud->width * cloud->height) == 0)
 			return;
@@ -56,12 +62,21 @@ class PclRecord{
 		pcl::io::savePCDFile (ss2.str (), *cloud, Eigen::Vector4f::Zero (),
 						 Eigen::Quaternionf::Identity (), false);
 	}
+	
+	void AngleCB (const std_msgs::Float64 msg_angle)
+	{
+		if(abs(msg_angle.data - angle) < 0.5)
+			check = 1;
+	}
 
 	protected:
 		ros::NodeHandle nh;
-                ros::Subscriber pcl_sub;
+        ros::Subscriber pcl_sub;
+		ros::Subscriber angle_sub;
 
 };
+
+
 
 /**
  * Main:
@@ -74,35 +89,39 @@ int main(int argc, char **argv)
 
 	system("mkdir --parents ~/.kinect_environments/");
 
-        PclRecord handler;
+	PclRecord handler;
 
 	ros::NodeHandle n;
-
-	ros::Publisher rec_pub = n.advertise<std_msgs::Float64>("tilt_angle", 1000);
-
-	ros::Rate loop_rate(0.3);
-	ros::Rate sleep1(0.2);
-
-	angle = -30.0;
 	n.param<double>("granularity", granularity, 1.0); //!!!
 
-	std_msgs::Float64 msg;
-	msg.data = angle;
-	rec_pub.publish(msg);
-	ros::spinOnce();
-	sleep1.sleep();
+	ros::AsyncSpinner spinner(4); // Use 4 threads
+	spinner.start();
+		
+	ros::ServiceClient client_move = n.serviceClient<kinect_setup::MoveKinect>("move_kinect");
+	angle = -30.0;
+	kinect_setup::MoveKinect srv;
+	srv.request.angle = angle;
+	client_move.call(srv);
+	
+	ros::WallDuration(1).sleep(); 
+	
+	srv.request.angle = angle;
+	client_move.call(srv);
+	ros::WallDuration(4).sleep(); 
+		
 	ROS_INFO ("Ready to start");
 	while (ros::ok())
 	{
-		msg.data = angle;
-		rec_pub.publish(msg);
-		go = 1;
+		srv.request.angle = angle;
+		client_move.call(srv);
 		
 		ROS_INFO ("Cur Angle %lf", angle);
-
-		ros::spinOnce();
-		loop_rate.sleep();
+		ros::WallDuration(2).sleep(); 
 		
+		go = 1;
+		
+		ros::WallDuration(2).sleep(); 
+			
 		angle = angle + granularity; //!!!
 		
 		if(angle >= 31.0)

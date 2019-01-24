@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(pose_estimation)
+project(kinect_setup)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -67,8 +67,8 @@ roslaunch_add_file_check(launch)
 ## Generate services in the 'srv' folder
  add_service_files(
    FILES
-   SetFilter.srv
-   SetFilterParam.srv
+   MoveKinect.srv
+   RegulateKinect.srv
  )
 
 ## Generate actions in the 'action' folder
@@ -120,10 +120,8 @@ include_directories(
 
 ## Declare a cpp executable
 
-add_executable(pcl_background_segmentation src/pcl_background_segmentation.cpp)
-add_executable(pcl_record src/pcl_record.cpp)
-add_executable(pcl_filter src/pcl_filter.cpp)
-add_executable(position_estimation src/position_estimation.cpp)
+add_executable(kinect_move_server src/kinect_move_server.cpp)
+add_executable(kinect_regulation_server src/kinect_regulation_server.cpp)
 
  
  ## Add cmake target dependencies of the executable/library
@@ -131,10 +129,8 @@ add_executable(position_estimation src/position_estimation.cpp)
 # add_dependencies(retrorov_model_bathymetric_node retrorov_model_bathymetric_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(pcl_background_segmentation ${catkin_LIBRARIES} ${PCL_LIBRARIES})
-target_link_libraries(pcl_record ${catkin_LIBRARIES} ${PCL_LIBRARIES})
-target_link_libraries(pcl_filter ${catkin_LIBRARIES} ${PCL_LIBRARIES})
-target_link_libraries(position_estimation ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+target_link_libraries(kinect_regulation_server ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+target_link_libraries(kinect_move_server ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 #############
 ## Install ##
 #############

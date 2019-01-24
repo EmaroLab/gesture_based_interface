@@ -7,6 +7,8 @@
 #include <pcl/filters/statistical_outlier_removal.h>
 #include <pcl/filters/passthrough.h>
 #include <pcl/filters/voxel_grid.h>
+#include "pose_estimation/SetFilter.h"
+#include "pose_estimation/SetFilterParam.h"
 
 bool use_downsampling = true;
 bool use_filter_z = true;
@@ -32,6 +34,87 @@ double max_x = 0.5;
 int sor_k = 40;
 double sor_stddev = 1.0;
 
+bool set_filter(pose_estimation::SetFilter::Request  &req,
+         pose_estimation::SetFilter::Response &res)
+{
+	std::string str_z = "z_filter";
+	std::string str_y = "y_filter";
+	std::string str_x = "x_filter";
+	std::string str_down = "downsampling_filter";
+	std::string str_sor = "sor_filter";
+	if(req.filter_name.compare(str_z) == 0)
+	{
+		use_filter_z = req.enable;
+	}
+	else if(req.filter_name.compare(str_y) == 0)
+	{
+		use_filter_y = req.enable;
+	}
+	else if(req.filter_name.compare(str_x) == 0)
+	{
+		use_filter_x = req.enable;
+	}
+	else if(req.filter_name.compare(str_down) == 0)
+	{
+		use_downsampling = req.enable;
+	}
+	else if(req.filter_name.compare(str_sor) == 0)
+	{
+		use_filter_sor = req.enable;
+	}
+	res.result = true;
+	return true;
+}
+
+bool set_filter_param(pose_estimation::SetFilterParam::Request  &req,
+         pose_estimation::SetFilterParam::Response &res)
+{
+	std::string str_leaf = "leaf_size";
+	std::string str_min_z = "min_z";
+	std::string str_max_z = "max_z";
+	std::string str_min_y = "min_y";
+	std::string str_max_y = "max_y";
+	std::string str_min_x = "min_x";
+	std::string str_max_x = "max_x";
+	std::string str_sor_k = "sor_k";
+	std::string str_sor_stddev = "sor_stddev";
+	
+	if(req.param_name.compare(str_leaf) == 0)
+	{
+		leaf_size = req.value;
+	}
+	else if(req.param_name.compare(str_min_z) == 0)
+	{
+		min_z = req.value;
+	}
+	else if(req.param_name.compare(str_max_z) == 0)
+	{
+		max_z = req.value;
+	}
+	else if(req.param_name.compare(str_min_y) == 0)
+	{
+		min_y = req.value;
+	}
+	else if(req.param_name.compare(str_max_y) == 0)
+	{
+		max_y = req.value;
+	}
+	else if(req.param_name.compare(str_min_x) == 0)
+	{
+		min_x = req.value;
+	}
+	else if(req.param_name.compare(str_sor_k) == 0)
+	{
+		sor_k = (int) req.value;
+	}
+	else if(req.param_name.compare(str_sor_stddev) == 0)
+	{
+		sor_stddev = req.value;
+	}
+	
+	res.result = true;
+	return true;
+}
 /**
  *  @brief Class to filter the /camera/pcl_background_segmentation point cloud, with different filters:
  * 		- Downsampling (with VoxelGrid)
@@ -63,7 +146,7 @@ public:
      */
     PclFilter()
     {
-        pcl_sub = nh.subscribe("/camera/pcl_background_segmentation", 100, &cloudHandler::filterCB, this);
+        pcl_sub = nh.subscribe("/camera/pcl_background_segmentation", 100, &PclFilter::filterCB, this);
         pcl_pub = nh.advertise<sensor_msgs::PointCloud2>("/camera/pcl_filtered", 100);
     }
     /** 
@@ -213,6 +296,10 @@ main(int argc, char** argv)
     
     PclFilter handler;
 
+    
+	ros::ServiceServer enable_service = n.advertiseService("set_filter", set_filter);
+	ros::ServiceServer service = n.advertiseService("set_filter_param", set_filter_param);
+	
     ros::spin();
 
     return 0;

@@ -1,7 +1,8 @@
 <launch>
 	
 	<node name="kinect_aux_node" pkg ="kinect_aux" type="kinect_aux_node" output="screen" />
-	<node name="kinect_move_server" pkg="pose_estimation" type="kinect_move_server" output="screen"/>
+	<node name="kinect_move_server" pkg="kinect_setup" type="kinect_move_server" output="screen"/>
+	<node name="kinect_regulation_server" pkg="kinect_setup" type="kinect_regulation_server" output="screen"/>
 
 	<node name="pcl_background_segmentation" pkg ="pose_estimation" type="pcl_background_segmentation" output="screen">
 		<param name="granularity" value="1"/>
