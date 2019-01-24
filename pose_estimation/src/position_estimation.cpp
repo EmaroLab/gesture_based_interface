@@ -30,7 +30,7 @@ public:
     {
         pcl_sub = nh.subscribe("/camera/pcl_filtered", 10, &PoseEstimation::poseCB, this);
 
-        pcl_pub = nh.advertise<nav_msgs::Odometry>("/odom", 10);
+        pcl_pub = nh.advertise<nav_msgs::Odometry>("/odometry/kinect/center_of_mass", 10);
     }
     /** 
      * Callback function
@@ -65,7 +65,7 @@ public:
 
 
 	msg.header.frame_id =  "camera_link";
-	msg.child_frame_id =  "position_human_frame";
+	msg.child_frame_id =  "position_com_frame";
 
 	msg.pose.pose.orientation.x = 1 ;              	// identity quaternion
 	msg.pose.pose.orientation.y = 0  ;             	// identity quaternion
@@ -81,7 +81,7 @@ public:
 	tf::Vector3 point(x, y, z);
 	tf::StampedTransform transformation;
 	try{    
-		listener.lookupTransform( "camera_link","camera_link",  
+		listener.lookupTransform("camera_link", "camera_link",  
 		ros::Time::now(), transformation);
 	}
 	catch (tf::TransformException ex){
