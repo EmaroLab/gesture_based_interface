@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-Baxter PBR node -> provides services for: playback and record baxter movements.
+Baxter File Management node -> provides: list of records, rename, delete.
 """
 
 import argparse
@@ -22,6 +22,10 @@ from pbr_header import *
 
 def list_files_handler(req):
     """Service used to provide the entire list of the recorded files.
+    
+    @returns: n_files -> number of records.
+    @returns: list_files -> array of file name.
+    @returns: isError -> 0 on success, 1 on error.
     """
     print("Called!!")
 
@@ -45,6 +49,11 @@ def list_files_handler(req):
 def delete_file_handler(req):
     """
     Service used to delete a baxter file.
+    
+    @type req.filename: string
+    @param req.filename: name of the file you want to delete.
+    
+    @returns: isError -> 0 on success, 1 on error.
     """
     
     file_path_string = "src/BaxterGBI_pbr/RecordedFile/"+req.filename
@@ -56,6 +65,13 @@ def delete_file_handler(req):
 def rename_file_handler(req):
     """
     Service used to rename a baxter file.
+    
+    @type req.old_filename: string
+    @param req.old_filename: name of the file you want to rename.
+    @type req.new_filename: string
+    @param req.new_filename: new file name.
+    
+    @returns: isError -> 0 on success, 1 on error.
     """
     
     path = "src/BaxterGBI_pbr/RecordedFile/"

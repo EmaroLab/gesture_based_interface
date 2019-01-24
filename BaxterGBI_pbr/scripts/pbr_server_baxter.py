@@ -23,6 +23,15 @@ from pbr_header import *
 def playback_handler(req):
     """
     Service used to activate the playback mode on the baxter.
+    
+    @type req.msg.filename: string
+    @param req.msg.filename: name of the file you want to play.
+    @type req.msg.loops: uint8
+    @param req.msg.loops: number of times you want to play it.
+    @type req.msg.scale_vel: float32
+    @param req.msg.scale_vel: number to scale velocity of movement.
+    
+    @returns: 0 on success, 1 on errors
     """
     print "Called!!!"
 
@@ -30,7 +39,6 @@ def playback_handler(req):
     file_path_string = "src/BaxterGBI_pbr/RecordedFile/"+req.msg.filename
     print(file_path_string)
     if os.path.isfile(file_path_string) :
-    	#TODO -> Add default value for loops (1)
         map_file(file_path_string, req.msg.loops, req.msg.scale_vel)
         return 0
     else:
@@ -39,7 +47,15 @@ def playback_handler(req):
 
 
 def record_start_handler(req):
-    """Service used to start the recording.
+    """
+    Service used to start the recording mode on the baxter.
+    
+    @type req.filename: string
+    @param req.filename: name of the recorderd file.
+    @type req.record_rate: uint16
+    @param req.record_rate: rate used for recording joints' data.
+    
+    @returns: 0 on success, 1 on errors
     """
     print "Called !!!"
      
@@ -53,8 +69,12 @@ def record_start_handler(req):
 
 
 def record_stop_handler(req):
-    """Service used to stop the recording.
     """
+    Service used to stop the recording mode on the baxter.
+    
+    @returns: 0 on success, 1 on errors
+    """
+    
     print "Called !!!"
     msg = record_status()
     msg.filename = " "

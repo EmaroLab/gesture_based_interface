@@ -1,4 +1,4 @@
 string filename
-uint8 record_rate
+uint16 record_rate
 ---
 uint8 isError

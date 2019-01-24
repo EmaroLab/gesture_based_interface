@@ -22,6 +22,7 @@ add_message_files(
    FILES
    playback_msg.msg
    record_status.msg
+   mirror_end_effector.msg
 )
 
 add_service_files(
@@ -59,8 +60,3 @@ install(
   USE_SOURCE_PERMISSIONS
 )
 
-install(
-  DIRECTORY launch/
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
-  USE_SOURCE_PERMISSIONS
-)

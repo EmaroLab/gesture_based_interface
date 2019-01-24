@@ -11,11 +11,25 @@ from BaxterGBI_pbr import JointRecorder
 from baxter_interface import CHECK_VERSION
 from BaxterGBI_pbr.msg import record_status
 
-#0 -> stop   1 -> recording
 
+"""
+
+"""
 
 #Handle stop -> stop 
 def callback(data):
+    """
+    Callback function called when a data is written on the topic, it enables/disables the recording mode.
+    
+    @type data.filename: string
+    @param data.filename: name of the file where we want to record.
+    @type req.mode: string
+    @param req.mode: modality: start/stop.
+    @type req.record_rate: uint16
+    @param req.record_rate: rate used for recording joints' data.
+    
+    @returns: 0 on success, 1 on errors
+    """
     print("Called!!")
     rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.mode)
     global recorder, state, rate
@@ -37,10 +51,10 @@ def callback(data):
     
 def main():
     """
+    Node used for the recording mode.
     """
     print("Initializing node... ")
     rospy.init_node('joint_recorder_node', anonymous=True)
-
     rospy.Subscriber("recording_status", record_status, callback)
     print("Getting robot state... ")
     rs = baxter_interface.RobotEnable(CHECK_VERSION)

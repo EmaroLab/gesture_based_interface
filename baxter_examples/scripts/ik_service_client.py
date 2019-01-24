@@ -50,6 +50,8 @@ from baxter_core_msgs.srv import (
 )
 
 
+
+#limb -> left or right
 def ik_test(limb):
     rospy.init_node("rsdk_ik_service_client")
     ns = "ExternalTools/" + limb + "/PositionKinematicsNode/IKService"

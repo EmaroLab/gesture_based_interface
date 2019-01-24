@@ -1,3 +1,3 @@
 string filename
 string mode
-uint8 record_rate
+uint16 record_rate
