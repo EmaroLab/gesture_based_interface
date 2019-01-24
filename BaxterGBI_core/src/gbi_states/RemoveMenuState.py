@@ -2,9 +2,7 @@ from MenuState import MenuState
 
 class RemoveMenuState(MenuState):
     def __init__(self, trigger_event):
-        outcomes = ['user_missed',
-                    'back',
-                    'preempted']
+        outcomes = ['back']
 
         MenuState.__init__(self,
                            outcomes,

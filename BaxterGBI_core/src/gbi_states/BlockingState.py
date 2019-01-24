@@ -13,7 +13,6 @@ class BlockingState(smach.State):
 
         self._trigger_event = trigger_event
         self.type = None
-        self.context = None
         self.pub = rospy.Publisher('fsm_status', pub_status.status, queue_size=10)
         self.msg = pub_status.status()
 

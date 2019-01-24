@@ -97,8 +97,7 @@ void ConfigPanel::scan(){
 }
 
 void ConfigPanel::enableLoadButton(int tab, int mappings){
-	qInfo() << tab << " " << mappings;
-	isFilled[tab] = mappings > 0; //set array element to true
+    isFilled[tab] = mappings > 0; //set array element to true
 	
 	for(int i = 0; i < 6; i++){
 		if(not isFilled[i]){

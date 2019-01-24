@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QString>
 #include <QStandardItemModel>
+#include <QStandardItem>
 
 namespace Ui {
 class Mapping;
@@ -24,11 +25,14 @@ signals:
 	void removed(Mapping* mapping);
 
 private slots:
-	void updateSubtopics(int idx);
+    void onTopicChange(int newTopicIdx);
+    void onSubtopicChange(int newSubtopicIdx);
 
 private:
+    int currentTopicIdx = 0;
+    int currentSubtopicIdx = 0;
 	Ui::Mapping* ui;
-	QStandardItemModel *model;
+    QStandardItemModel *model;
 };
 
 #endif // TASK_H

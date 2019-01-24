@@ -2,11 +2,8 @@ from MenuState import MenuState
 
 class MacroMenuState(MenuState):
     def __init__(self, trigger_event):
-        outcomes = ['user_missed',
-                    'selection',
-                    'play',
-                    'back',
-                    'preempted']
+        outcomes = ['play',
+                    'back']
 
         MenuState.__init__(self,
                            outcomes,

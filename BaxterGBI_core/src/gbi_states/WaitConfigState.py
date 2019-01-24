@@ -1,10 +1,10 @@
 import rospy
 from BlockingState import BlockingState
 
+
 class WaitConfigState(BlockingState):
     def __init__(self, trigger_event):
-        outcomes=['config_available',
-                  'preempted']
+        outcomes=['config_available']
 
         BlockingState.__init__(self, outcomes, trigger_event)
         self.type = 'config_wait'

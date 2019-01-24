@@ -1,11 +1,11 @@
 import rospy
 from BlockingState import BlockingState
 
+
 class WaitUserState(BlockingState):
     def __init__(self, trigger_event):
         outcomes=['reconf_requested',
-                  'user_detected',
-                  'preempted']
+                  'user_detected']
 
         BlockingState.__init__(self, outcomes, trigger_event)
         self.type = 'wait_user'
