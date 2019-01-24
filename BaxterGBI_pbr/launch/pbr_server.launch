@@ -1,0 +1,15 @@
+<launch>
+
+  <!-- Start Baxter Server -->
+  <node name="pbr_server_baxter" pkg="BaxterGBI_pbr"
+  type="pbr_server_baxter.py" required="true" output="screen"/>
+
+  <!-- Start Baxter Server -->
+  <node name="pbr_server_filesys" pkg="BaxterGBI_pbr"
+  type="pbr_server_filesys.py" required="true" output="screen"/>
+
+  <!-- Start Recorder node -->
+  <node name="joint_recorder_node" pkg="BaxterGBI_pbr"
+  type="joint_recorder_node.py" required="true" output="screen"/>
+
+</launch>

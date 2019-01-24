@@ -65,58 +65,12 @@ def record_stop_handler(req):
     return 0
 
 
-def list_files_handler(req):
-    """Service used to provide the entire list of the recorded files.
-    """
-    print("Called!!")
-
-    resp = ListFilesResponse()
-    
-    path = "src/BaxterGBI_pbr/RecordedFile"
-    files = os.listdir(path)
-
-    resp.n_files = len(files)
-    files_name = list()
-
-    for file in files:
-        if file.endswith(".baxter"):
-            path, filename = os.path.split(file)
-            files_name.append(filename)
-    
-    resp.list_files = files_name
-    resp.isError = 0
-    return resp
-
-def delete_file_handler(req):
-    """
-    Service used to delete a baxter file.
-    """
-    
-    file_path_string = "src/BaxterGBI_pbr/RecordedFile/"+req.filename
-        
-    if os.path.isfile(file_path_string) :
-        os.remove(file_path_string)
-    return 0
-    
-def rename_file_handler(req):
-    """
-    Service used to rename a baxter file.
-    """
-    
-    path = "src/BaxterGBI_pbr/RecordedFile/"
-    
-    if os.path.isfile(path+req.old_filename) :
-        os.rename(path+req.old_filename,path+req.new_filename)
-    else:
-        print("There is no file with this name!")
-    return 0
-
 #pbr_node initialization
-def pbr_server():
+def pbr_server_baxter():
     """Main of the node. It makes available the services and wait for requests.
     """
     print("Initializing node... ")
-    rospy.init_node('pbr_server')
+    rospy.init_node('pbr_server_baxter')
     print("Getting robot state... ")
     rs = baxter_interface.RobotEnable(CHECK_VERSION)
     init_state = rs.state().enabled
@@ -131,10 +85,7 @@ def pbr_server():
     service1 = rospy.Service('playback', Playback, playback_handler)
     service2 = rospy.Service('record_stop', RecordStop, record_stop_handler)
     service3 = rospy.Service('record_start', RecordStart, record_start_handler)
-    service4 = rospy.Service('files', ListFiles, list_files_handler)
-    service5 = rospy.Service('delete_file', DeleteFile, delete_file_handler)
-    service6 = rospy.Service('rename_file', RenameFile, rename_file_handler)
-    print "PBR node executed -> providing services."
+    print "PBR node executed -> providing playback/record services."
 
     def clean_shutdown():
         print("\nExiting example...")
@@ -146,4 +97,4 @@ def pbr_server():
     rospy.spin()
 
 if __name__ == "__main__":
-    pbr_server()
+    pbr_server_baxter()

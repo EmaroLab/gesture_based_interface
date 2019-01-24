@@ -103,7 +103,7 @@ if __name__ == "__main__":
        print "Client: Called!"
     elif type_service == 3: #Record Stop
        print "Client: Calling Service Stop Record"
-       call_record(filename,record_rate, 0)
+       call_record("",100,0)
        print "Client: Called!"
     elif type_service == 4: #List Files
        call_list_files()
