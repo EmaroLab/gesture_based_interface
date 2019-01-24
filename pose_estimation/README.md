@@ -1,6 +1,6 @@
 # pose_estimation
 
-This project was done for the coursework of SofAr by Marco Lapolla, Marta Lagomarsino, Alessandro Grattarola.
+This project was done for the coursework of Software Architecture by Marco Lapolla, Marta Lagomarsino, Alessandro Grattarola, Federico Tomat.
 The aim of this work is to determine the pose of a human.
 
 Using the Kinect 360, we would like to locate a human in the environment by estimating the position of his center of mass.

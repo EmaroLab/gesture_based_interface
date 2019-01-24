@@ -14,10 +14,10 @@ git status
 ## Kinect launcher
 ```
 roscore
-// launch nodes used by Kinect
+// launch nodes for the Kinect
 roslaunch openni_launch openni.launch
 // configuration: generation of environments according to the orientation angle of the Kinect
-roslaunch pose_estimation config.launch //launcher per generare environment per ogni angolazione
+roslaunch pose_estimation config.launch
 // estimation of the position of human's center of mass
 roslaunch pose_estimation pose_estimator.launch
 // service for setting the orientation angle of the Kinect 
@@ -25,9 +25,8 @@ roslaunch pose_estimation pose_estimator.launch
 rosservice call /move_kinect "angle: <float>"
 ```
 
-//rviz -> topic : /camera/pcl_filtered
+```
+rviz -> topic : /camera/pcl_filtered
 	fixed frame: camera_link
-	orbit: fixed frame (destra) 
-//servizi per 
-rostopic pub //service passi angolo per telecamera -> nodo nel pose estimator
-//pubblica angolo su tilt angle
+	orbit: fixed frame (on the right)
+```

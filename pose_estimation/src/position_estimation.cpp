@@ -12,30 +12,31 @@
 #include <tf/transform_datatypes.h>
 
 /**
- *  Class to estimate the position of the center of mass of points in /camera/pcl_filtered via statistical mean
+ *  @brief Class to estimate the position of the center of mass of points in /camera/pcl_filtered via statistical mean
  */
-class cloudHandler
+class PoseEstimation
 {
 public:
-	/** 
+    /**
      * Transformation from Base Frame to Camera Frame
      */
     tf::TransformListener listener;
      
-	/** Handler:
+    /** Handler:
      * - subscribe to /camera/pcl_filtered, sent by plc_filter
      * - publish odometry data to /odom
      */
-    cloudHandler()
+    PoseEstimation()
     {
-        pcl_sub = nh.subscribe("/camera/pcl_filtered", 10, &cloudHandler::cloudCB, this);
+        pcl_sub = nh.subscribe("/camera/pcl_filtered", 10, &cloudHandler::poseCB, this);
 
         pcl_pub = nh.advertise<nav_msgs::Odometry>("/odom", 10);
     }
     /** 
      * Callback function
+     * @param[in]  input	point cloud data from /camera/pcl_filtered
      */
-    void cloudCB(const sensor_msgs::PointCloud2 &input)
+    void poseCB(const sensor_msgs::PointCloud2 &input)
     {
 	pcl::PointCloud<pcl::PointXYZ> cloud;
 
@@ -112,7 +113,7 @@ main(int argc, char **argv)
 {
     ros::init(argc, argv, "position_estimation");
 
-    cloudHandler handler;
+    PoseEstimation handler;
 
     ros::spin();
 

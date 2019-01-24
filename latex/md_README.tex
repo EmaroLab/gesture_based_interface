@@ -1,0 +1,34 @@
+\#\# Download instructions 
+\begin{DoxyCode}
+1 mkdir ~/sofar\_ws
+2 cd ~/sofar\_ws
+3 git clone https://github.com/EmaroLab/gesture\_based\_interface.git src
+4 catkin\_make
+5 . devel/setup.bash
+6 cd src
+7 git status
+\end{DoxyCode}
+
+
+\#\# Kinect launcher 
+\begin{DoxyCode}
+1 roscore
+2 // launch nodes for the Kinect
+3 roslaunch openni\_launch openni.launch
+4 // configuration: generation of environments according to the orientation angle of the Kinect
+5 roslaunch pose\_estimation config.launch
+6 // estimation of the position of human's center of mass
+7 roslaunch pose\_estimation pose\_estimator.launch
+8 // service for setting the orientation angle of the Kinect 
+9 // (node inside pose estimator that publishes the angle on the topic tilt\_angle)
+10 rosservice call /move\_kinect "angle: <float>"
+\end{DoxyCode}
+
+
+
+\begin{DoxyCode}
+1 rviz -> topic : /camera/pcl\_filtered
+2     fixed frame: camera\_link
+3     orbit: fixed frame (on the right)
+\end{DoxyCode}
+ 

@@ -33,13 +33,13 @@ int sor_k = 40;
 double sor_stddev = 1.0;
 
 /**
- *  Class to filter the /camera/pcl_background_segmentation point cloud, with different filters:
+ *  @brief Class to filter the /camera/pcl_background_segmentation point cloud, with different filters:
  * 		- Downsampling (with VoxelGrid)
  * 		- XYZ axes range filter
  * 		- Statistical Outlier Removal Filter
  *  and publish the filtered point cloud in /camera/pcl_filtered
  */
-class cloudHandler
+class PclFilter
 {
 private:
 
@@ -61,15 +61,16 @@ public:
      * - subscribe to /camera/pcl_background_segmentation, sent by plc_background_segmentation
      * - publish filtered data to /camera/pcl_filtered 
      */
-    cloudHandler()
+    PclFilter()
     {
-        pcl_sub = nh.subscribe("/camera/pcl_background_segmentation", 100, &cloudHandler::cloudCB, this);
+        pcl_sub = nh.subscribe("/camera/pcl_background_segmentation", 100, &cloudHandler::filterCB, this);
         pcl_pub = nh.advertise<sensor_msgs::PointCloud2>("/camera/pcl_filtered", 100);
     }
     /** 
      * Callback function
+     * @param[in] input point cloud data from background segmentation
      */
-    void cloudCB(const boost::shared_ptr<const sensor_msgs::PointCloud2>& input)
+    void filterCB(const boost::shared_ptr<const sensor_msgs::PointCloud2>& input)
     {
 		pcl::PCLPointCloud2::Ptr input_pcl (new pcl::PCLPointCloud2 ());
 		pcl_conversions::toPCL(*input, *input_pcl);
@@ -210,7 +211,7 @@ main(int argc, char** argv)
     n.param<bool>("revert_filter_y", revert_filter_y, false);
     n.param<bool>("revert_filter_x", revert_filter_x, false);
     
-    cloudHandler handler;
+    PclFilter handler;
 
     ros::spin();
 
