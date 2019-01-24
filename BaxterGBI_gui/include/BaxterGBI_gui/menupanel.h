@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 #include <QWidget>
+#include <QPushButton>
+#include <QVector>
 
 namespace Ui {
 class MenuPanel;
@@ -21,6 +23,8 @@ public:
 
 private:
 	Ui::MenuPanel* ui;
+	QVector<QPushButton*> optionsButtons;
+	QVector<QPushButton*> fixedOptionsButtons;
 
 private slots:
 
