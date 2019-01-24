@@ -1,6 +1,8 @@
 #ifndef TASK_H
 #define TASK_H
 
+#include "BaxterGBI_gui/selectionfiltermodel.h"
+
 #include <QWidget>
 #include <QString>
 #include <QStandardItemModel>
@@ -29,10 +31,15 @@ private slots:
     void onSubtopicChange(int newSubtopicIdx);
 
 private:
+    static unsigned int _id;
+    unsigned int id = 0;
     int currentTopicIdx = 0;
     int currentSubtopicIdx = 0;
 	Ui::Mapping* ui;
     QStandardItemModel *model;
+    SelectionFilterModel *filter;
+    QStandardItem *topic, *subtopic;
+    bool ignoreChange = false;
 };
 
 #endif // TASK_H
