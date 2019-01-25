@@ -20,8 +20,9 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr actualImage(new pcl::PointCloud<pcl::PointXY
 double delta = 0.08;
 int angle = 0;
 /** @brief Class to implement Background Segmentation
- * 	remove the background associated to the current Kinect angle from the /camera/depth/points
- * 	publish filtered points cloud in /camera/pcl_background_segmentation
+ * 
+ *  The class removes the background, associated to the current Kinect angle, from the raw Point Cloud acquired by the Kinect and saved in /camera/depth/points.
+ * 	The filtered point cloud is published on the topic /camera/pcl_background_segmentation
  */
 class PclBackgroundSegmentation{
     /** Handler:
@@ -36,8 +37,10 @@ class PclBackgroundSegmentation{
         pcl_pub = nh.advertise<sensor_msgs::PointCloud2>("/camera/pcl_background_segmentation", 1);
     }
     /**
-     * Point cloud callback function
-        *@param[in]  input	point cloud data from the Kinect
+     * Point cloud callback function:
+     *  - remove the background associated to the current Kinect angle from the /camera/depth/points
+     *  - publish filtered points cloud in /camera/pcl_background_segmentation
+     * @param[in]	input	point cloud data from the Kinect
      */
     void backCB(const sensor_msgs::PointCloud2& input){
 
@@ -57,6 +60,7 @@ class PclBackgroundSegmentation{
     }
     /**
      * Angle callback function
+     * acquires the current tilt angle of the Kinect that is useful to know the right background to remove
      * @param[in]  angle_msg	current tilt angle of the Kinect
      */
     void angleCB(const std_msgs::Float64& angle_msg){
@@ -74,8 +78,9 @@ protected:
 };
 
 /**
- * Main:
- * Initialization of the parameter delta and of the handler
+ * Main function:
+ * - initialize of the parameter delta and the handler
+ * - acquire and save all backgrounds, associated to different angles of the Kinect
  * @param[in]  delta	sensitivity of the segmentation
  */
 main(int argc, char** argv)

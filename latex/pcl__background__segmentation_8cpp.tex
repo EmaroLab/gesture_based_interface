@@ -1,0 +1,69 @@
+\hypertarget{pcl__background__segmentation_8cpp}{}\section{pose\+\_\+estimation/src/pcl\+\_\+background\+\_\+segmentation.cpp File Reference}
+\label{pcl__background__segmentation_8cpp}\index{pose\+\_\+estimation/src/pcl\+\_\+background\+\_\+segmentation.\+cpp@{pose\+\_\+estimation/src/pcl\+\_\+background\+\_\+segmentation.\+cpp}}
+
+
+Main function\+:  
+
+
+{\ttfamily \#include $<$ros/ros.\+h$>$}\\*
+{\ttfamily \#include $<$pcl/point\+\_\+cloud.\+h$>$}\\*
+{\ttfamily \#include $<$pcl/filters/extract\+\_\+indices.\+h$>$}\\*
+{\ttfamily \#include $<$pcl\+\_\+conversions/pcl\+\_\+conversions.\+h$>$}\\*
+{\ttfamily \#include $<$sensor\+\_\+msgs/\+Point\+Cloud2.\+h$>$}\\*
+{\ttfamily \#include $<$iostream$>$}\\*
+{\ttfamily \#include $<$pcl/filters/statistical\+\_\+outlier\+\_\+removal.\+h$>$}\\*
+{\ttfamily \#include $<$math.\+h$>$}\\*
+{\ttfamily \#include $<$string.\+h$>$}\\*
+{\ttfamily \#include \char`\"{}std\+\_\+msgs/\+Float64.\+h\char`\"{}}\\*
+{\ttfamily \#include $<$Eigen/\+Geometry$>$}\\*
+{\ttfamily \#include $<$ros/package.\+h$>$}\\*
+{\ttfamily \#include $<$pwd.\+h$>$}\\*
+Include dependency graph for pcl\+\_\+background\+\_\+segmentation.\+cpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{pcl__background__segmentation_8cpp__incl}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classPclBackgroundSegmentation}{Pcl\+Background\+Segmentation}
+\begin{DoxyCompactList}\small\item\em Class to implement Background Segmentation. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+std\+::vector$<$ pcl\+::\+Point\+Cloud$<$ pcl\+::\+Point\+X\+YZ $>$\+::Ptr $>$ {\bfseries backgrounds} (61)\hypertarget{pcl__background__segmentation_8cpp_a674c14212a8fe87d98c519e179f0f96d}{}\label{pcl__background__segmentation_8cpp_a674c14212a8fe87d98c519e179f0f96d}
+
+\item 
+pcl\+::\+Point\+Cloud$<$ pcl\+::\+Point\+X\+YZ $>$\+::Ptr {\bfseries actual\+Image} (new pcl\+::\+Point\+Cloud$<$ pcl\+::\+Point\+X\+YZ $>$)\hypertarget{pcl__background__segmentation_8cpp_a81c267788950e2b4a2cd07bd82eea0d6}{}\label{pcl__background__segmentation_8cpp_a81c267788950e2b4a2cd07bd82eea0d6}
+
+\item 
+{\bfseries main} (int argc, char $\ast$$\ast$argv)\hypertarget{pcl__background__segmentation_8cpp_a5ea466849f21e6c2be4ef9b2eb8868d3}{}\label{pcl__background__segmentation_8cpp_a5ea466849f21e6c2be4ef9b2eb8868d3}
+
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+double {\bfseries delta} = 0.\+08\hypertarget{pcl__background__segmentation_8cpp_a9ea1a8f5ef3e6d20b362385e1288c72c}{}\label{pcl__background__segmentation_8cpp_a9ea1a8f5ef3e6d20b362385e1288c72c}
+
+\item 
+int {\bfseries angle} = 0\hypertarget{pcl__background__segmentation_8cpp_a63177970cacb40efba67ce501ea89210}{}\label{pcl__background__segmentation_8cpp_a63177970cacb40efba67ce501ea89210}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Main function\+: 
+
+
+\begin{DoxyItemize}
+\item initialize of the parameter delta and of the handler
+\item acquire and save all backgrounds, associated to different angles of the Kinect 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em delta} & sensitivity of the segmentation \\
+\hline
+\end{DoxyParams}
+
+\end{DoxyItemize}

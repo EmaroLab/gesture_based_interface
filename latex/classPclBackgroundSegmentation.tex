@@ -1,0 +1,87 @@
+\hypertarget{classPclBackgroundSegmentation}{}\section{Pcl\+Background\+Segmentation Class Reference}
+\label{classPclBackgroundSegmentation}\index{Pcl\+Background\+Segmentation@{Pcl\+Background\+Segmentation}}
+
+
+Class to implement Background Segmentation.  
+
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classPclBackgroundSegmentation_a7e27a18fc9e7e7a0345d2ab0573b60bb}{Pcl\+Background\+Segmentation} ()
+\item 
+void \hyperlink{classPclBackgroundSegmentation_adc1a5bace5ac90646ff552336564acbc}{back\+CB} (const sensor\+\_\+msgs\+::\+Point\+Cloud2 \&input)
+\item 
+void \hyperlink{classPclBackgroundSegmentation_a2255df663f6848dc6a59e6d31f058c0b}{angle\+CB} (const std\+\_\+msgs\+::\+Float64 \&angle\+\_\+msg)
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+ros\+::\+Node\+Handle {\bfseries nh}\hypertarget{classPclBackgroundSegmentation_a42e22fca2c30a57d35b09d5077279cca}{}\label{classPclBackgroundSegmentation_a42e22fca2c30a57d35b09d5077279cca}
+
+\item 
+ros\+::\+Subscriber {\bfseries pcl\+\_\+sub}\hypertarget{classPclBackgroundSegmentation_a48bba168a2eb4c6521dd77110d71f1f4}{}\label{classPclBackgroundSegmentation_a48bba168a2eb4c6521dd77110d71f1f4}
+
+\item 
+ros\+::\+Subscriber {\bfseries angle\+\_\+sub}\hypertarget{classPclBackgroundSegmentation_a4137ec77c2ed7ce6aa01b9ed6ca6891a}{}\label{classPclBackgroundSegmentation_a4137ec77c2ed7ce6aa01b9ed6ca6891a}
+
+\item 
+ros\+::\+Publisher {\bfseries pcl\+\_\+pub}\hypertarget{classPclBackgroundSegmentation_a9ac6a20a2cd1c05cb74db86e967bc074}{}\label{classPclBackgroundSegmentation_a9ac6a20a2cd1c05cb74db86e967bc074}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Class to implement Background Segmentation. 
+
+The class removes the background, associated to the current Kinect angle, from the raw Point Cloud acquired by the Kinect and saved in /camera/depth/points. The filtered point cloud is published on the topic /camera/pcl\+\_\+background\+\_\+segmentation 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Pcl\+Background\+Segmentation@{Pcl\+Background\+Segmentation}!Pcl\+Background\+Segmentation@{Pcl\+Background\+Segmentation}}
+\index{Pcl\+Background\+Segmentation@{Pcl\+Background\+Segmentation}!Pcl\+Background\+Segmentation@{Pcl\+Background\+Segmentation}}
+\subsubsection[{\texorpdfstring{Pcl\+Background\+Segmentation()}{PclBackgroundSegmentation()}}]{\setlength{\rightskip}{0pt plus 5cm}Pcl\+Background\+Segmentation\+::\+Pcl\+Background\+Segmentation (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classPclBackgroundSegmentation_a7e27a18fc9e7e7a0345d2ab0573b60bb}{}\label{classPclBackgroundSegmentation_a7e27a18fc9e7e7a0345d2ab0573b60bb}
+Handler\+:
+\begin{DoxyItemize}
+\item subscribe to /camera/depth/points to get raw data acquired by the Kinect
+\item subscribe to /cur\+\_\+tilt\+\_\+angle to know the current tilt angle of the Kinect
+\item publish filtered point cloud on /camera/pcl\+\_\+background\+\_\+segmentation 
+\end{DoxyItemize}
+
+\subsection{Member Function Documentation}
+\index{Pcl\+Background\+Segmentation@{Pcl\+Background\+Segmentation}!angle\+CB@{angle\+CB}}
+\index{angle\+CB@{angle\+CB}!Pcl\+Background\+Segmentation@{Pcl\+Background\+Segmentation}}
+\subsubsection[{\texorpdfstring{angle\+C\+B(const std\+\_\+msgs\+::\+Float64 \&angle\+\_\+msg)}{angleCB(const std_msgs::Float64 &angle_msg)}}]{\setlength{\rightskip}{0pt plus 5cm}void Pcl\+Background\+Segmentation\+::angle\+CB (
+\begin{DoxyParamCaption}
+\item[{const std\+\_\+msgs\+::\+Float64 \&}]{angle\+\_\+msg}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classPclBackgroundSegmentation_a2255df663f6848dc6a59e6d31f058c0b}{}\label{classPclBackgroundSegmentation_a2255df663f6848dc6a59e6d31f058c0b}
+Angle callback function acquires the current tilt angle of the Kinect that is useful to know the right background to remove 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em angle\+\_\+msg} & current tilt angle of the Kinect \\
+\hline
+\end{DoxyParams}
+\index{Pcl\+Background\+Segmentation@{Pcl\+Background\+Segmentation}!back\+CB@{back\+CB}}
+\index{back\+CB@{back\+CB}!Pcl\+Background\+Segmentation@{Pcl\+Background\+Segmentation}}
+\subsubsection[{\texorpdfstring{back\+C\+B(const sensor\+\_\+msgs\+::\+Point\+Cloud2 \&input)}{backCB(const sensor_msgs::PointCloud2 &input)}}]{\setlength{\rightskip}{0pt plus 5cm}void Pcl\+Background\+Segmentation\+::back\+CB (
+\begin{DoxyParamCaption}
+\item[{const sensor\+\_\+msgs\+::\+Point\+Cloud2 \&}]{input}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classPclBackgroundSegmentation_adc1a5bace5ac90646ff552336564acbc}{}\label{classPclBackgroundSegmentation_adc1a5bace5ac90646ff552336564acbc}
+Point cloud callback function\+:
+\begin{DoxyItemize}
+\item remove the background associated to the current Kinect angle from the /camera/depth/points
+\item publish filtered points cloud in /camera/pcl\+\_\+background\+\_\+segmentation 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em input} & point cloud data from the Kinect \\
+\hline
+\end{DoxyParams}
+
+\end{DoxyItemize}
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+pose\+\_\+estimation/src/pcl\+\_\+background\+\_\+segmentation.\+cpp\end{DoxyCompactItemize}

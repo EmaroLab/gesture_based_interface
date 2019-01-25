@@ -21,9 +21,11 @@ float angle = -30.0;
 int go = 0;
 int check = 0;
 
-/** @brief Class to record all the environments for each possible orientation of the Kinect
- * 		the range of the Kinect tilt is [-30,30] degree
- * 		with a given granularity
+/** @brief Class to record environments
+ * 
+ * The class records all the environments for each possible orientation of the Kinect
+ * 		- the range of the Kinect tilt is [-30,30] degree
+ * 		- acquisitions with a given granularity
  */
 class PclRecord{
 	
@@ -37,8 +39,8 @@ class PclRecord{
                 angle_sub = nh.subscribe("/cur_tilt_angle", 10, &PclRecord::AngleCB, this);
 	}
 	/** 
-	 * Callback function
-         * @param[in] cloud raw point cloud data from Kinect
+	 * Callback function to save environments in a file environment<angle>.pcd in the folder /.kinect_environments
+     * @param[in] cloud raw point cloud data from Kinect
 	 */
 	void PclRecordCB (const sensor_msgs::PointCloud2ConstPtr& cloud)
 	{
@@ -76,11 +78,10 @@ class PclRecord{
 
 };
 
-
-
 /**
  * Main:
- * Initialization of the parameter granularity and the handler
+ * Initialization of the parameter granularity and the handler.
+ * Change the tilt angle of the Kinect in order to save all environments.
  * @param[in]  granularity  angle step between two consecutive records 
  */
 int main(int argc, char **argv)
@@ -92,7 +93,7 @@ int main(int argc, char **argv)
 	PclRecord handler;
 
 	ros::NodeHandle n;
-	n.param<double>("granularity", granularity, 1.0); //!!!
+	n.param<double>("granularity", granularity, 1.0);
 
 	ros::AsyncSpinner spinner(4); // Use 4 threads
 	spinner.start();
@@ -122,7 +123,7 @@ int main(int argc, char **argv)
 		
 		ros::WallDuration(2).sleep(); 
 			
-		angle = angle + granularity; //!!!
+		angle = angle + granularity;
 		
 		if(angle >= 31.0)
 			exit(0);
