@@ -14,16 +14,11 @@ class ActionPanel : public QWidget
 
 public:
 	explicit ActionPanel(QWidget* parent = nullptr);
-	void updateActionPanel(std::string pbr_action, std::string pbr_msg);
+  void update(QString action, QString msg);
 	~ActionPanel();
 
 private:
 	Ui::ActionPanel* ui;
-
-private slots:
-
-signals:
- 
 };
 
 #endif // ACTIONPANEL_H

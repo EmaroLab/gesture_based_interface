@@ -6,3 +6,4 @@
 *.includes
 *.config
 *.creator
+*.autosave

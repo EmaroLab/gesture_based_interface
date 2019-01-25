@@ -1,8 +1,20 @@
 #include "BaxterGBI_gui/mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <stdexcept>
 #include <QCloseEvent>
 #include <QPushButton>
+
+QVector<QString> cxx2qt_strvec(std::vector<std::string> &stdvstds){
+  std::vector<QString> v;
+  v.clear();
+  v.reserve(stdvstds.size());
+  std::transform(stdvstds.begin(),
+                 stdvstds.end(),
+                 std::back_inserter(v),
+                 QString::fromStdString);
+  return QVector<QString>::fromStdVector(v);
+}
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -30,21 +42,25 @@ MainWindow::~MainWindow(){
 }
 
 void MainWindow::updateMainWindow(const boost::shared_ptr<BaxterGBI_core_msgs::status> msg){
-	ROS_INFO("Context type: [%s]", msg->context_type.c_str()); //menu, azione, config
-	qInfo() << "Context type: " << msg->context_type.c_str();
-	static QWidget *target_page;
+  static QWidget *target_page;
 
 	if(msg->context_type == "config_wait" or msg->context_type == "wait_user"){
 		target_page = &conf_page;
-	} 
-	else if(msg->context_type == "menu"){
-		target_page = &menu_page;
-		menu_page.updateMenuPanel(msg->m_title, msg->m_options, msg->m_fixed_options, msg->m_selection);
-	}
-	else if(msg->context_type == "action"){
+    } else if (msg->context_type == "menu"){
+      target_page = &menu_page;
+      auto title = QString::fromStdString(msg->m_title);
+      auto options = cxx2qt_strvec(msg->m_options);
+      auto fixed_options = cxx2qt_strvec(msg->m_fixed_options);
+      menu_page.update(title, options, fixed_options, msg->m_selection);
+    } else if (msg->context_type == "action"){
 		target_page = &action_page;
-		action_page.updateActionPanel(msg->pbr_action, msg->pbr_msg);
-	}
+      auto action = QString::fromStdString(msg->pbr_action);
+      auto message = QString::fromStdString(msg->pbr_msg);
+      action_page.update(action, message);
+    } else {
+      ROS_WARN("Wrong context type in received status msg.");
+      return;
+    };
 
 	if (current_page != target_page){
 		if (current_page) {
