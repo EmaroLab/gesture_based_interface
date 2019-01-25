@@ -14,7 +14,23 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true"/>
+   <string notr="true">/*QPushButton#back {
+	background-color:#FF756E;
+}
+
+QPushButton#back:hover{
+	background-color:#FF483E;
+}
+
+QPushButton#select{
+	background-color:#A4ED8D;
+	border:2px solid #6FD64E;
+}
+
+QPushButton#select:hover{
+	background-color:#6FD64E;
+}
+*/</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
@@ -35,8 +51,9 @@
      <item>
       <widget class="QLabel" name="menuTitle">
        <property name="styleSheet">
-        <string notr="true">font: 20pt &quot;ComicSansMS&quot;;
-font-style:bold;</string>
+        <string notr="true">font: 22pt &quot;ComicSansMS&quot;;
+font-style:bold;
+</string>
        </property>
        <property name="text">
         <string>TextLabel</string>
@@ -60,6 +77,12 @@ font-style:bold;</string>
    </item>
    <item>
     <widget class="QScrollArea" name="scrollArea">
+     <property name="styleSheet">
+      <string notr="true">#scrollArea{
+	border:none
+}
+</string>
+     </property>
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
@@ -68,9 +91,14 @@ font-style:bold;</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>544</width>
-        <height>472</height>
+        <width>546</width>
+        <height>473</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">#scrollAreaWidgetContents{
+background-color:#FFE3E2;
+}</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
