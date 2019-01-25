@@ -4,6 +4,42 @@
 #include <QInputDialog>
 #include <QDebug>
 #include <QComboBox>
+#include <QtGlobal>
+
+void tagItem(QStandardItem *item, int id){
+    auto data = item->data(Qt::UserRole);
+    if (data.typeName() == 0){ //invalid variant
+        item->setData(QVariant(QList<QVariant>{id}), Qt::UserRole);
+    } else {
+        auto list = data.toList();
+        list.append(id);
+        item->setData(list, Qt::UserRole);
+    }
+}
+
+void untagItem(QStandardItem *item, int id){
+    auto data = item->data(Qt::UserRole);
+    auto list = data.toList();
+    list.removeOne(id);
+    item->setData(list, Qt::UserRole);
+}
+
+void markSelectable(QStandardItem *item, bool selectable){
+    auto flags = item->flags();
+    if (selectable)
+        flags |= Qt::ItemIsSelectable;
+    else
+        flags &= ~Qt::ItemIsSelectable;
+    item->setFlags(flags);
+}
+
+QModelIndex getSelectableIdx(QAbstractItemModel *model, const QModelIndex &root = QModelIndex()){
+    for (int i = 0; i < model->rowCount(root); i++){
+        auto flags = model->flags(model->index(i, 0, root));
+        if (flags & Qt::ItemIsSelectable)
+            return model->index(i, 0, root);
+    }
+}
 
 unsigned int Mapping::_id = 0;
 
@@ -13,57 +49,43 @@ Mapping::Mapping(QStandardItemModel *model, QWidget *parent) :
     model(model)
     {
         id = _id++;
-        filter = new SelectionFilterModel(id);
-		ui->setupUi(this);
-		connect(ui->deleteMapping, &QPushButton::clicked, [this] {
-						emit removed(this);
-						});
+        ui->setupUi(this);
 
+        filter = new SelectionFilterModel(id);
         filter->setSourceModel(model);
         ui->topic->setModel(filter);
         ui->subtopic->setModel(filter);
 
         qInfo() << "Mapping()";
-        for (currentTopicIdx = 0; currentTopicIdx < filter->rowCount(); currentTopicIdx++){
-            auto flags = filter->flags(filter->index(currentTopicIdx, 0));
-            if (flags & Qt::ItemIsSelectable) break;
-        }
-        ui->topic->setCurrentIndex(currentTopicIdx);
-        auto topicIdx = filter->index(currentTopicIdx, 0);
-        auto data = filter->data(topicIdx, Qt::UserRole);
-        if (data.typeName() == 0){ //invalid variant
-            filter->setData(topicIdx, QVariant(QList<QVariant>{id}), Qt::UserRole);
-        } else {
-            auto list = data.toList();
-            list.append(id);
-            filter->setData(topicIdx, list, Qt::UserRole);
-        }
 
-        for (currentSubtopicIdx = 0; currentSubtopicIdx < filter->rowCount(topicIdx); currentSubtopicIdx++){
-            auto flags = filter->flags(filter->index(currentSubtopicIdx, 0, topicIdx));
-            if (flags & Qt::ItemIsSelectable) break;
-        }
-        ui->subtopic->setRootModelIndex(topicIdx);
-        ui->subtopic->setCurrentIndex(currentSubtopicIdx);
-        auto subtopicIdx = filter->index(currentSubtopicIdx, 0, topicIdx);
-        data = filter->data(subtopicIdx, Qt::UserRole);
-        if (data.typeName() == 0){ //invalid variant
-            filter->setData(subtopicIdx, QVariant(QList<QVariant>{id}), Qt::UserRole);
-        } else {
-            auto list = data.toList();
-            list.append(id);
-            filter->setData(subtopicIdx, list, Qt::UserRole);
-        }
-        subtopic = model->itemFromIndex(filter->mapToSource(subtopicIdx));
-        topic = model->itemFromIndex(filter->mapToSource(topicIdx));
+        // Search for selectable topic/usbtopic pair
+        topicFilterIdx = getSelectableIdx(filter);
+        topic = model->itemFromIndex(filter->mapToSource(topicFilterIdx));
 
-        subtopic->setFlags(subtopic->flags() & (~Qt::ItemIsSelectable));
+        subtopicFilterIdx = getSelectableIdx(filter, topicFilterIdx);
+        subtopic = model->itemFromIndex(filter->mapToSource(subtopicFilterIdx));
+
+
+        // Mark topic/subtopic with the mapping id
+        tagItem(topic, id);
+        tagItem(subtopic, id);
+
+        // Update selection in GUI
+        ui->topic->setCurrentIndex(topicFilterIdx.row());
+        ui->subtopic->setRootModelIndex(topicFilterIdx);
+        ui->subtopic->setCurrentIndex(subtopicFilterIdx.row());
+
+
+        // Mark subtopic (and topic, if no other subtopics are free) as not selectable
+        markSelectable(subtopic, false);
         qInfo() << "\t disabled subtopic " << subtopic->text()  << "of topic " << subtopic->parent()->text();
-        if (currentSubtopicIdx == filter->rowCount(topicIdx)-1){
-            topic->setFlags(topic->flags() & (~Qt::ItemIsSelectable));
+
+        if (filter->rowCount(topicFilterIdx) == 1){ //no selectable subtopics then
+            markSelectable(topic, false);
             qInfo() << "\t disabled topic " << topic->text();
         }
 
+        // Connect callbacks to handle changes in selection
 		connect(ui->topic, 
                 qOverload<int>(&QComboBox::currentIndexChanged),
                 this,
@@ -73,130 +95,86 @@ Mapping::Mapping(QStandardItemModel *model, QWidget *parent) :
                 qOverload<int>(&QComboBox::currentIndexChanged),
                 this,
                 &Mapping::onSubtopicChange);
+
+        connect(ui->deleteMapping, &QPushButton::clicked,
+                [this] {emit removed(this);});
 }
 
 Mapping::~Mapping(){
    qInfo() << "~Mapping()";
-   ignoreChange = true;
 
-   auto data = subtopic->data(Qt::UserRole);
-   auto list = data.toList();
-   list.removeOne(id);
-   subtopic->setData(list, Qt::UserRole);
-   subtopic->setFlags(subtopic->flags() | Qt::ItemIsSelectable);
+   markSelectable(subtopic, true);
    qInfo() << "\t enabled subtopic " << subtopic->text()  << "of topic " << subtopic->parent()->text();
 
-   //if (rowCount(filter->mapFromSource(topic->index())){ //the filter has at least one subtopic
-       data = topic->data(Qt::UserRole);
-       list = data.toList();
-       list.removeOne(id);
-       topic->setData(list, Qt::UserRole);
-       topic->setFlags(topic->flags() | Qt::ItemIsSelectable);
-       qInfo() << "\t enabled topic " << topic->text();
-    //}
+   markSelectable(topic, true);
+   qInfo() << "\t enabled topic " << topic->text();
+
+   untagItem(subtopic, id);
+   untagItem(topic, id);
+
    delete ui;
 }
 
 void Mapping::onTopicChange(int newTopicIdx){
-    if (ignoreChange) return;
     if (newTopicIdx == -1) return;
-    if (topic == model->itemFromIndex(filter->mapToSource(filter->index(newTopicIdx, 0)))) return;
+    if (topic->index() == filter->mapToSource(filter->index(newTopicIdx, 0))) return;
 
     qInfo() << "Mapping " << id <<" onTopicChange()";
 
-    topic->setFlags(topic->flags() | Qt::ItemIsSelectable);
-    subtopic->setFlags(subtopic->flags() | Qt::ItemIsSelectable);
-
-
-    auto data = subtopic->data(Qt::UserRole);
-    auto list = data.toList();
-    list.removeOne(id);
-    subtopic->setData(list, Qt::UserRole);
-    qInfo() << "\t enabled subtopic " << subtopic->text() << "of topic " << subtopic->parent()->text();
-
-    data = topic->data(Qt::UserRole);
-    list = data.toList();
-    list.removeOne(id);
-    topic->setData(list, Qt::UserRole);
+    markSelectable(topic, true);
     qInfo() << "\t enabled topic " << topic->text();
 
+    markSelectable(subtopic, true);
+    qInfo() << "\t enabled subtopic " << subtopic->text() << "of topic " << subtopic->parent()->text();
 
+    untagItem(topic, id);
+    untagItem(subtopic, id);
 
+    topicFilterIdx = filter->index(newTopicIdx, 0);
+    topic = model->itemFromIndex(filter->mapToSource(topicFilterIdx));
 
-    auto topicIdx = filter->index(newTopicIdx, 0);
-    data = filter->data(topicIdx, Qt::UserRole);
-    if (data.typeName() == 0){ //invalid variant
-        filter->setData(topicIdx, QVariant(QList<QVariant>{id}), Qt::UserRole);
-    } else {
-        auto list = data.toList();
-        list.append(id);
-        filter->setData(topicIdx, list, Qt::UserRole);
-    }
+    subtopicFilterIdx = getSelectableIdx(filter, topicFilterIdx);
+    subtopic = model->itemFromIndex(filter->mapToSource(subtopicFilterIdx));
 
-    for (currentSubtopicIdx = 0; currentSubtopicIdx < filter->rowCount(topicIdx); currentSubtopicIdx++){
-        auto flags = filter->flags(filter->index(currentSubtopicIdx, 0, topicIdx));
-        if (flags & Qt::ItemIsSelectable) break;
-    }
-    auto subtopicIdx = filter->index(currentSubtopicIdx, 0, topicIdx);
-    data = filter->data(subtopicIdx, Qt::UserRole);
-    if (data.typeName() == 0){ //invalid variant
-        filter->setData(subtopicIdx, QVariant(QList<QVariant>{id}), Qt::UserRole);
-    } else {
-        auto list = data.toList();
-        list.append(id);
-        filter->setData(subtopicIdx, list, Qt::UserRole);
-    }
+    tagItem(topic, id);
+    tagItem(subtopic, id);
 
-    subtopic = model->itemFromIndex(filter->mapToSource(subtopicIdx));
-    topic = model->itemFromIndex(filter->mapToSource(topicIdx));
+    markSelectable(subtopic, false);
+    qInfo() << "\t disabled subtopic " << subtopic->text()  << "of topic " << subtopic->parent()->text();
 
-    subtopic->setFlags(subtopic->flags() & (~Qt::ItemIsSelectable));
-    qInfo() << "\t disabled subtopic " << subtopic->text() << "of topic " << subtopic->parent()->text();
-    if (currentSubtopicIdx == filter->rowCount(topicIdx)-1){
-        topic->setFlags(topic->flags() & (~Qt::ItemIsSelectable));
+    if (subtopicFilterIdx.row() == filter->rowCount(topicFilterIdx)-1){ //If this was the last subtopic available...
+        Q_ASSERT((filter->rowCount(topicFilterIdx)-1) == 0);    // TODO: this condition should be true and simpler
+        markSelectable(topic, false);
         qInfo() << "\t disabled topic " << topic->text();
     }
-    currentTopicIdx = newTopicIdx;
-    ui->subtopic->setRootModelIndex(topicIdx);
-    ui->subtopic->setCurrentIndex(currentSubtopicIdx);
+
+    ui->subtopic->setRootModelIndex(topicFilterIdx);
+    ui->subtopic->setCurrentIndex(subtopicFilterIdx.row());
 }
 
 void Mapping::onSubtopicChange(int newSubtopicIdx){
-    if (ignoreChange) return;
     if (newSubtopicIdx == -1) return;
-    if (subtopic == model->itemFromIndex(filter->mapToSource(filter->index(newSubtopicIdx, 0, filter->mapFromSource(topic->index()))))) return;
+    topicFilterIdx = filter->mapFromSource(subtopic->parent()->index());
+    if (subtopic->index() == filter->mapToSource(filter->index(newSubtopicIdx, 0, topicFilterIdx))) return;
 
     qInfo() << "Mapping " << id <<" onSubtopicChange()";
 
     auto oldSubtopic = subtopic;
 
-    auto topicIdx = filter->index(currentTopicIdx, 0);
-    auto subtopicIdx = filter->index(newSubtopicIdx, 0, topicIdx);
+    subtopicFilterIdx = filter->index(newSubtopicIdx, 0, topicFilterIdx);
+    subtopic = model->itemFromIndex(filter->mapToSource(subtopicFilterIdx));
 
-    currentSubtopicIdx = newSubtopicIdx;
+    tagItem(subtopic, id);
 
-    auto data = filter->data(subtopicIdx, Qt::UserRole);
-    if (data.typeName() == 0){ //invalid variant
-        filter->setData(subtopicIdx, QVariant(QList<QVariant>{id}), Qt::UserRole);
-    } else {
-        auto list = data.toList();
-        list.append(id);
-        filter->setData(subtopicIdx, list, Qt::UserRole);
-    }
-    subtopic = model->itemFromIndex(filter->mapToSource(subtopicIdx));
-    subtopic->setFlags(subtopic->flags() & (~Qt::ItemIsSelectable));
+    markSelectable(subtopic, false);
     qInfo() << "\t disabled subtopic " << subtopic->text() << "of topic " << subtopic->parent()->text();
 
-    oldSubtopic->setFlags(oldSubtopic->flags() | Qt::ItemIsSelectable);
-    data = oldSubtopic->data(Qt::UserRole);
-    auto list = data.toList();
-    list.removeOne(id);
-    oldSubtopic->setData(list, Qt::UserRole);
+    untagItem(oldSubtopic, id);
+
+    markSelectable(oldSubtopic, true);
     qInfo() << "\t enabled subtopic " << oldSubtopic->text() << "of topic " << oldSubtopic->parent()->text();
 }
 
 QPair<QString, QString> Mapping::currentSelection(){
 	return {ui->topic->currentText(), ui->subtopic->currentText()};
 }
-
-

@@ -33,13 +33,11 @@ private slots:
 private:
     static unsigned int _id;
     unsigned int id = 0;
-    int currentTopicIdx = 0;
-    int currentSubtopicIdx = 0;
 	Ui::Mapping* ui;
     QStandardItemModel *model;
     SelectionFilterModel *filter;
     QStandardItem *topic, *subtopic;
-    bool ignoreChange = false;
+    QModelIndex topicFilterIdx, subtopicFilterIdx;
 };
 
 #endif // TASK_H
