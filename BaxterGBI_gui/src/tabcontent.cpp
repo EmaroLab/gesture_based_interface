@@ -24,7 +24,6 @@ QVector<QPair<QString, QString>> TabContent::getSelectedTopics(){
 	QVector<QPair<QString, QString>> selectedTopics;
 	for(auto item : mappings)
 		selectedTopics.append(item->currentSelection());
-	
 	return selectedTopics;
 }
 
@@ -53,8 +52,8 @@ void TabContent::clear(){
 		delete item;
 	}
 	mappings.clear();
-  count = 0;
-  emit numberOfMappings(count);
+    count = 0;
+    emit numberOfMappings(count);
 }
 
 void TabContent::enableAddButton(bool enable){

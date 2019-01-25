@@ -14,6 +14,7 @@ class MenuState(BlockingState):
         self.variable_options = []
         self.fixed_options = fixed_options
         self.selection = 0
+        self.timeout_t=time.time()+self.timeout
 
     def action_1(self, userdata):
         max_selection = len(self.variable_options) + len(self.fixed_options)
@@ -36,6 +37,10 @@ class MenuState(BlockingState):
 
     def user_left(self, userdata):
         return 'user_missed'
+
+    def user_detected(self, userdata):
+        self.timeout_t=time.time()+self.timeout
+        return None
 
     def execute(self, userdata):
         self.variable_options = self.update_variable_options(userdata)

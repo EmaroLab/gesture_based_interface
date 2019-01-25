@@ -20,22 +20,11 @@ ActionPanel::~ActionPanel(){
 	delete ui;
 }
 
-void ActionPanel::updateActionPanel(std::string pbr_action, std::string pbr_msg){
-	QString action = QString::fromStdString(pbr_action);
-	QString msg = QString::fromStdString(pbr_msg);
-	QPixmap logo;
-	
-	if(action == "play"){
-		logo.load(":/images/play.png");	
-	} else if(action == "pause"){
-		logo.load(":/images/pause.png");
-	} else if(action == "stop"){
-		logo.load(":/images/stop.png");
-	} else if(action == "rec"){
-		logo.load(":/images/rec.png");
-	} else if(action == "wait"){
-		logo.load(":/images/wait.png");
-	}
+void ActionPanel::update(QString action, QString msg){
+  QPixmap logo;
+  static QList<QString> actions{"play", "pause", "stop", "rec", "wait"};
+  if(actions.contains(action))
+    logo.load(QString(":/images/%1.png").arg(action));
 	ui->label->setPixmap(logo);
 	ui->message->setText(msg);
 }

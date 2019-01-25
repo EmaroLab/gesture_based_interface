@@ -5,13 +5,13 @@
 
 class SelectionFilterModel : public QSortFilterProxyModel
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    SelectionFilterModel(unsigned int id, QObject *parent = 0);
+  SelectionFilterModel(unsigned int id, QObject *parent = 0);
 protected:
-    virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
+  virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
 private:
-    unsigned int id;
+  unsigned int id;
 };
 
 #endif // SELECTIONFILTERMODEL_H

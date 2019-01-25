@@ -13,6 +13,8 @@ class BlockingState(smach.State):
 
         self._trigger_event = trigger_event
         self.type = None
+        self.timeout=5
+        self.timeout_t=-1
         self.pub = rospy.Publisher('fsm_status', pub_status.status, queue_size=10)
         self.msg = pub_status.status()
 
@@ -72,7 +74,7 @@ class BlockingState(smach.State):
                 ret = self.action_6(userdata)
             elif event_id == 'user_detected':
                 ret = self.user_detected(userdata)
-            elif event_id == 'user_left':
+            elif self.timeout>=0 && time.time() > self.timeout:
                 ret = self.user_left(userdata)
             elif event_id == 'config':
                 ret = self.config(userdata)
