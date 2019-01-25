@@ -23,30 +23,19 @@ ActionPanel::~ActionPanel(){
 void ActionPanel::updateActionPanel(std::string pbr_action, std::string pbr_msg){
 	QString action = QString::fromStdString(pbr_action);
 	QString msg = QString::fromStdString(pbr_msg);
-	
 	QPixmap logo;
 	
 	if(action == "play"){
-		logo.load("play.png");
-		ui->label->setPixmap(logo);
+		logo.load(":/images/play.png");	
+	} else if(action == "pause"){
+		logo.load(":/images/pause.png");
+	} else if(action == "stop"){
+		logo.load(":/images/stop.png");
+	} else if(action == "rec"){
+		logo.load(":/images/rec.png");
+	} else if(action == "wait"){
+		logo.load(":/images/wait.png");
 	}
-	else if(action == "pause"){
-		logo.load("pause.png");
-		ui->label->setPixmap(logo);
-	}
-	else if(action == "stop"){
-		logo.load("stop.png");
-		ui->label->setPixmap(logo);
-	}
-	else if(action == "rec"){
-		logo.load("rec.png");
-		ui->label->setPixmap(logo);
-	}
-	else if(action == "wait"){
-		logo.load("wait.png");
-		ui->label->setPixmap(logo);
-	}
-
+	ui->label->setPixmap(logo);
 	ui->message->setText(msg);
-	
 }
