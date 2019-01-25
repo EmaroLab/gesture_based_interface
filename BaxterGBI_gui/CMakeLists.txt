@@ -6,6 +6,7 @@ set (CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
 
 #set(Qt5_DIR "/usr/lib/x86_64-linux-gnu/cmake/Qt5")
 
@@ -44,6 +45,7 @@ add_executable(
   gui 
   ${project_SOURCES} 
   ${project_HEADERS}
+  resources/resources.qrc
 )
 
 target_link_libraries(
