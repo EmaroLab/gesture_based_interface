@@ -16,13 +16,24 @@
 /** 
  * Publisher, to control the tilt angle of the Kinect
 */
-ros::Publisher rec_pub;
-ros::ServiceClient client_move;
-ros::ServiceClient client_filter;
+ros::Publisher rec_pub; //!!!!!!!!!!!!! non necessario
 /** 
- * Callback of the /move_kinect service
+ * Client, to control the tilt angle of the Kinect
+*/
+ros::ServiceClient client_move;
+/** 
+ * Client, to regulate the parameters of filters applied to the point cloud obtained by the background segmentation
+*/
+ros::ServiceClient client_filter;
+
+/** @file
+ * Callback of the /regulate_kinect service
+ * - control the tilt angle of the Kinect according to the coordinates xyz provided by the Beacon
+ * - regulate the parameters of the filters according to the coordinates xyz
  * @param[in]  req  Request Message
-	* @param[in]  req.angle Desired Orientation angle of the Kinect
+	* @param[in]  req.x x-coordinate of the watch
+	* @param[in]  req.y y-coordinate of the watch
+	* @param[in]  req.z z-coordinate of the watch
  * @param[out]  res    Response of the service
 	* @param[out]  res.result If the operation is completed successfully
  */

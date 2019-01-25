@@ -11,20 +11,21 @@
 #include "kinect_setup/MoveKinect.h"
 
 /** 
- * Publisher, to control the tilt angle of the Kinect
+ * Publisher, to regulate the tilt angle of the Kinect
 */
 ros::Publisher rec_pub;
 
-/** 
+/** @file
  * Callback of the /move_kinect service
  * @param[in]  req  Request Message
 	* @param[in]  req.angle Desired Orientation angle of the Kinect
  * @param[out]  res    Response of the service
-	* @param[out]  res.result If the operation is completed successfully
+	* @param[out]  res.result check if the operation is completed successfully
  */
 bool move(kinect_setup::MoveKinect::Request  &req,
          kinect_setup::MoveKinect::Response &res)
 {
+	// saturation
 	if(req.angle > 30)
 	{
 		req.angle = 30;

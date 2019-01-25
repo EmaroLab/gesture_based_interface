@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['pcl_5fbackground_5fsegmentation_2ecpp',['pcl_background_segmentation.cpp',['../pcl__background__segmentation_8cpp.html',1,'']]]
+  ['kinect_5fregulation_5fserver_2ecpp',['kinect_regulation_server.cpp',['../kinect__regulation__server_8cpp.html',1,'']]]
 ];

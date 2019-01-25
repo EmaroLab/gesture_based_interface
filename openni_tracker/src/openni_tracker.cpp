@@ -7,6 +7,8 @@
 #include <XnCodecIDs.h>
 #include <XnCppWrapper.h>
 
+#include <math.h>
+
 using std::string;
 
 xn::Context        g_Context;
@@ -83,11 +85,30 @@ void publishTransform(XnUserID const& user, XnSkeletonJoint const& joint, string
     tf::Transform change_frame;
     change_frame.setOrigin(tf::Vector3(0, 0, 0));
     tf::Quaternion frame_rotation;
-    frame_rotation.setEulerZYX(1.5708, 0, 1.5708);
+    frame_rotation.setEulerZYX(M_PI/2, 0, M_PI/2);
     change_frame.setRotation(frame_rotation);
 
     transform = change_frame * transform;
+    
+    // Transformation matrix to have the head frame oriented as the Kinect frame
+    tf::Transform change_frame2;
+    change_frame2.setOrigin(tf::Vector3(0, 0, 0));
+    tf::Quaternion frame_rotation2;
+    frame_rotation2.setEulerZYX(-M_PI/2, -M_PI/2, 0);
+    change_frame2.setRotation(frame_rotation2);
 
+    transform = transform * change_frame2;
+
+	// Transformation matrix to have left-hand and right-hand frame oriented as the Kinect frame
+	if(child_frame_id.compare("head") != 0){
+		change_frame2.setOrigin(tf::Vector3(0, 0, 0));
+		tf::Quaternion frame_rotation2;
+		frame_rotation2.setEulerZYX(M_PI, M_PI, 0);
+		change_frame2.setRotation(frame_rotation2);
+
+		transform = transform * change_frame2;
+	}
+    
     br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), frame_id, child_frame_no));
 }
 
@@ -173,11 +194,10 @@ int main(int argc, char **argv) {
 	CHECK_RC(nRetVal, "StartGenerating");
 
 	ros::Rate r(30);
-
         
-        ros::NodeHandle pnh("~");
-        string frame_id("camera_link");
-        pnh.getParam("camera_frame_id", frame_id);
+	ros::NodeHandle pnh("~");
+	string frame_id("camera_link");
+	pnh.getParam("camera_frame_id", frame_id);
                 
 	while (ros::ok()) {
 		g_Context.WaitAndUpdateAll();

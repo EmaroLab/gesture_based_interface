@@ -1,0 +1,91 @@
+\hypertarget{kinect__regulation__server_8cpp}{}\section{kinect\+\_\+setup/src/kinect\+\_\+regulation\+\_\+server.cpp File Reference}
+\label{kinect__regulation__server_8cpp}\index{kinect\+\_\+setup/src/kinect\+\_\+regulation\+\_\+server.\+cpp@{kinect\+\_\+setup/src/kinect\+\_\+regulation\+\_\+server.\+cpp}}
+{\ttfamily \#include $<$ros/ros.\+h$>$}\\*
+{\ttfamily \#include \char`\"{}std\+\_\+msgs/\+String.\+h\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}std\+\_\+msgs/\+Float64.\+h\char`\"{}}\\*
+{\ttfamily \#include $<$pcl/point\+\_\+cloud.\+h$>$}\\*
+{\ttfamily \#include $<$pcl/point\+\_\+types.\+h$>$}\\*
+{\ttfamily \#include $<$pcl\+\_\+conversions/pcl\+\_\+conversions.\+h$>$}\\*
+{\ttfamily \#include $<$sensor\+\_\+msgs/\+Point\+Cloud2.\+h$>$}\\*
+{\ttfamily \#include $<$pcl/filters/statistical\+\_\+outlier\+\_\+removal.\+h$>$}\\*
+{\ttfamily \#include $<$pcl/filters/passthrough.\+h$>$}\\*
+{\ttfamily \#include $<$pcl/filters/voxel\+\_\+grid.\+h$>$}\\*
+{\ttfamily \#include \char`\"{}kinect\+\_\+setup/\+Move\+Kinect.\+h\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}kinect\+\_\+setup/\+Regulate\+Kinect.\+h\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}pose\+\_\+estimation/\+Set\+Filter\+Param.\+h\char`\"{}}\\*
+{\ttfamily \#include $<$math.\+h$>$}\\*
+Include dependency graph for kinect\+\_\+regulation\+\_\+server.\+cpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{kinect__regulation__server_8cpp__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool {\bfseries regulate} (kinect\+\_\+setup\+::\+Regulate\+Kinect\+::\+Request \&req, kinect\+\_\+setup\+::\+Regulate\+Kinect\+::\+Response \&res)\hypertarget{kinect__regulation__server_8cpp_a04a147a7f20c408ad46289d2d3f8c14d}{}\label{kinect__regulation__server_8cpp_a04a147a7f20c408ad46289d2d3f8c14d}
+
+\item 
+\hyperlink{kinect__regulation__server_8cpp_a5ea466849f21e6c2be4ef9b2eb8868d3}{main} (int argc, char $\ast$$\ast$argv)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+ros\+::\+Publisher \hyperlink{kinect__regulation__server_8cpp_abce76e70ebfd7c17e73a477ff47a485e}{rec\+\_\+pub}
+\item 
+ros\+::\+Service\+Client \hyperlink{kinect__regulation__server_8cpp_a1fdaee71ea7131695e608c338b5ee833}{client\+\_\+move}
+\begin{DoxyCompactList}\small\item\em !!!!!!!!!!!! non necessario \end{DoxyCompactList}\item 
+ros\+::\+Service\+Client \hyperlink{kinect__regulation__server_8cpp_a338b88518fb61d8831128a707d8f40a1}{client\+\_\+filter}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Callback of the /regulate\+\_\+kinect service
+\begin{DoxyItemize}
+\item control the tilt angle of the Kinect according to the coordinates xyz provided by the Beacon
+\item regulate the parameters of the filters according to the coordinates xyz 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em req} & Request Message \\
+\hline
+\mbox{\tt in}  & {\em req.\+x} & x-\/coordinate of the watch \\
+\hline
+\mbox{\tt in}  & {\em req.\+y} & y-\/coordinate of the watch \\
+\hline
+\mbox{\tt in}  & {\em req.\+z} & z-\/coordinate of the watch \\
+\hline
+\mbox{\tt out}  & {\em res} & Response of the service \\
+\hline
+\mbox{\tt out}  & {\em res.\+result} & If the operation is completed successfully \\
+\hline
+\end{DoxyParams}
+
+\end{DoxyItemize}
+
+\subsection{Function Documentation}
+\index{kinect\+\_\+regulation\+\_\+server.\+cpp@{kinect\+\_\+regulation\+\_\+server.\+cpp}!main@{main}}
+\index{main@{main}!kinect\+\_\+regulation\+\_\+server.\+cpp@{kinect\+\_\+regulation\+\_\+server.\+cpp}}
+\subsubsection[{\texorpdfstring{main(int argc, char $\ast$$\ast$argv)}{main(int argc, char **argv)}}]{\setlength{\rightskip}{0pt plus 5cm}main (
+\begin{DoxyParamCaption}
+\item[{int}]{argc, }
+\item[{char $\ast$$\ast$}]{argv}
+\end{DoxyParamCaption}
+)}\hypertarget{kinect__regulation__server_8cpp_a5ea466849f21e6c2be4ef9b2eb8868d3}{}\label{kinect__regulation__server_8cpp_a5ea466849f21e6c2be4ef9b2eb8868d3}
+Main\+: Initialization of the service 
+
+\subsection{Variable Documentation}
+\index{kinect\+\_\+regulation\+\_\+server.\+cpp@{kinect\+\_\+regulation\+\_\+server.\+cpp}!client\+\_\+filter@{client\+\_\+filter}}
+\index{client\+\_\+filter@{client\+\_\+filter}!kinect\+\_\+regulation\+\_\+server.\+cpp@{kinect\+\_\+regulation\+\_\+server.\+cpp}}
+\subsubsection[{\texorpdfstring{client\+\_\+filter}{client_filter}}]{\setlength{\rightskip}{0pt plus 5cm}ros\+::\+Service\+Client client\+\_\+filter}\hypertarget{kinect__regulation__server_8cpp_a338b88518fb61d8831128a707d8f40a1}{}\label{kinect__regulation__server_8cpp_a338b88518fb61d8831128a707d8f40a1}
+Client, to regulate the parameters of filters applied to the point cloud obtained by the background segmentation \index{kinect\+\_\+regulation\+\_\+server.\+cpp@{kinect\+\_\+regulation\+\_\+server.\+cpp}!client\+\_\+move@{client\+\_\+move}}
+\index{client\+\_\+move@{client\+\_\+move}!kinect\+\_\+regulation\+\_\+server.\+cpp@{kinect\+\_\+regulation\+\_\+server.\+cpp}}
+\subsubsection[{\texorpdfstring{client\+\_\+move}{client_move}}]{\setlength{\rightskip}{0pt plus 5cm}ros\+::\+Service\+Client client\+\_\+move}\hypertarget{kinect__regulation__server_8cpp_a1fdaee71ea7131695e608c338b5ee833}{}\label{kinect__regulation__server_8cpp_a1fdaee71ea7131695e608c338b5ee833}
+
+
+!!!!!!!!!!!! non necessario 
+
+Client, to control the tilt angle of the Kinect \index{kinect\+\_\+regulation\+\_\+server.\+cpp@{kinect\+\_\+regulation\+\_\+server.\+cpp}!rec\+\_\+pub@{rec\+\_\+pub}}
+\index{rec\+\_\+pub@{rec\+\_\+pub}!kinect\+\_\+regulation\+\_\+server.\+cpp@{kinect\+\_\+regulation\+\_\+server.\+cpp}}
+\subsubsection[{\texorpdfstring{rec\+\_\+pub}{rec_pub}}]{\setlength{\rightskip}{0pt plus 5cm}ros\+::\+Publisher rec\+\_\+pub}\hypertarget{kinect__regulation__server_8cpp_abce76e70ebfd7c17e73a477ff47a485e}{}\label{kinect__regulation__server_8cpp_abce76e70ebfd7c17e73a477ff47a485e}
+Publisher, to control the tilt angle of the Kinect 
