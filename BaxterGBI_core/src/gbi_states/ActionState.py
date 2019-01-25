@@ -10,9 +10,14 @@ class ActionState(BlockingState):
                                input_keys=input_keys)
         self.type = 'action'
         self.action = action
+        self.timeout_t=time.time()+self.timeout
 
     def user_left(self, userdata):
         return 'user_missed'
+
+    def user_detected(self, userdata):
+        self.timeout_t=time.time()+self.timeout
+        return None
 
     def publish_state(self):
         self.msg.context_type = self.type
