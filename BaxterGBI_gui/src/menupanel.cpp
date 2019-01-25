@@ -20,7 +20,6 @@ void MenuPanel::updateMenuPanel(std::string m_title, std::vector<std::string> m_
 																std::vector<std::string> m_fixed_options, int8_t m_selection){
 	
 	QString title = QString::fromStdString(m_title);
-	ui->menuTitle->setStyleSheet(titleStyle);
 	ui->menuTitle->setText(title);
 
 	//delete previous items in the menu, if present
@@ -43,8 +42,9 @@ void MenuPanel::updateMenuPanel(std::string m_title, std::vector<std::string> m_
 		options.append(text);
 		auto button = new QPushButton(text);
 		optionsButtons.push_back(button);
-		button->setStyleSheet(style);
-		ui->optionsContainer->addWidget(button);		
+		ui->optionsContainer->addWidget(button);
+		//button->setAutoDefault(false);
+		//button->setDefault(false);
 	}
 	
 	//vertical spacer
@@ -57,15 +57,14 @@ void MenuPanel::updateMenuPanel(std::string m_title, std::vector<std::string> m_
 		fixedOptions.append(text);
 		auto button = new QPushButton(text);
 		fixedOptionsButtons.push_back(button);
-		button->setStyleSheet(style);
-		//button->setStyleSheet(buttonStyle);
 		ui->fixedOptionsContainer->addWidget(button);		
 	}
-	
+
 	//manage selection
 	m_selection = m_selection % (optionsButtons.size() + fixedOptionsButtons.size());
-	if(m_selection >= 0 and m_selection < optionsButtons.size())
-		optionsButtons.at(m_selection)->setStyleSheet(selectedStyle);
+	if(m_selection >= 0 and m_selection < optionsButtons.size()){
+		optionsButtons.at(m_selection)->setObjectName("selection");
+	}
 	else if (m_selection >= optionsButtons.size() and m_selection < (optionsButtons.size() + fixedOptionsButtons.size()))
-		fixedOptionsButtons.at(m_selection - options.size())->setStyleSheet(selectedStyle);
+		fixedOptionsButtons.at(m_selection - options.size())->setObjectName("selection");
 }

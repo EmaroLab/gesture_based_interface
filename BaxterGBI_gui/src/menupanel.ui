@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
     <layout class="QHBoxLayout" name="topContainer">
@@ -31,6 +34,10 @@
      </item>
      <item>
       <widget class="QLabel" name="menuTitle">
+       <property name="styleSheet">
+        <string notr="true">font: 20pt &quot;ComicSansMS&quot;;
+font-style:bold;</string>
+       </property>
        <property name="text">
         <string>TextLabel</string>
        </property>
@@ -62,7 +69,7 @@
         <x>0</x>
         <y>0</y>
         <width>544</width>
-        <height>485</height>
+        <height>472</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">

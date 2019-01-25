@@ -46,10 +46,7 @@ void ActionPanel::updateActionPanel(std::string pbr_action, std::string pbr_msg)
 		logo.load("wait.png");
 		ui->label->setPixmap(logo);
 	}
-	
-	ui->message->setStyleSheet("QLabel { font: 15pt Comic Sans MS;"
-																"font-style:italic;"
-																"padding:5px;}");
+
 	ui->message->setText(msg);
 	
 }

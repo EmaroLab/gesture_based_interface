@@ -42,6 +42,10 @@
      <property name="autoFillBackground">
       <bool>false</bool>
      </property>
+     <property name="styleSheet">
+      <string notr="true">font: 57 italic 15pt &quot;Ubuntu&quot;;
+padding:5px;</string>
+     </property>
      <property name="text">
       <string>TextLabel</string>
      </property>

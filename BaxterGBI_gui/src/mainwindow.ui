@@ -6,38 +6,114 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>549</width>
-    <height>336</height>
+    <width>1024</width>
+    <height>600</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1024</width>
+    <height>600</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QMainWindow{
+background-color: rgb(176, 218, 221);
+}</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QPushButton" name="configModeButton">
-      <property name="text">
-       <string>Config mode</string>
-      </property>
-     </widget>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QPushButton" name="configModeButton">
+        <property name="text">
+         <string>Config mode</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="menuModeButton">
+        <property name="text">
+         <string>Menu mode</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="actionModeButton">
+        <property name="text">
+         <string>Action mode</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
     <item>
-     <widget class="QPushButton" name="menuModeButton">
-      <property name="text">
-       <string>Menu mode</string>
+     <widget class="QWidget" name="widget" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="actionModeButton">
-      <property name="text">
-       <string>Action mode</string>
+      <property name="minimumSize">
+       <size>
+        <width>1024</width>
+        <height>600</height>
+       </size>
       </property>
+      <property name="maximumSize">
+       <size>
+        <width>1024</width>
+        <height>600</height>
+       </size>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton, QComboBox{
+		font: 16pt Comic Sans MS;
+		background-color: white;
+		height: 50px;
+		border-radius:10px;
+		border: none;
+		padding: 6px;
+}
+
+QPushButton#selection{
+		font: 16pt Comic Sans MS;
+		background-color:#99ffff;
+		border-style:none;
+		border-radius: 10px;
+		height: 50px;
+		padding: 6px;
+}
+
+
+</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <layout class="QVBoxLayout" name="innerLayout"/>
+       </item>
+      </layout>
      </widget>
-    </item>
-    <item>
-     <layout class="QVBoxLayout" name="innerLayout"/>
     </item>
    </layout>
   </widget>
