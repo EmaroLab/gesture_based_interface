@@ -34,7 +34,6 @@ void TabContent::addMapping(){
 	ui->topicsContainer->addWidget(mapping);
 	connect(mapping, &Mapping::removed, this, &TabContent::removeMapping);
 	count++;
-	qInfo() << count << "added";
 	emit numberOfMappings(count);
 }
 
@@ -44,7 +43,6 @@ void TabContent::removeMapping(Mapping* mapping){
 	mappings.removeOne(mapping);
 	delete mapping;
 	count--;
-	//qInfo() << count << "deleted";
 	emit numberOfMappings(count);
 }
 

@@ -1,9 +1,12 @@
 #ifndef TASK_H
 #define TASK_H
 
+#include "BaxterGBI_gui/selectionfiltermodel.h"
+
 #include <QWidget>
 #include <QString>
 #include <QStandardItemModel>
+#include <QStandardItem>
 
 namespace Ui {
 class Mapping;
@@ -24,11 +27,17 @@ signals:
 	void removed(Mapping* mapping);
 
 private slots:
-	void updateSubtopics(int idx);
+    void onTopicChange(int newTopicIdx);
+    void onSubtopicChange(int newSubtopicIdx);
 
 private:
+    static unsigned int _id;
+    unsigned int id = 0;
 	Ui::Mapping* ui;
-	QStandardItemModel *model;
+    QStandardItemModel *model;
+    SelectionFilterModel *filter;
+    QStandardItem *topic, *subtopic;
+    QModelIndex topicFilterIdx, subtopicFilterIdx;
 };
 
 #endif // TASK_H

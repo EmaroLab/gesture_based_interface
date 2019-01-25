@@ -2,11 +2,8 @@ from MenuState import MenuState
 
 class PlayMenuState(MenuState):
     def __init__(self, trigger_event):
-        outcomes = ['user_missed',
-                    'selection',
-                    'back',
-                    'remove',
-                    'preempted']
+        outcomes = ['back',
+                    'remove']
 
         MenuState.__init__(self,
                            outcomes,
