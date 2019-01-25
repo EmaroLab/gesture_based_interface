@@ -58,23 +58,23 @@ class BlockingState(smach.State):
 
             ret = None
 
-            if event_id == 'action_1':  # up
+            if event_id == 'action_1':
                 ret = self.action_1(userdata)
-            elif event_id == 'action_2':  # up
+            elif event_id == 'action_2': 
                 ret = self.action_2(userdata)
-            elif event_id == 'action_3':  # up
+            elif event_id == 'action_3': 
                 ret = self.action_3(userdata)
-            elif event_id == 'action_4':  # up
+            elif event_id == 'action_4': 
                 ret = self.action_4(userdata)
-            elif event_id == 'action_5':  # up
+            elif event_id == 'action_5': 
                 ret = self.action_5(userdata)
-            elif event_id == 'action_6':  # up
+            elif event_id == 'action_6': 
                 ret = self.action_6(userdata)
-            elif event_id == 'user_detected':  # up
+            elif event_id == 'user_detected':
                 ret = self.user_detected(userdata)
-            elif event_id == 'user_left':  # up
+            elif event_id == 'user_left':
                 ret = self.user_left(userdata)
-            elif event_id == 'config':  # up
+            elif event_id == 'config':
                 ret = self.config(userdata)
 
             if ret:
