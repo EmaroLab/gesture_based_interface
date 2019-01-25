@@ -1,4 +1,9 @@
 #!/usr/bin/env python
+
+## @package core
+#  This package is the core application of the 
+#  state machine
+
 import rospy
 import signal
 import BaxterGBI_input_msgs.msg as bgi_io
@@ -8,17 +13,21 @@ import threading
 from gbi_states import *
 from graphviz import Digraph
 
-
+##  ActionState
+#   inerithed form threaing.Thread 
 class FSMThread(threading.Thread):
+    ## the constructor
     def __init__(self):
         threading.Thread.__init__(self)
         
         smach.set_loggers(smach.loginfo,smach.logwarn,self.logdebug,smach.logerr)
 
+        ## f attribute to manage the graph in graphviz
         self.f = Digraph('finite_state_machine', filename='state_machine.gv')
         self.f.attr(rankdir='TD', size="30",splines=None)
         self.f.attr('node', shape='circle',style='filled')
         self.f.format="pdf"
+        ## sm instance of the container StateMachine with outome=EXIT
         self.sm = smach.StateMachine(outcomes=['EXIT'])
         self.event = FsmEvent(self.sm)
         self.sm.register_transition_cb(self.transition_cb)
@@ -112,10 +121,18 @@ class FSMThread(threading.Thread):
                                                 'preempted':'EXIT'})
     def logdebug(self,msg):
         pass
-
+   
+    ## method register_transition_cb
+    #  overide of contaneir.register_transition_cb
+    #  @param transition:cb function associating to the transition 
     def register_transition_cb(self, transition_cb): 
         self._transition_cbs.append((transition_cb)) 
 
+
+    ## method register_transition_cb
+    #  @param userdata data of used from the active state
+    #  @param active_states list of the active states after the transition
+    #  @param *cb_args additional arguments
     def transition_cb(self,userdata,active_states,*cb_args):
         self.f.node_attr.update(color="0.000 1.000 1.000")
         self.f.node(active_states[0],color="0.201 0.753 1.000")
@@ -124,29 +141,41 @@ class FSMThread(threading.Thread):
         
 
 
+    ## method presence_cb
+    #  @param msg message of the topic
+    #  @param params list of parameters
     def presence_cb(self, msg, params):
         self.event.signal('user_detected')
 
         #rospy.loginfo("Action %d triggered by the %s:\n%s\n", params["code"], params["topic"], msg)
 
+
+    ## method action_cb
+    #  @param msg message of the topic
+    #  @param params list of parameters
     def action_cb(self, msg, params):
         self.event.signal('action_' + str(params["code"]))
         #rospy.loginfo("Action %d triggered by the %s:\n%s\n", params["code"], params["topic"], msg)
 
+    ## method config_cb
+    #  @param req rquest from service
     def config_cb(self, req):
         self.event.signal('config')
         #FIXME wait for state machine transition outcome
         return TriggerResponse(success = True, message = "ciao")
 
+    ## method run
     def run(self):
         rospy.Service('config', Trigger, self.config_cb)
         self.sm.execute()
-    
+    ## method stop
     def stop(self):
         self.sm.request_preempt()
         while self.sm.is_running(): pass
 
-    def func(self):
+    ## method graph_gen
+    #  generation of the graph
+    def graph_gen(self):
         global f
         tr_edge=self.sm.get_internal_edges()
         self.f.node(self.sm.get_initial_states()[0])
@@ -154,12 +183,12 @@ class FSMThread(threading.Thread):
             self.f.edge(tr_edge[i][1],tr_edge[i][2],label=tr_edge[i][0])
 
 
-t = FSMThread()
-
+## function config_server
+#  ros node
 def config_server():
-    global t
+    t = FSMThread()
     rospy.init_node('config_server')
-    t.func()
+    t.graph_gen()
     #t.f.render(filename='state_machine',directory=None,view=True,cleanup=True)
     filename = "state_machine.gv"
     '''file = open(filename, "r")

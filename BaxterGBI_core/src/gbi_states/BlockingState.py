@@ -74,7 +74,7 @@ class BlockingState(smach.State):
                 ret = self.action_6(userdata)
             elif event_id == 'user_detected':
                 ret = self.user_detected(userdata)
-            elif self.timeout>=0 && time.time() > self.timeout:
+            elif self.timeout>=0 and time.time() > self.timeout:
                 ret = self.user_left(userdata)
             elif event_id == 'config':
                 ret = self.config(userdata)

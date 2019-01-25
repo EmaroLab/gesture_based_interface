@@ -1,23 +1,20 @@
 ## @package InitState
-#  bla bla bla bla
+#  The package defines the structure of the IINIT state
 
  
 import rospy
 import smach
 
-##  Documentation for the class
-#   details
-
-
+##  InitState
+#   outcomes: (config_available,config_missing,
+#  'preempted')
 class InitState(smach.State):
     ## The constructor
-    
     def __init__(self):
         
         outcomes = list(['config_available',
                          'config_missing',
                          'preempted'])
-
         smach.State.__init__(
             self,
             outcomes)
