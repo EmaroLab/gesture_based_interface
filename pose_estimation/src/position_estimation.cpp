@@ -11,8 +11,9 @@
 #include <geometry_msgs/Vector3.h>
 #include <tf/transform_datatypes.h>
 
-/**
- *  @brief Class to estimate the position of the center of mass of points in /camera/pcl_filtered via statistical mean
+/**@brief Class for estimating the Center of Mass 
+ * 
+ * Estimation of the position of the center of mass of filtered points in /camera/pcl_filtered via statistical mean.
  */
 class PoseEstimation
 {
@@ -23,8 +24,8 @@ public:
     tf::TransformListener listener;
      
     /** Handler:
-     * - subscribe to /camera/pcl_filtered, sent by plc_filter
-     * - publish odometry data to /odom
+     * - subscribe to /camera/pcl_filtered to get filtered point cloud sent by plc_filter
+     * - publish odometry data on /odometry/kinect/center_of_mass
      */
     PoseEstimation()
     {
@@ -102,8 +103,8 @@ public:
 
 protected:
     ros::NodeHandle nh;
-    ros::Subscriber pcl_sub;
-    ros::Publisher pcl_pub;
+    ros::Subscriber pcl_sub; /**< Subscriber to /camera/pcl_filtered */
+    ros::Publisher pcl_pub; /**< Publisher of odometry data on /odometry/kinect/center_of_mass */
 };
 /**
  * Main:

@@ -10,7 +10,7 @@
 #include <pcl/filters/voxel_grid.h>
 
 /** 
- * Publisher, to control the tilt angle of the Kinect
+ * Publisher, to activate Baxter Robot
 */
 ros::Publisher rec_pub;
 

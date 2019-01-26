@@ -34,6 +34,9 @@ double max_x = 0.5;
 int sor_k = 40;
 double sor_stddev = 1.0;
 
+/** Callback function of enable_service
+ * for enabling filters.
+ */
 bool set_filter(pose_estimation::SetFilter::Request  &req,
          pose_estimation::SetFilter::Response &res)
 {
@@ -65,7 +68,9 @@ bool set_filter(pose_estimation::SetFilter::Request  &req,
 	res.result = true;
 	return true;
 }
-
+/** Callback function of a service
+ * to set filters parameters (leaf_size, range of XYZ filter, SOR filter parameters).
+ */
 bool set_filter_param(pose_estimation::SetFilterParam::Request  &req,
          pose_estimation::SetFilterParam::Response &res)
 {
@@ -115,44 +120,52 @@ bool set_filter_param(pose_estimation::SetFilterParam::Request  &req,
 	res.result = true;
 	return true;
 }
-/**
- *  @brief Class to filter the /camera/pcl_background_segmentation point cloud, with different filters:
+/**@brief Class to filter the Point Cloud
+ * 
+ * The class has the aim of filtering the Point Cloud obtained by the background segmentation and saved in /camera/pcl_background_segmentation.
+ * It uses different filters:
  * 		- Downsampling (with VoxelGrid)
  * 		- XYZ axes range filter
  * 		- Statistical Outlier Removal Filter
- *  and publish the filtered point cloud in /camera/pcl_filtered
+ * and publish the filtered point cloud on /camera/pcl_filtered
  */
 class PclFilter
 {
 private:
 
 	/** 
-     * Input Point Cloud
-     */
-    pcl::PointCloud<pcl::PointXYZ> cloud;
-    /** 
-     * Output Point Cloud
-     */
-    pcl::PointCloud<pcl::PointXYZ> cloud_filtered;
-    /** 
-     * SOR Filter
-     */
-    pcl::StatisticalOutlierRemoval<pcl::PointXYZ> statFilter;
+	 * Input Point Cloud
+	 */
+	pcl::PointCloud<pcl::PointXYZ> cloud;
+	/** 
+	 * Output Point Cloud
+	 */
+	pcl::PointCloud<pcl::PointXYZ> cloud_filtered;
+	/** 
+	 * Statistical Outlier Removal Filter
+	 */
+	pcl::StatisticalOutlierRemoval<pcl::PointXYZ> statFilter;
 
 public:
 	/** Handler:
-     * - subscribe to /camera/pcl_background_segmentation, sent by plc_background_segmentation
-     * - publish filtered data to /camera/pcl_filtered 
-     */
+	 * - subscribe to /camera/pcl_background_segmentation to get the point cloud obtained by the background segmentation
+	 * - publish filtered point cloud on /camera/pcl_filtered 
+	 */
     PclFilter()
     {
         pcl_sub = nh.subscribe("/camera/pcl_background_segmentation", 100, &PclFilter::filterCB, this);
         pcl_pub = nh.advertise<sensor_msgs::PointCloud2>("/camera/pcl_filtered", 100);
     }
-    /** 
-     * Callback function
-     * @param[in] input point cloud data from background segmentation
-     */
+	/** 
+	 * Callback function
+	 * implementation of filters:
+	 * - Downsampling filter with parameter leaf_size
+	 * - Filter on z axis in range (min_z, max_z)
+	 * - Filter on x axis in range (min_x, max_x)
+	 * - Filter on y axis in range (min_y, max_y)
+	 * - Statistical Outlier Removal filter to remove outliers 
+	 * @param[in] input point cloud data from background segmentation
+	 */
     void filterCB(const boost::shared_ptr<const sensor_msgs::PointCloud2>& input)
     {
 		pcl::PCLPointCloud2::Ptr input_pcl (new pcl::PCLPointCloud2 ());
@@ -242,8 +255,8 @@ public:
 
 protected:
     ros::NodeHandle nh;
-    ros::Subscriber pcl_sub;
-    ros::Publisher pcl_pub;
+    ros::Subscriber pcl_sub; /**< Subscriber to /camera/pcl_background_segmentation */
+    ros::Publisher pcl_pub; /**< Publisher of filtered point cloud on /camera/pcl_filtered */
 };
 
 /**
@@ -296,7 +309,6 @@ main(int argc, char** argv)
     
     PclFilter handler;
 
-    
 	ros::ServiceServer enable_service = n.advertiseService("set_filter", set_filter);
 	ros::ServiceServer service = n.advertiseService("set_filter_param", set_filter_param);
 	
