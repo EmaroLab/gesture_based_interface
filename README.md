@@ -14,14 +14,22 @@ git status
 ## Kinect launcher
 ```
 roscore
-// launch nodes for the Kinect
+```
+Launch nodes for the Kinect
+```
 roslaunch openni_launch openni.launch
-// configuration: generation of environments according to the orientation angle of the Kinect
+```
+Configuration: generation of environments according to the orientation angle of the Kinect
+```
 roslaunch pose_estimation config.launch
-// estimation of the position of human's center of mass
+```
+Estimation of the position of human's center of mass
+```
 roslaunch pose_estimation pose_estimator.launch
-// service for setting the orientation angle of the Kinect 
-// (node inside pose estimator that publishes the angle on the topic tilt_angle)
+```
+Service for setting the orientation angle of the Kinect: 
+A node inside the package kinect_setup publishes the angle on the topic tilt_angle
+```
 rosservice call /move_kinect "angle: <float>"
 ```
 
