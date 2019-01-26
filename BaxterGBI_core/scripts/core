@@ -29,7 +29,7 @@ class FSMThread(threading.Thread):
         self.f.format="pdf"
         ## sm instance of the container StateMachine with outome=EXIT
         self.sm = smach.StateMachine(outcomes=['EXIT'])
-        self.event = FsmEvent(self.sm)
+        self.event = FsmEvent()
         self.sm.register_transition_cb(self.transition_cb)
         self.sm.set_initial_state(['INIT'])
         with self.sm:
