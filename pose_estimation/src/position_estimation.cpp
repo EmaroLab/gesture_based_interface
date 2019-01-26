@@ -10,6 +10,7 @@
 #include <tf/transform_listener.h>
 #include <geometry_msgs/Vector3.h>
 #include <tf/transform_datatypes.h>
+#include <tf/transform_broadcaster.h>
 
 /**@brief Class for estimating the Center of Mass 
  * 
@@ -65,7 +66,7 @@ public:
 	z = z / (cloud.size() + 0.0);
 
 
-	msg.header.frame_id =  "camera_link";
+	msg.header.frame_id =  "camera_depth_optical_frame";
 	msg.child_frame_id =  "position_com_frame";
 
 	msg.pose.pose.orientation.x = 1 ;              	// identity quaternion
@@ -80,25 +81,22 @@ public:
 							0, 0, 0, 0, 0, 99999} ; // large covariance on rot z
 
 	tf::Vector3 point(x, y, z);
-	tf::StampedTransform transformation;
-	try{    
-		listener.lookupTransform("camera_link", "camera_link",  
-		ros::Time::now(), transformation);
-	}
-	catch (tf::TransformException ex){
-		ROS_WARN("Base to camera transform unavailable %s", ex.what());
-	}
 
-	tf::Vector3 point_bl =  transformation * point;
-
-	tf::vector3TFToMsg (point_bl, new_point);
+	tf::vector3TFToMsg (point, new_point);
 
 	msg.pose.pose.position.x = new_point.x;
 	msg.pose.pose.position.y= new_point.y;
 	msg.pose.pose.position.z= new_point.z;
 
 	pcl_pub.publish(msg);
-
+	
+	// Publish tf
+	tf::Transform transform;
+    transform.setOrigin(tf::Vector3(x, y, z));
+    transform.setRotation(tf::Quaternion(0, 0, 0, 1));
+    
+    static tf::TransformBroadcaster br;
+    br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), msg.header.frame_id , msg.child_frame_id));
 }
 
 protected:
@@ -114,6 +112,7 @@ main(int argc, char **argv)
 {
     ros::init(argc, argv, "position_estimation");
 
+    ros::NodeHandle pnh;
     PoseEstimation handler;
 
     ros::spin();

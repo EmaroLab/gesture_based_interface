@@ -87,7 +87,7 @@ void publishTransform(XnUserID const& user, XnSkeletonJoint const& joint, string
     transform.setOrigin(tf::Vector3(x, y, z));
     transform.setRotation(tf::Quaternion(qx, -qy, -qz, qw));
 
-    // #4994
+    // #Change from kinect depth camera frame and kinect frame
     tf::Transform change_frame;
     change_frame.setOrigin(tf::Vector3(0, 0, 0));
     tf::Quaternion frame_rotation;
@@ -96,26 +96,6 @@ void publishTransform(XnUserID const& user, XnSkeletonJoint const& joint, string
 
     transform = change_frame * transform;
   
-    // Rotation of head frame
-    tf::Transform change_frame2;
-    change_frame2.setOrigin(tf::Vector3(0, 0, 0));
-    tf::Quaternion frame_rotation2;
-    frame_rotation2.setEulerZYX( -M_PI/2, -M_PI/2, 0);
-    change_frame2.setRotation(frame_rotation2);
-
-    transform = transform * change_frame2;
-    
-    if(child_frame_id.compare("head") != 0)
-    {
-		// Rotation of left and right hand frames 
-		change_frame2.setOrigin(tf::Vector3(0, 0, 0));
-		tf::Quaternion frame_rotation2;
-		frame_rotation2.setEulerZYX( M_PI, M_PI, 0);
-		change_frame2.setRotation(frame_rotation2);
-
-		transform = transform * change_frame2;
-	}
-
     br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), frame_id, child_frame_no));
     
     // Publish odometry message onto the right topic
@@ -145,8 +125,8 @@ void publishTransforms(const std::string& frame_id) {
         if (!g_UserGenerator.GetSkeletonCap().IsTracking(user))
             continue;
         publishTransform(user, XN_SKEL_HEAD,           frame_id, "head");
-        publishTransform(user, XN_SKEL_LEFT_HAND,      frame_id, "left_hand");
-        publishTransform(user, XN_SKEL_RIGHT_HAND,     frame_id, "right_hand");
+        publishTransform(user, XN_SKEL_LEFT_HAND,      frame_id, "right_hand");
+        publishTransform(user, XN_SKEL_RIGHT_HAND,     frame_id, "left_hand");
     }
 }
 

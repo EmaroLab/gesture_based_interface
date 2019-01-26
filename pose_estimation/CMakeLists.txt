@@ -124,6 +124,8 @@ add_executable(pcl_background_segmentation src/pcl_background_segmentation.cpp)
 add_executable(pcl_record src/pcl_record.cpp)
 add_executable(pcl_filter src/pcl_filter.cpp)
 add_executable(position_estimation src/position_estimation.cpp)
+add_executable(head_tracking src/head_tracking.cpp)
+
 
  
  ## Add cmake target dependencies of the executable/library
@@ -135,6 +137,7 @@ target_link_libraries(pcl_background_segmentation ${catkin_LIBRARIES} ${PCL_LIBR
 target_link_libraries(pcl_record ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 target_link_libraries(pcl_filter ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 target_link_libraries(position_estimation ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+target_link_libraries(head_tracking ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 #############
 ## Install ##
 #############

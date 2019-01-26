@@ -68,7 +68,8 @@ roslaunch_add_file_check(launch)
  add_service_files(
    FILES
    MoveKinect.srv
-   RegulateKinect.srv
+   RegulateKinectByWrist.srv
+   RegulateKinectByHead.srv
  )
 
 ## Generate actions in the 'action' folder

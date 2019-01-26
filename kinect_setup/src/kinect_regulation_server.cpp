@@ -9,7 +9,8 @@
 #include <pcl/filters/passthrough.h>
 #include <pcl/filters/voxel_grid.h>
 #include "kinect_setup/MoveKinect.h"
-#include "kinect_setup/RegulateKinect.h"
+#include "kinect_setup/RegulateKinectByHead.h"
+#include "kinect_setup/RegulateKinectByWrist.h"
 #include "pose_estimation/SetFilterParam.h"
 #include <math.h>
 
@@ -36,8 +37,8 @@ ros::ServiceClient client_filter;
  * @param[out]  res    Response of the service
 	* @param[out]  res.result If the operation is completed successfully
  */
-bool regulate(kinect_setup::RegulateKinect::Request  &req,
-         kinect_setup::RegulateKinect::Response &res)
+bool regulateWrist(kinect_setup::RegulateKinectByWrist::Request  &req,
+         kinect_setup::RegulateKinectByWrist::Response &res)
 {
 	float x = req.x;
 	float y = req.y;
@@ -47,9 +48,59 @@ bool regulate(kinect_setup::RegulateKinect::Request  &req,
 	float min_z = z - 0.80;
 	float max_z = z + 0.80;
 	float min_y = y - 1.50;
-	float max_y = y + 0.80;
-	float min_x = x - 0.40;
-	float max_x = x + 0.40;
+	float max_y = y + 1.50;
+	float min_x = x - 0.50;
+	float max_x = x + 0.50;
+	
+	kinect_setup::MoveKinect srv;
+	srv.request.angle = angle;
+	
+	client_move.call(srv);
+	
+	pose_estimation::SetFilterParam srv2;
+	
+	srv2.request.param_name = "min_z";
+	srv2.request.value = min_z;
+	client_filter.call(srv2);
+	
+	srv2.request.param_name = "max_z";
+	srv2.request.value = max_z;
+	client_filter.call(srv2);
+	
+	srv2.request.param_name = "min_y";
+	srv2.request.value = min_y;
+	client_filter.call(srv2);
+	
+	srv2.request.param_name = "max_y";
+	srv2.request.value = max_y;
+	client_filter.call(srv2);
+	
+	srv2.request.param_name = "min_x";
+	srv2.request.value = min_x;
+	client_filter.call(srv2);
+	
+	srv2.request.param_name = "max_x";
+	srv2.request.value = max_x;
+	client_filter.call(srv2);
+	
+	res.result = true;
+	return true;
+}
+
+bool regulateHead(kinect_setup::RegulateKinectByHead::Request  &req,
+         kinect_setup::RegulateKinectByHead::Response &res)
+{
+	float x = req.x;
+	float y = req.y;
+	float z = req.z;
+	
+	float angle = atan(y/z) * 180 / M_PI;
+	float min_z = z - 0.80;
+	float max_z = z + 0.80;
+	float min_y = y - 0.30;
+	float max_y = y + 1.90;
+	float min_x = x - 0.50;
+	float max_x = x + 0.50;
 	
 	kinect_setup::MoveKinect srv;
 	srv.request.angle = angle;
@@ -93,7 +144,8 @@ main(int argc, char** argv)
 {
     ros::init(argc, argv, "kinect_regulation_server");
 	ros::NodeHandle n;
-	ros::ServiceServer service = n.advertiseService("regulate_kinect", regulate);
+	ros::ServiceServer service = n.advertiseService("regulate_kinect_by_wrist", regulateWrist);
+	ros::ServiceServer service2 = n.advertiseService("regulate_kinect_by_head", regulateHead);
 	
 	client_move = n.serviceClient<kinect_setup::MoveKinect>("move_kinect");
 	client_filter = n.serviceClient<pose_estimation::SetFilterParam>("pcl_filter/set_filter_param");
