@@ -27,6 +27,7 @@ public:
     /** Handler:
      * - subscribe to /camera/pcl_filtered to get filtered point cloud sent by plc_filter
      * - publish odometry data on /odometry/kinect/center_of_mass
+     * - publish a frame with origin in the computed center of mass and the same orientation of the Kinect 
      */
     PoseEstimation()
     {
@@ -90,11 +91,12 @@ public:
 
 	pcl_pub.publish(msg);
 	
-	// Publish tf
+	// Transformation matrix of com_frame with respect to the Kinect
 	tf::Transform transform;
-    transform.setOrigin(tf::Vector3(x, y, z));
-    transform.setRotation(tf::Quaternion(0, 0, 0, 1));
+    transform.setOrigin(tf::Vector3(x, y, z));  //origin in the center of mass
+    transform.setRotation(tf::Quaternion(0, 0, 0, 1)); //same orientation
     
+    // Publish the frame
     static tf::TransformBroadcaster br;
     br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), msg.header.frame_id , msg.child_frame_id));
 }

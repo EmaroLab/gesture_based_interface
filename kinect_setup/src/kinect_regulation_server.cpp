@@ -27,7 +27,7 @@ ros::ServiceClient client_move;
 */
 ros::ServiceClient client_filter;
 
-/** Callback of the /regulate_kinect service
+/** Callback of the regulate_kinect_by_wrist service
  * - control the tilt angle of the Kinect according to the coordinates xyz provided by the Beacon
  * - regulate the parameters of the filters according to the coordinates xyz
  * @param[in]  req  Request Message
@@ -87,6 +87,16 @@ bool regulateWrist(kinect_setup::RegulateKinectByWrist::Request  &req,
 	return true;
 }
 
+/** Callback of the regulate_kinect_by_head service
+ * - control the tilt angle of the Kinect according to the coordinates xyz of the head
+ * - regulate the parameters of the filters according to the coordinates xyz of the head
+ * @param[in]  req  Request Message
+	* @param[in]  req.x x-coordinate of the head
+	* @param[in]  req.y y-coordinate of the head
+	* @param[in]  req.z z-coordinate of the head
+ * @param[out]  res    Response of the service
+	* @param[out]  res.result If the operation is completed successfully
+ */
 bool regulateHead(kinect_setup::RegulateKinectByHead::Request  &req,
          kinect_setup::RegulateKinectByHead::Response &res)
 {
@@ -139,7 +149,7 @@ bool regulateHead(kinect_setup::RegulateKinectByHead::Request  &req,
 }
 /**
  * Main:
- * Initialization of the service
+ * Initialization of the services for regulating the orientation of the Kinect according to the position of the wrist or the head.
  */
 main(int argc, char** argv)
 {

@@ -87,7 +87,7 @@ void publishTransform(XnUserID const& user, XnSkeletonJoint const& joint, string
     transform.setOrigin(tf::Vector3(x, y, z));
     transform.setRotation(tf::Quaternion(qx, -qy, -qz, qw));
 
-    // #Change from kinect depth camera frame and kinect frame
+    // Change from kinect depth camera frame and kinect frame
     tf::Transform change_frame;
     change_frame.setOrigin(tf::Vector3(0, 0, 0));
     tf::Quaternion frame_rotation;

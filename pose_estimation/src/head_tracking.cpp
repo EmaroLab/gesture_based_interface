@@ -16,17 +16,17 @@
 
 ros::ServiceClient client_move;  
 
-/**@brief Class for estimating the Center of Mass 
+/**@brief Class for tracking the head 
  * 
- * Follow of the position of the head from the info in /odometry/kinect/head
+ * The position of the head (info in /odometry/kinect/head) is followed by the Kinect. In particular, the Kinect changes its tilt angle and the ranges used by the filters are modified according to the xyz coordinates of the head.
  */
 class HeadTracking
 {
 public:
      
     /** Handler:
-     * - subscribe to /camera/pcl_filtered to get filtered point cloud sent by plc_filter
-     * - publish odometry data on /odometry/kinect/center_of_mass
+     * - subscribe to /odometry/kinect/head to get odometry data
+     * - use the service regulate_kinect_by_head to change the orientation of the Kinect and set filters ranges
      */
     HeadTracking()
     {
