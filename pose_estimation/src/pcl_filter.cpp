@@ -34,9 +34,6 @@ double max_x = 0.5;
 int sor_k = 40;
 double sor_stddev = 1.0;
 
-/** Callback function of enable_service
- * for enabling filters.
- */
 bool set_filter(pose_estimation::SetFilter::Request  &req,
          pose_estimation::SetFilter::Response &res)
 {
@@ -68,9 +65,7 @@ bool set_filter(pose_estimation::SetFilter::Request  &req,
 	res.result = true;
 	return true;
 }
-/** Callback function of a service
- * to set filters parameters (leaf_size, range of XYZ filter, SOR filter parameters).
- */
+
 bool set_filter_param(pose_estimation::SetFilterParam::Request  &req,
          pose_estimation::SetFilterParam::Response &res)
 {
@@ -120,142 +115,135 @@ bool set_filter_param(pose_estimation::SetFilterParam::Request  &req,
 	res.result = true;
 	return true;
 }
-/**@brief Class to filter the Point Cloud
- * 
- * The class has the aim of filtering the Point Cloud obtained by the background segmentation and saved in /camera/pcl_background_segmentation.
- * It uses different filters:
+/**
+ *  @brief Class to filter the /camera/pcl_background_segmentation point cloud, with different filters:
  * 		- Downsampling (with VoxelGrid)
  * 		- XYZ axes range filter
  * 		- Statistical Outlier Removal Filter
- * and publish the filtered point cloud on /camera/pcl_filtered
+ *  and publish the filtered point cloud in /camera/pcl_filtered
  */
 class PclFilter
 {
-	private:
-		/** 
-		 * Input Point Cloud
-		 */
-		pcl::PointCloud<pcl::PointXYZ> cloud;
-		/** 
-		 * Output Point Cloud
-		 */
-		pcl::PointCloud<pcl::PointXYZ> cloud_filtered;
-		/** 
-		 * Statistical Outlier Removal Filter
-		 */
-		pcl::StatisticalOutlierRemoval<pcl::PointXYZ> statFilter;
+private:
 
-	public:
-		/** Handler:
-		 * - subscribe to /camera/pcl_background_segmentation to get the point cloud obtained by the background segmentation
-		 * - publish filtered point cloud on /camera/pcl_filtered 
-		 */
-		PclFilter()
+	/** 
+     * Input Point Cloud
+     */
+    pcl::PointCloud<pcl::PointXYZ> cloud;
+    /** 
+     * Output Point Cloud
+     */
+    pcl::PointCloud<pcl::PointXYZ> cloud_filtered;
+    /** 
+     * SOR Filter
+     */
+    pcl::StatisticalOutlierRemoval<pcl::PointXYZ> statFilter;
+
+public:
+	/** Handler:
+     * - subscribe to /camera/pcl_background_segmentation, sent by plc_background_segmentation
+     * - publish filtered data to /camera/pcl_filtered 
+     */
+    PclFilter()
+    {
+        pcl_sub = nh.subscribe("/camera/pcl_background_segmentation", 100, &PclFilter::filterCB, this);
+        pcl_pub = nh.advertise<sensor_msgs::PointCloud2>("/camera/pcl_filtered", 100);
+    }
+    /** 
+     * Callback function
+     * @param[in] input point cloud data from background segmentation
+     */
+    void filterCB(const boost::shared_ptr<const sensor_msgs::PointCloud2>& input)
+    {
+		pcl::PCLPointCloud2::Ptr input_pcl (new pcl::PCLPointCloud2 ());
+		pcl_conversions::toPCL(*input, *input_pcl);
+		
+		pcl::PCLPointCloud2::Ptr input_pcl_filtered (new pcl::PCLPointCloud2 ());
+		
+		// Downsampling filter with parameter leaf_size
+		if(use_downsampling)
 		{
-			pcl_sub = nh.subscribe("/camera/pcl_background_segmentation", 100, &PclFilter::filterCB, this);
-			pcl_pub = nh.advertise<sensor_msgs::PointCloud2>("/camera/pcl_filtered", 100);
+			pcl::VoxelGrid<pcl::PCLPointCloud2> sor;
+			sor.setInputCloud (input_pcl);
+			sor.setLeafSize (leaf_size, leaf_size, leaf_size);
+			sor.filter (*input_pcl_filtered);
 		}
-		/** 
-		 * Callback function
-		 * implementation of filters:
-		 * - Downsampling filter with parameter leaf_size
-		 * - Filter on z axis in range (min_z, max_z)
-		 * - Filter on x axis in range (min_x, max_x)
-		 * - Filter on y axis in range (min_y, max_y)
-		 * - Statistical Outlier Removal filter to remove outliers 
-		 * @param[in] input point cloud data from background segmentation
-		 */
-		void filterCB(const boost::shared_ptr<const sensor_msgs::PointCloud2>& input)
+		else
 		{
-			pcl::PCLPointCloud2::Ptr input_pcl (new pcl::PCLPointCloud2 ());
-			pcl_conversions::toPCL(*input, *input_pcl);
+			input_pcl_filtered = input_pcl;
+		}
 			
-			pcl::PCLPointCloud2::Ptr input_pcl_filtered (new pcl::PCLPointCloud2 ());
-			
-			// Downsampling filter with parameter leaf_size
-			if(use_downsampling)
+		pcl::fromPCLPointCloud2(*input_pcl_filtered, cloud);
+        sensor_msgs::PointCloud2 output;
+		
+		if(!cloud.empty()){	
+			// Filter on z axis in range (min_z, max_z)		
+			if(use_filter_z)
 			{
-				pcl::VoxelGrid<pcl::PCLPointCloud2> sor;
-				sor.setInputCloud (input_pcl);
-				sor.setLeafSize (leaf_size, leaf_size, leaf_size);
-				sor.filter (*input_pcl_filtered);
-			}
-			else
-			{
-				input_pcl_filtered = input_pcl;
-			}
-				
-			pcl::fromPCLPointCloud2(*input_pcl_filtered, cloud);
-			sensor_msgs::PointCloud2 output;
-			
-			if(!cloud.empty()){	
-				// Filter on z axis in range (min_z, max_z)		
-				if(use_filter_z)
-				{
-					pcl::PassThrough<pcl::PointXYZ> pass;
-					pass.setInputCloud (cloud.makeShared());
-					pass.setFilterFieldName ("z");
-					pass.setFilterLimits (min_z, max_z);
-					// To use the complementar range
-					if(revert_filter_z)
-						pass.setFilterLimitsNegative (true);
-						
-					pass.filter (cloud_filtered);
-				}
-				if(!cloud_filtered.empty()){
-					// Filter on x axis in range (min_x, max_x)
-					if(use_filter_x)
-					{
-						pcl::PassThrough<pcl::PointXYZ> pass2;
-						pass2.setInputCloud (cloud_filtered.makeShared());
-						pass2.setFilterFieldName ("x");
-						pass2.setFilterLimits (min_x, max_x);
-						// To use the complementar range
-						if(revert_filter_x)
-							pass2.setFilterLimitsNegative (true);
-						
-						pass2.filter (cloud_filtered);
-					}
+				pcl::PassThrough<pcl::PointXYZ> pass;
+				pass.setInputCloud (cloud.makeShared());
+				pass.setFilterFieldName ("z");
+				pass.setFilterLimits (min_z, max_z);
+				// To use the complementar range
+				if(revert_filter_z)
+					pass.setFilterLimitsNegative (true);
 					
+				pass.filter (cloud_filtered);
+			}
+			if(!cloud_filtered.empty()){
+				// Filter on x axis in range (min_x, max_x)
+				if(use_filter_x)
+				{
+					pcl::PassThrough<pcl::PointXYZ> pass2;
+					pass2.setInputCloud (cloud_filtered.makeShared());
+					pass2.setFilterFieldName ("x");
+					pass2.setFilterLimits (min_x, max_x);
+					// To use the complementar range
+					if(revert_filter_x)
+						pass2.setFilterLimitsNegative (true);
+					
+					pass2.filter (cloud_filtered);
+				}
+				
+				if(!cloud_filtered.empty()){
+					// Filter on y axis in range (min_y, max_y)
+					if(use_filter_y)
+					{
+						pcl::PassThrough<pcl::PointXYZ> pass3;
+						pass3.setInputCloud (cloud_filtered.makeShared());
+						pass3.setFilterFieldName ("y");
+						pass3.setFilterLimits (min_y, max_y);
+						// To use the complementar range
+						if(revert_filter_y)
+							pass3.setFilterLimitsNegative (true);
+					
+						pass3.filter (cloud_filtered);
+					}
 					if(!cloud_filtered.empty()){
-						// Filter on y axis in range (min_y, max_y)
-						if(use_filter_y)
-						{
-							pcl::PassThrough<pcl::PointXYZ> pass3;
-							pass3.setInputCloud (cloud_filtered.makeShared());
-							pass3.setFilterFieldName ("y");
-							pass3.setFilterLimits (min_y, max_y);
-							// To use the complementar range
-							if(revert_filter_y)
-								pass3.setFilterLimitsNegative (true);
-						
-							pass3.filter (cloud_filtered);
-						}
-						if(!cloud_filtered.empty()){
-							// Removing outliers using a StatisticalOutlierRemoval filter
-							if(use_filter_sor){
-								pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor2;
-								sor2.setInputCloud (cloud_filtered.makeShared());
-								sor2.setMeanK (sor_k);
-								sor2.setStddevMulThresh (sor_stddev);
-								sor2.filter (cloud_filtered);
-							}
+						// Removing outliers using a StatisticalOutlierRemoval filter
+						if(use_filter_sor){
+							pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor2;
+							sor2.setInputCloud (cloud_filtered.makeShared());
+							sor2.setMeanK (sor_k);
+							sor2.setStddevMulThresh (sor_stddev);
+							sor2.filter (cloud_filtered);
 						}
 					}
 				}
-				pcl::toROSMsg(cloud_filtered, output);
 			}
-			else
-			{
-				pcl::toROSMsg(cloud, output);
-			}
-			pcl_pub.publish(output);
+			pcl::toROSMsg(cloud_filtered, output);
 		}
+        else
+        {
+			pcl::toROSMsg(cloud, output);
+		}
+        pcl_pub.publish(output);
+    }
 
-	protected:
-		ros::NodeHandle nh;
-		ros::Subscriber pcl_sub;
-		ros::Publisher pcl_pub;
+protected:
+    ros::NodeHandle nh;
+    ros::Subscriber pcl_sub;
+    ros::Publisher pcl_pub;
 };
 
 /**
@@ -307,6 +295,7 @@ main(int argc, char** argv)
     n.param<bool>("revert_filter_x", revert_filter_x, false);
     
     PclFilter handler;
+
     
 	ros::ServiceServer enable_service = n.advertiseService("set_filter", set_filter);
 	ros::ServiceServer service = n.advertiseService("set_filter_param", set_filter_param);

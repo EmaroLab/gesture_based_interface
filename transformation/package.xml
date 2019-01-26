@@ -2,7 +2,7 @@
 <package>
   <name>transformation</name>
   <version>0.0.0</version>
-  <description>Activate Baxter</description>
+  <description>TRansform Kinect Coordinate System information into Baxter Coordinate System</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->

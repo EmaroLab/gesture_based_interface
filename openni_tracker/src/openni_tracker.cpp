@@ -6,8 +6,10 @@
 #include <XnOpenNI.h>
 #include <XnCodecIDs.h>
 #include <XnCppWrapper.h>
-
-#include <math.h>
+#include <nav_msgs/Odometry.h>
+#include <tf/transform_listener.h>
+#include <geometry_msgs/Vector3.h>
+#include <tf/transform_datatypes.h>
 
 using std::string;
 
@@ -17,6 +19,10 @@ xn::UserGenerator  g_UserGenerator;
 
 XnBool g_bNeedPose   = FALSE;
 XnChar g_strPose[20] = "";
+
+ros::Publisher head_pub;
+ros::Publisher left_hand_pub;
+ros::Publisher right_hand_pub;
 
 void XN_CALLBACK_TYPE User_NewUser(xn::UserGenerator& generator, XnUserID nId, void* pCookie) {
 	ROS_INFO("New User %d", nId);
@@ -89,27 +95,45 @@ void publishTransform(XnUserID const& user, XnSkeletonJoint const& joint, string
     change_frame.setRotation(frame_rotation);
 
     transform = change_frame * transform;
-    
-    // Transformation matrix to have the head frame oriented as the Kinect frame
+  
+     // Rotate
     tf::Transform change_frame2;
     change_frame2.setOrigin(tf::Vector3(0, 0, 0));
     tf::Quaternion frame_rotation2;
-    frame_rotation2.setEulerZYX(-M_PI/2, -M_PI/2, 0);
+    frame_rotation2.setEulerZYX( -M_PI/2, -M_PI/2, 0);
     change_frame2.setRotation(frame_rotation2);
 
     transform = transform * change_frame2;
-
-	// Transformation matrix to have left-hand and right-hand frame oriented as the Kinect frame
-	if(child_frame_id.compare("head") != 0){
+    
+    if(child_frame_id.compare("head") != 0)
+    {
+			
+		 // Rotates
 		change_frame2.setOrigin(tf::Vector3(0, 0, 0));
 		tf::Quaternion frame_rotation2;
-		frame_rotation2.setEulerZYX(M_PI, M_PI, 0);
+		frame_rotation2.setEulerZYX( M_PI, M_PI, 0);
 		change_frame2.setRotation(frame_rotation2);
 
 		transform = transform * change_frame2;
 	}
-    
+
     br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), frame_id, child_frame_no));
+    
+    // Publish odometry message onto the right topic
+    nav_msgs::Odometry odom_msg;
+	odom_msg.header.stamp = ros::Time::now();
+	odom_msg.header.frame_id = frame_id;
+	tf::poseTFToMsg(transform, odom_msg.pose.pose);
+    if(child_frame_id.compare("head") == 0){
+		head_pub.publish(odom_msg);
+	}
+	else if(child_frame_id.compare("left_hand") == 0){
+		left_hand_pub.publish(odom_msg);
+	}
+	else if(child_frame_id.compare("right_hand") == 0){
+		right_hand_pub.publish(odom_msg);
+	}
+    
 }
 
 void publishTransforms(const std::string& frame_id) {
@@ -121,18 +145,8 @@ void publishTransforms(const std::string& frame_id) {
         XnUserID user = users[i];
         if (!g_UserGenerator.GetSkeletonCap().IsTracking(user))
             continue;
-
-
         publishTransform(user, XN_SKEL_HEAD,           frame_id, "head");
-        publishTransform(user, XN_SKEL_NECK,           frame_id, "neck");
-        publishTransform(user, XN_SKEL_TORSO,          frame_id, "torso");
-
-        publishTransform(user, XN_SKEL_LEFT_SHOULDER,  frame_id, "left_shoulder");
-        publishTransform(user, XN_SKEL_LEFT_ELBOW,     frame_id, "left_elbow");
         publishTransform(user, XN_SKEL_LEFT_HAND,      frame_id, "left_hand");
-
-        publishTransform(user, XN_SKEL_RIGHT_SHOULDER, frame_id, "right_shoulder");
-        publishTransform(user, XN_SKEL_RIGHT_ELBOW,    frame_id, "right_elbow");
         publishTransform(user, XN_SKEL_RIGHT_HAND,     frame_id, "right_hand");
     }
 }
@@ -147,6 +161,10 @@ void publishTransforms(const std::string& frame_id) {
 int main(int argc, char **argv) {
     ros::init(argc, argv, "openni_tracker");
     ros::NodeHandle nh;
+    
+	head_pub = nh.advertise<nav_msgs::Odometry>("/odometry/kinect/head", 10);
+	left_hand_pub = nh.advertise<nav_msgs::Odometry>("/odometry/kinect/right_hand", 10);
+	right_hand_pub = nh.advertise<nav_msgs::Odometry>("/odometry/kinect/left_hand", 10);
 
     string configFilename = ros::package::getPath("openni_tracker") + "/openni_tracker.xml";
     XnStatus nRetVal = g_Context.InitFromXmlFile(configFilename.c_str());
@@ -194,10 +212,11 @@ int main(int argc, char **argv) {
 	CHECK_RC(nRetVal, "StartGenerating");
 
 	ros::Rate r(30);
+
         
-	ros::NodeHandle pnh("~");
-	string frame_id("camera_link");
-	pnh.getParam("camera_frame_id", frame_id);
+        ros::NodeHandle pnh("~");
+        string frame_id("camera_link");
+        pnh.getParam("camera_frame_id", frame_id);
                 
 	while (ros::ok()) {
 		g_Context.WaitAndUpdateAll();
