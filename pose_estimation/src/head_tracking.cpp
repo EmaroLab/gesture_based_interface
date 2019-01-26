@@ -34,7 +34,7 @@ public:
     }
     /** 
      * Callback function
-     * @param[in]  input	point cloud data from /camera/pcl_filtered
+     * @param[in]  head_pos	position of the head (xyz coordinates)
      */
     void trackCB(const nav_msgs::Odometry &head_pos)
     {
@@ -48,7 +48,7 @@ public:
 
 	protected:
 		ros::NodeHandle nh;
-		ros::Subscriber head_sub; /**< Subscriber to /camera/pcl_filtered */
+		ros::Subscriber head_sub; /**< Subscriber to /odometry/kinect/head */
 };
 /**
  * Main:
