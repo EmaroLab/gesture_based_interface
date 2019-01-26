@@ -6,6 +6,7 @@
 #include <vector>
 #include <regex>
 #include <initializer_list>
+#include <algorithm>
 
 #include "ros/ros.h"
 #include "ros/master.h"
@@ -44,6 +45,7 @@ void ConfigPanel::scan(){
   std::regex regex("^\\/([a-zA-Z][0-9a-zA-Z_]*)\\/([0-9a-zA-Z_]+)$"); //to match topics
   std::smatch match;
   ros::master::getTopics(topicMap);
+  int n_topics = 0;
 
   for (int i = 0; i < 6; i++){
     tabs[i]->clear();
@@ -56,12 +58,16 @@ void ConfigPanel::scan(){
   for (ros::master::TopicInfo ti: topicMap){
     if (ti.datatype == "BaxterGBI_input_msgs/signal"){
       if (std::regex_match(ti.name, match, regex)){
+        ++n_topics;
         static std::string topic, subtopic;
         topic = match[1];
         subtopic = match[2];
         auto [__discard, first_sub] = compatibleSubtopics.try_emplace(topic, std::initializer_list<std::string>{subtopic});
         if (not first_sub)
-          compatibleSubtopics[topic].push_back(subtopic);
+          compatibleSubtopics[topic].insert(std::upper_bound(compatibleSubtopics[topic].begin(),
+                                                             compatibleSubtopics[topic].end(),
+                                                             subtopic),
+                                            subtopic);
       }
     }
   }
