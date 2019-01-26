@@ -22,7 +22,6 @@ class InitState(smach.State):
     ##  method execute
     #   @param self the object pointer
     #   @param userdata the data come from the prevoius state
-    
     def execute(self, userdata):
         
         if self.preempt_requested():

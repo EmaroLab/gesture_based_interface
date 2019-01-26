@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ## @package core
-#  This package is the core application of the 
+#. This package is the core application of the 
 #  state machine
 
 import rospy
@@ -13,7 +13,7 @@ import threading
 from gbi_states import *
 from graphviz import Digraph
 
-##  ActionState
+##  class FSMThread 
 #   inerithed form threaing.Thread 
 class FSMThread(threading.Thread):
     ## the constructor
@@ -22,7 +22,7 @@ class FSMThread(threading.Thread):
         
         smach.set_loggers(smach.loginfo,smach.logwarn,self.logdebug,smach.logerr)
 
-        ## f attribute to manage the graph in graphviz
+        ## attribute to manage the graph in graphviz
         self.f = Digraph('finite_state_machine', filename='state_machine.gv')
         self.f.attr(rankdir='TD', size="30",splines=None)
         self.f.attr('node', shape='circle',style='filled')
@@ -124,7 +124,7 @@ class FSMThread(threading.Thread):
    
     ## method register_transition_cb
     #  overide of contaneir.register_transition_cb
-    #  @param transition:cb function associating to the transition 
+    #  @param transition_cb function associating to the transition 
     def register_transition_cb(self, transition_cb): 
         self._transition_cbs.append((transition_cb)) 
 
@@ -174,7 +174,7 @@ class FSMThread(threading.Thread):
         while self.sm.is_running(): pass
 
     ## method graph_gen
-    #  generation of the graph
+    #  graph generation
     def graph_gen(self):
         global f
         tr_edge=self.sm.get_internal_edges()
