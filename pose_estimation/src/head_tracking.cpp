@@ -39,8 +39,8 @@ public:
     void trackCB(const nav_msgs::Odometry &head_pos)
     {
 		kinect_setup::RegulateKinectByHead srv;
-		srv.request.x = head_pos.pose.pose.position.y;
-		srv.request.y = head_pos.pose.pose.position.z;
+		srv.request.x = -1 * head_pos.pose.pose.position.y;
+		srv.request.y = -1 * head_pos.pose.pose.position.z;
 		srv.request.z = head_pos.pose.pose.position.x;
 		client_move.call(srv);
 	
