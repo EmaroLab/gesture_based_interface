@@ -16,15 +16,12 @@ class TabContent : public QWidget
 public:
 	explicit TabContent(QStandardItemModel *model, QWidget *parent = nullptr);
 	QVector<QPair<QString, QString>> getSelectedTopics();
-	~TabContent();
-
-private slots:
 	void addMapping();
+	~TabContent();
 
 public slots:
 	void removeMapping(Mapping *mapping);
 	void clear();
-	void enableAddButton(bool enable);
 
 private:
 	Ui::TabContent *ui;

@@ -34,6 +34,7 @@ private slots:
 	void scan();
 	void enableLoadButton(int tab, int count);
 	void sendConfig();
+	void addMappingToActiveTab();
 
 signals:
 	void scan_terminated();

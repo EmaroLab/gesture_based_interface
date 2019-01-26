@@ -12,8 +12,6 @@ TabContent::TabContent(QStandardItemModel *model, QWidget *parent) :
 {
 	ui->setupUi(this);
 	count = 0;
-	ui->addMappingButton->setEnabled(false); //disable add button at the beginning
-	connect(ui->addMappingButton, &QPushButton::clicked, this, &TabContent::addMapping);
 }
 
 TabContent::~TabContent(){
@@ -54,8 +52,4 @@ void TabContent::clear(){
 	mappings.clear();
     count = 0;
     emit numberOfMappings(count);
-}
-
-void TabContent::enableAddButton(bool enable){
-	ui->addMappingButton->setEnabled(enable);
 }

@@ -20,8 +20,10 @@ ConfigPanel::ConfigPanel(QWidget *parent) :
 	isFilled(6, false) //inizialize elements to false
 {
 	ui->setupUi(this);
-	ui->loadConfigButton->setEnabled(false);
+	ui->loadConfigButton->setEnabled(false); //disable load button
 	ui->tabWidget->clear();
+	
+	ui->addMappingButton->setEnabled(false); //disable add button
 
 	for (int i = 0; i < 6; i++){
 		tabs[i] = new TabContent(model);
@@ -29,9 +31,9 @@ ConfigPanel::ConfigPanel(QWidget *parent) :
 		connect(tabs[i], &TabContent::numberOfMappings, 
 						[=](const int &mappings){enableLoadButton(i, mappings);
 						});
-		connect(this, &ConfigPanel::topicsAvailable, tabs[i], &TabContent::enableAddButton);
 	}
 	connect(ui->scanButton, &QPushButton::clicked, this, &ConfigPanel::scan);
+	connect(ui->addMappingButton, &QPushButton::clicked, this, &ConfigPanel::addMappingToActiveTab);
 	connect(ui->loadConfigButton, &QPushButton::clicked, this, &ConfigPanel::sendConfig);
 }
 
@@ -48,7 +50,7 @@ void ConfigPanel::scan(){
   for (int i = 0; i < 6; i++){
     tabs[i]->clear();
 	}
-  emit topicsAvailable(false);
+  ui->addMappingButton->setEnabled(false);
   
   compatibleSubtopics.clear(); //erases all elements from the container
   model->clear();
@@ -77,8 +79,11 @@ void ConfigPanel::scan(){
       topic->appendRow(new QStandardItem(b.c_str()));
 	  }
   }
-  
-	emit topicsAvailable(model->rowCount());
+	ui->addMappingButton->setEnabled(model->rowCount());
+}
+
+void ConfigPanel::addMappingToActiveTab(){
+	tabs[ui->tabWidget->currentIndex()]->addMapping();
 }
 
 void ConfigPanel::enableLoadButton(int tab, int mappings){

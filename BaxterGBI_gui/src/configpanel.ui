@@ -139,6 +139,31 @@ QTabBar::tab:left:only-one, QTabBar::tab:right:only-one {
       </layout>
      </item>
      <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QPushButton" name="addMappingButton">
+         <property name="styleSheet">
+          <string notr="true">#addMappingButton{
+background-color:#A4ED8D;
+	border:2px solid #6FD64E;
+}
+
+#addMappingButton:hover{
+	background-color:#6FD64E;
+}
+
+#addMappingButton:disabled{
+	background-color:#FFFEFE;
+}</string>
+         </property>
+         <property name="text">
+          <string>Add Mapping</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <spacer name="horizontalSpacer">
