@@ -111,4 +111,10 @@ void ConfigPanel::sendConfig(){
 		ros::NodeHandle n;
 		n.setParam("key_" + std::to_string(i+1) + "_topics", serializedTopics);
 	}
+	/*
+	ros::ServiceClient client = nh.serviceClient<my_package::Foo>("/fsm_config");
+	my_package::Foo foo;
+	client.call(foo)
+	// call service /fsm_config of type std_srvs/Trigger
+	* */
 }

@@ -1,7 +1,17 @@
+## @package ConfigState
+#  The package defines the structure of the 
+#  configuration state
+
 import rospy
 import smach
 
+##  ConfigState
+#   outcomes: (invalid,success,
+#  'preempted')
 class ConfigState(smach.State):
+    ## The constructor
+    #  @param msg_type 
+    #  @param callback
     def __init__(self, msg_type, callback):
         outcomes = ['invalid',
                     'success',
@@ -14,6 +24,8 @@ class ConfigState(smach.State):
         self._msg_type = msg_type
         self.subscribers = []
 
+    ## method execute
+    #  @param userdata
     def execute(self, userdata):
         if self.preempt_requested():
             return 'preempted'
