@@ -96,7 +96,7 @@ void publishTransform(XnUserID const& user, XnSkeletonJoint const& joint, string
 
     transform = change_frame * transform;
   
-     // Rotate
+    // Rotation of head frame
     tf::Transform change_frame2;
     change_frame2.setOrigin(tf::Vector3(0, 0, 0));
     tf::Quaternion frame_rotation2;
@@ -107,8 +107,7 @@ void publishTransform(XnUserID const& user, XnSkeletonJoint const& joint, string
     
     if(child_frame_id.compare("head") != 0)
     {
-			
-		 // Rotates
+		// Rotation of left and right hand frames 
 		change_frame2.setOrigin(tf::Vector3(0, 0, 0));
 		tf::Quaternion frame_rotation2;
 		frame_rotation2.setEulerZYX( M_PI, M_PI, 0);
@@ -213,10 +212,9 @@ int main(int argc, char **argv) {
 
 	ros::Rate r(30);
 
-        
-        ros::NodeHandle pnh("~");
-        string frame_id("camera_link");
-        pnh.getParam("camera_frame_id", frame_id);
+	ros::NodeHandle pnh("~");
+	string frame_id("camera_link");
+	pnh.getParam("camera_frame_id", frame_id);
                 
 	while (ros::ok()) {
 		g_Context.WaitAndUpdateAll();
