@@ -1,3 +1,7 @@
+## @package MacroState
+## This package describes the structure
+#  of the macro state 
+
 from ActionState import ActionState
 
 class MacroState(ActionState):

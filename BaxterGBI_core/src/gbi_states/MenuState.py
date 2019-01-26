@@ -16,7 +16,7 @@ class MenuState(BlockingState):
     #  @param output_keys set of data in the output state
     #  @param input_keys set of data in the input state
     #  @param fixed_options fixed options of the menu
-    def __init__(self, outcomes, trigger_event, page_title, output_keys=[], input_keys=[], fixed_options=['back', 'run']):
+    def __init__(self, outcomes, trigger_event, page_title, output_keys=[], input_keys=[], fixed_options=['back', 'play']):
         BlockingState.__init__(self,
                                outcomes = ['user_missed', 'selection'] + outcomes,
                                trigger_event = trigger_event,
@@ -118,7 +118,7 @@ class MenuState(BlockingState):
     #  
     #  fill the field userdata.selection with item 
     def on_variable_selection(self, index, item, userdata):
-        userdata.selection = item
+        userdata.selection = index
         return 'selection'
 
     ## method on_fixed_selection

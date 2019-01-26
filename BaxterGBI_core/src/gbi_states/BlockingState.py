@@ -5,6 +5,7 @@
 import rospy
 import smach
 import BaxterGBI_core_msgs.msg as pub_status
+import time
 
 ##  BlockingState
 #   inerithed form smach.State
@@ -97,7 +98,7 @@ class BlockingState(smach.State):
     #  
     #  call back of the trigger "config"
     def config(self, userdata):
-        ## to override
+        # to override 
         return None
 
     ## method publish_state
@@ -138,7 +139,7 @@ class BlockingState(smach.State):
                 ret = self.action_6(userdata)
             elif event_id == 'user_detected':
                 ret = self.user_detected(userdata)
-            elif self.timeout>=0 and time.time() > self.timeout:
+            elif self.timeout_t>=0 and time.time() > self.timeout_t:
                 ret = self.user_left(userdata)
             elif event_id == 'config':
                 ret = self.config(userdata)

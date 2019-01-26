@@ -9,10 +9,10 @@ import threading
 #   inerithed form smach.State
 class FsmEvent:
     ## the constructor
-    def __init__(self, fsm):
+    def __init__(self):
         self.trigger = threading.Event()
         self.event_id = None
-        self.fsm = fsm
+        
 
     ## method wait
     #  method to wait an event
