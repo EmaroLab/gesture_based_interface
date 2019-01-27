@@ -34,16 +34,36 @@ from baxter_core_msgs.srv import (
 
 
 class ReturnValue(object):
+    """
+    Class used to collapse in a single structure the joints value and a boolean for the error.
+    """
     def __init__(self, limb_joints, isError):
         self.limb_joints = limb_joints
         self.isError = isError
 
 
-
+global init_pose_hand, init_orient_hand, first_data, init_pose_baxter, init_orient_baxter
+first_data = False
+init_pose_hand = []
+init_orient_hand = []
+init_pose_baxter = []
+init_orient_baxter = []
 
 #limb -> left or right
 #parameterized poses
 def ik_tracking(limb, pos, orient):
+    """
+    Method used to solve the Inverse Kinematic Problem and provide a solution, which is returned as output.
+    
+    @type limb: string
+    @param limb: specify left or right limb.
+    @type pos: float[]
+    @param pos: position we want to achieve.
+    @type orient: float[]
+    @param orient: orientation we want to achieve (Quaternion).
+    
+    @returns: ReturnValue object: limb joints position and 0 is ok, None and 1 if there is an error.
+    """
     ns = "ExternalTools/" + limb + "/PositionKinematicsNode/IKService"
     iksvc = rospy.ServiceProxy(ns, SolvePositionIK)
     ikreq = SolvePositionIKRequest()
@@ -120,12 +140,46 @@ def ik_tracking(limb, pos, orient):
 
 def mirror_callback(data):
     """
+    Callback function associated with the topic 'mirror_end_effector'.
+    Whenever a data is written in the topic, this function is called and obtain from ik_tracking function the joints values to assign and
+    move the end effector to the goal.
+    
+    @type data.position: float[]
+    @param data.position: position we want to achieve.
+    @type data.quaternion: float[]
+    @param data.quaternion: orientation we want to achieve (Quaternion).
     """
-    #Acquire data from the topic
+      #TODO -> make as parameter
+    limb = "left"
+    
+    arm = Limb(limb)
+    
+    global init_pose_hand, init_orient_hand, init_pose_baxter, init_orient_baxter, first_data
+    if first_data == False:
+        first_data = True
+        #Acquire initial position/orientation of the human hand (The first value published)
+        init_pose_hand.append(data.position[0])
+        init_pose_hand.append(data.position[1])
+        init_pose_hand.append(data.position[2])
+        init_orient_hand.append(data.quaternion[0])
+        init_orient_hand.append(data.quaternion[1])
+        init_orient_hand.append(data.quaternion[2])
+        init_orient_hand.append(data.quaternion[3])
+        
+        resp = arm.endpoint_pose()
+        #Acquire initial position/orientation of the baxter
+        init_pose_baxter = resp['position']
+        init_orient_baxter = resp['orientation']
+        print("Pose: "+ str(init_pose_baxter))
+        print("Orient: "+str(init_orient_baxter))
+        
+        
+    
+    #Evaluate the relative movement of the hand
     pos = []
-    pos.append(data.position[0])
-    pos.append(data.position[1])
-    pos.append(data.position[2])
+    pos.append(init_pose_baxter[0] + (data.position[0] - init_pose_hand[0]))
+    pos.append(init_pose_baxter[1] + (data.position[1] - init_pose_hand[1]))
+    pos.append(init_pose_baxter[2] + (data.position[2] - init_pose_hand[2]))
     
     
     orient = []
@@ -137,15 +191,11 @@ def mirror_callback(data):
     #orient.append(quaternion[2])
     #orient.append(quaternion[3])
     
-    orient.append(data.quaternion[0])
-    orient.append(data.quaternion[1])
-    orient.append(data.quaternion[2])
-    orient.append(data.quaternion[3])
+    orient.append(init_orient_baxter[0] + (data.quaternion[0] - init_orient_hand[0]))
+    orient.append(init_orient_baxter[1] + (data.quaternion[1] - init_orient_hand[1]))
+    orient.append(init_orient_baxter[2] + (data.quaternion[2] - init_orient_hand[2]))
+    orient.append(init_orient_baxter[3] + (data.quaternion[3] - init_orient_hand[3]))
     
-    #TODO -> make as parameter
-    limb = "left"
-    
-    arm = Limb(limb)
     print("Start q: "+str(arm.joint_angles()))
     
     
@@ -162,16 +212,13 @@ def mirror_callback(data):
     except rospy.ServiceException, e:
         print("Ahahah speravi andasse bene!!")
    
-   
-def mirror_handler(req):
-   """
-   """
-
 
 
 def mirror_server():
-    """Main of the node. It makes available the services and wait for requests.
     """
+    Main of the node. Takes the information from the topic and move the baxter end effector based on those values.
+    """
+    
     print("Initializing node... ")
     rospy.init_node('mirror_server')
     print("Getting robot state... ")
