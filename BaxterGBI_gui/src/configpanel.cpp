@@ -93,9 +93,9 @@ void ConfigPanel::addMappingToActiveTab(){
 }
 
 void ConfigPanel::enableLoadButton(int tab, int mappings){
-  isFilled[tab] = mappings > 0; //set array element to true
+	isFilled[tab] = mappings > 0; //set array element to true
 	
-  bool ok;
+  bool ok = true;
   for(int i = 0; i < 6 and ok; i++)
     ok = isFilled[i];
 	
