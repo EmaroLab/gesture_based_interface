@@ -32,12 +32,10 @@ class PclRecord{
 	public:
 	/** Handler:
 	 * - subscribe to /camera/depth/points to get raw data from the Kinect
-	 * - subscribe to /cur_tilt_angle
 	 * - save environments in ~/.kinect_environments
 	 */
 	PclRecord(){
                 pcl_sub = nh.subscribe("/camera/depth/points", 10, &PclRecord::PclRecordCB, this);
-                angle_sub = nh.subscribe("/cur_tilt_angle", 10, &PclRecord::AngleCB, this);
 	}
 	/** 
 	 * Callback function to save environments in a file environment<angle>.pcd in the folder /.kinect_environments
@@ -75,7 +73,6 @@ class PclRecord{
 	protected:
 		ros::NodeHandle nh;
         ros::Subscriber pcl_sub; /**< Subscriber to /camera/depth/points */
-		ros::Subscriber angle_sub; /**< Subscriber to /cur_tilt_angle */
 
 };
 
