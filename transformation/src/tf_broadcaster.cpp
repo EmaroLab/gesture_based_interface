@@ -58,11 +58,11 @@ main(int argc, char** argv)
 	
 	TF_Broadcaster tf_broadcaster;
 	
-	ros::Rate r(20000);
+	ros::Rate r(10000);
 	tf::TransformBroadcaster broadcaster;
 	
     tf::Transform change_frame;
-    change_frame.setOrigin(tf::Vector3(x_baxter, y_baxter, z_baxter));
+    change_frame.setOrigin(tf::Vector3(x_kinect, y_kinect, z_kinect));
 
 	tf::Quaternion frame_rotation;
         

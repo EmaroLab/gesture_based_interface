@@ -93,8 +93,18 @@ void publishTransform(XnUserID const& user, XnSkeletonJoint const& joint, string
     tf::Quaternion frame_rotation;
     frame_rotation.setRPY(M_PI/2, 0, M_PI/2);
     change_frame.setRotation(frame_rotation);
+    
+    
+	tf::StampedTransform transformation;
+	try{    
+		listener.lookupTransform("world_frame", "camera_link",  
+		ros::Time(0.0), transformation);
+	}
 
-    transform = change_frame * transform;
+
+    transform = transformation * change_frame * transform;
+    
+    
   
     br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), frame_id, child_frame_no));
     

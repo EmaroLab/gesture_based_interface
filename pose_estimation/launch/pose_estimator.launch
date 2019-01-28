@@ -46,4 +46,10 @@
 		<param name="z_kinect" value="0.3"/>
 	</node>
 
+
+	<node name="activate" pkg="activation" type="activate" output="screen">
+		<param name="security_distance" value="1.0"/>
+		<param name="threshold" value="0.7"/>
+	</node>
+
 </launch>
