@@ -118,7 +118,7 @@ include_directories(
 
 ## Declare a cpp executable
 
-add_executable(activate src/activate.cpp)
+add_executable(tf_broadcaster src/tf_broadcaster.cpp)
 
  
  ## Add cmake target dependencies of the executable/library
@@ -126,7 +126,7 @@ add_executable(activate src/activate.cpp)
 # add_dependencies(retrorov_model_bathymetric_node retrorov_model_bathymetric_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(activate ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+target_link_libraries(tf_broadcaster ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 #############
 ## Install ##
 #############

@@ -40,4 +40,10 @@
 
 	<node name="head_tracking" pkg="pose_estimation" type="head_tracking" output="screen"/>
 
+	<node name="tf_broadcaster" pkg="transformation" type="tf_broadcaster" output="screen">
+		<param name="x_kinect" value="0.3"/>
+		<param name="y_kinect" value="0.3"/>
+		<param name="z_kinect" value="0.3"/>
+	</node>
+
 </launch>

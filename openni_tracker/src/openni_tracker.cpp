@@ -91,7 +91,7 @@ void publishTransform(XnUserID const& user, XnSkeletonJoint const& joint, string
     tf::Transform change_frame;
     change_frame.setOrigin(tf::Vector3(0, 0, 0));
     tf::Quaternion frame_rotation;
-    frame_rotation.setEulerZYX(M_PI/2, 0, M_PI/2);
+    frame_rotation.setRPY(M_PI/2, 0, M_PI/2);
     change_frame.setRotation(frame_rotation);
 
     transform = change_frame * transform;

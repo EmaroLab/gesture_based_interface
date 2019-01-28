@@ -45,8 +45,8 @@ bool regulateWrist(kinect_setup::RegulateKinectByWrist::Request  &req,
 	float z = req.z;
 	
 	float angle = -1 * atan(y/z) * 180 / M_PI;
-	float min_z = z - 0.80;
-	float max_z = z + 0.80;
+	float min_z = z - 0.50;
+	float max_z = z + 0.50;
 	float min_y = y - 1.50;
 	float max_y = y + 1.50;
 	float min_x = x - 0.50;
@@ -106,10 +106,10 @@ bool regulateHead(kinect_setup::RegulateKinectByHead::Request  &req,
 	
 	float angle = -1 * atan(y/z) * 180 / M_PI;
 	
-	float min_z = z - 0.80;
-	float max_z = z + 0.80;
-	float min_y = y - 0.30;
-	float max_y = y + 1.90;
+	float min_z = z - 0.50;
+	float max_z = z + 0.50;
+	float min_y = y - 0.40;
+	float max_y = y + 2.00;
 	float min_x = x - 0.50;
 	float max_x = x + 0.50;
 	

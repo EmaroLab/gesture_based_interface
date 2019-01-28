@@ -81,10 +81,34 @@ public:
 							0, 0, 0, 0, 99999, 0,  	// large covariance on rot y
 							0, 0, 0, 0, 0, 99999} ; // large covariance on rot z
 
+
+	tf::StampedTransform transformation;
+	try{    
+		listener.lookupTransform("world_frame", "camera_link",  
+		ros::Time(0.0), transformation);
+	}
+
+	catch (tf::TransformException ex){
+
+		ROS_WARN("Base to camera transform unavailable %s", ex.what());
+	}
+	
+	tf::StampedTransform transformation2;
+	try{    
+		listener.lookupTransform("camera_link", "camera_depth_optical_frame",  
+		ros::Time(0.0), transformation2);
+	}
+
+	catch (tf::TransformException ex){
+
+		ROS_WARN("Base to camera transform unavailable %s", ex.what());
+	}
 	tf::Vector3 point(x, y, z);
+	tf::Vector3 point_bl =  transformation * transformation2 * point;
 
-	tf::vector3TFToMsg (point, new_point);
-
+	tf::vector3TFToMsg (point_bl, new_point);
+	
+	
 	msg.pose.pose.position.x = new_point.x;
 	msg.pose.pose.position.y= new_point.y;
 	msg.pose.pose.position.z= new_point.z;
