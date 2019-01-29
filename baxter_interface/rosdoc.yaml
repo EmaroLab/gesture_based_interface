@@ -1,3 +1,0 @@
- - builder: epydoc
-   name: Baxter SDK Python API
-   config: epydoc.config
