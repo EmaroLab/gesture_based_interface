@@ -94,12 +94,12 @@ def ik_tracking(limb, pos, orient):
 
         # Format solution into Limb API-compatible dictionary
         limb_joints = dict(zip(resp.joints[0].name, resp.joints[0].position))
-        print "\nIK Joint Solution:\n", limb_joints
-        print "------------------"
-        print "Response Message:\n", resp
+        rospy.loginfo("\nIK Joint Solution:\n", limb_joints)
+        rospy.loginfo("------------------")
+        rospy.loginfo("Response Message:\n", resp)
 
         return ReturnValue(limb_joints,0)
     else:
-        print("INVALID POSE - No Valid Joint Solution Found.")
+        rospy.logerr("INVALID POSE - No Valid Joint Solution Found.")
 
     return ReturnValue(None,1)

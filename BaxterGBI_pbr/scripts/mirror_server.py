@@ -73,8 +73,8 @@ def mirror_callback(data):
         #Acquire initial position/orientation of the baxter
         init_pose_baxter = resp['position']
         init_orient_baxter = resp['orientation']
-        print("Pose: "+ str(init_pose_baxter))
-        print("Orient: "+str(init_orient_baxter))
+        rospy.loginfo("Pose: "+ str(init_pose_baxter))
+        rospy.loginfo("Orient: "+str(init_orient_baxter))
         
         
     
@@ -99,7 +99,7 @@ def mirror_callback(data):
     orient.append(init_orient_baxter[2] + (data.quaternion[2] - init_orient_hand[2]))
     orient.append(init_orient_baxter[3] + (data.quaternion[3] - init_orient_hand[3]))
     
-    print("Start q: "+str(arm.joint_angles()))
+    rospy.loginfo("Start q: "+str(arm.joint_angles()))
     
     
     try:
@@ -107,13 +107,12 @@ def mirror_callback(data):
         joint_solution = ik_tracking(limb,pos,orient)   #joint_solution is an object type ReturnValue
         
         if joint_solution.isError == 1:
-            print("Cannot reach the goal")
+            rospy.logwarn("Cannot reach the goal")
         else:
             # set arm joint positions to solution
-            #arm = Limb(limb) #TODO -> remove (?) there is at the beginning of the funtion
             arm.move_to_joint_positions(joint_solution.limb_joints)
     except rospy.ServiceException, e:
-        print("Ahahah speravi andasse bene!!")
+        rospy.logerr("Error during Inverse Kinematic problem")
    
 
 
@@ -122,26 +121,26 @@ def mirror_server():
     Main of the node. Takes the information from the topic and move the baxter end effector based on those values.
     """
     
-    print("Initializing node... ")
+    rospy.loginfo("Initializing node... ")
     rospy.init_node('mirror_server')
-    print("Getting robot state... ")
+    rospy.loginfo("Getting robot state... ")
     rs = baxter_interface.RobotEnable(CHECK_VERSION)
     init_state = rs.state().enabled
-    print("Enabling robot... ")
+    rospy.loginfo("Enabling robot... ")
     rs.enable()
 
     #Mirror service -> input on/off
     #service1 = rospy.Service('mirror', Mirror, mirror_handler)
-    print "Mirror Server executed -> mirror service available."
+    rospy.loginfo("Mirror Server executed -> mirror service available.")
 
 
     
     rospy.Subscriber("mirror_end_effector", mirror_end_effector, mirror_callback)
     
     def clean_shutdown():
-        print("\nExiting example...")
+        rospy.loginfo("\nExiting example...")
         if not init_state:
-            print("Disabling robot...")
+            rospy.loginfo("Disabling robot...")
             rs.disable()
     rospy.on_shutdown(clean_shutdown)
 

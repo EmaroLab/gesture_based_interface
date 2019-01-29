@@ -25,7 +25,7 @@ def call_playback(filename, loops, scale_vel):
         msg.scale_vel = scale_vel
         isOk = playback(msg)
     except rospy.ServiceException, e:
-        print "Service call failed: %s"%e
+        rospy.logerr("Service call failed: %s"%e)
 
 def call_record(filename, record_rate, mode):
     """Call the record function provided by pbr_server."""
@@ -35,14 +35,14 @@ def call_record(filename, record_rate, mode):
             record_start = rospy.ServiceProxy('record_start', RecordStart)
             isOk = record_start(filename, record_rate)
         except rospy.ServiceException, e:
-            print "Service call failed: %s"%e
+            rospy.logerr("Service call failed: %s"%e)
     elif mode == 0:
         rospy.wait_for_service('record_stop')
         try:
             record_stop = rospy.ServiceProxy('record_stop', RecordStop)
             isOk = record_stop()
         except rospy.ServiceException, e:
-            print "Service call failed: %s"%e
+            rospy.logerr( "Service call failed: %s"%e)
         
 
 def call_list_files():
@@ -51,9 +51,9 @@ def call_list_files():
     try:
         files = rospy.ServiceProxy('files', ListFiles)
         list_files = files()
-        print(list_files.list_files)
+        rospy.loginfo(list_files.list_files)
     except rospy.ServiceException, e:
-        print "Service call failed: %s"%e
+        rospy.logerr("Service call failed: %s"%e)
 
 
 def call_delete_file(filename):
@@ -63,12 +63,12 @@ def call_delete_file(filename):
         deleteFile = rospy.ServiceProxy('delete_file', DeleteFile)
         response = deleteFile(filename)
         if response.isError == 0:
-            print("Deletion Completed!")
+            rospy.loginfo("Deletion Completed!")
         else:
-            print("Error during deletion")
+            rospy.logwarn("Error during deletion")
         
     except rospy.ServiceException, e:
-        print "Service call failed: %s"%e
+        rospy.logerr("Service call failed: %s"%e)
         
 
 def call_rename_file(old,new):
@@ -78,12 +78,12 @@ def call_rename_file(old,new):
         renameFile = rospy.ServiceProxy('rename_file', RenameFile)
         response = renameFile(old,new)
         if response.isError == 0:
-            print("File renamed correctly!")
+            rospy.loginfo("File renamed correctly!")
         else:
-            print("Error during renaming")
+            rospy.logwarn("Error during renaming")
         
     except rospy.ServiceException, e:
-        print "Service call failed: %s"%e
+        rospy.logerr("Service call failed: %s"%e)
 
 
 def call_gripper(limb, mode):
@@ -92,12 +92,12 @@ def call_gripper(limb, mode):
         gripper = rospy.ServiceProxy('gripper', Gripper)
         response = gripper(limb,mode)
         if response.isError == 0:
-            print("Open/Close correctly!")
+            rospy.loginfo("Open/Close correctly!")
         else:
-            print("Error during opening/closing gripper")
+            rospy.logwarn("Error during opening/closing gripper")
         
     except rospy.ServiceException, e:
-        print "Service call failed: %s"%e
+        rospy.logerr("Service call failed: %s"%e)
 
 
 def call_reach_goal(limb, pos_x, pos_y, pos_z, orient_x, orient_y, orient_z, orient_w):
@@ -112,12 +112,12 @@ def call_reach_goal(limb, pos_x, pos_y, pos_z, orient_x, orient_y, orient_z, ori
         #posture.quaternion = orient
         response = reach_goal(limb, pos, orient)
         if response.isError == 0:
-            print("Position Reached !")
+            rospy.loginfo("Position Reached !")
         else:
-            print("Cannot reach the position")
+            rospy.logwarn("Cannot reach the position")
         
     except rospy.ServiceException, e:
-        print "Service call failed: %s"%e
+        rospy.logerr("Service call failed: %s"%e)
 
 
 if __name__ == "__main__":
@@ -127,19 +127,19 @@ if __name__ == "__main__":
        filename = sys.argv[2]
        loops = int(sys.argv[3])
        scale_vel = int(sys.argv[4])
-       print "Client: Calling Service Playback"
+       rospy.loginfo("Client: Calling Service Playback")
        call_playback(filename,loops,scale_vel)
-       print "Client: Called!"
+       rospy.loginfo("Client: Called!")
     elif type_service == 2: #Record Start
        filename = sys.argv[2]
        record_rate = int(sys.argv[3])
-       print "Client: Calling Service Start Record"
+       rospy.loginfo("Client: Calling Service Start Record")
        call_record(filename,record_rate,1)
-       print "Client: Called!"
+       rospy.loginfo("Client: Called!")
     elif type_service == 3: #Record Stop
-       print "Client: Calling Service Stop Record"
+       rospy.loginfo("Client: Calling Service Stop Record")
        call_record("",100,0)
-       print "Client: Called!"
+       rospy.loginfo("Client: Called!")
     elif type_service == 4: #List Files
        call_list_files()
     elif type_service == 5: #Remove file

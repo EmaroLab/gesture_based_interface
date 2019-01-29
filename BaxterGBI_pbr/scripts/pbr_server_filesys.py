@@ -27,16 +27,14 @@ def list_files_handler(req):
     @returns: list_files -> array of file name.
     @returns: isError -> 0 on success, 1 on error.
     """
-    print("Called!!")
+    rospy.loginfo("Called!!")
 
     resp = ListFilesResponse()
     
-    print(os.getcwd())
+    #rospy.loginfo(os.getcwd())
     
     path = "src/BaxterGBI_pbr/RecordedFile"
     files = os.listdir(path)
-    
-    #TODO -> check if folder exists (?)
     
     
     resp.n_files = len(files)
@@ -84,22 +82,22 @@ def rename_file_handler(req):
     if os.path.isfile(path+req.old_filename) :
         os.rename(path+req.old_filename,path+req.new_filename)
     else:
-        print("There is no file with this name!")
-        #TODO -> Return 1 ???
+        rospy.logerr("There is no file with this name!")
+        return 1
     return 0
 
 #pbr_node initialization
 def pbr_server_filesys():
     """Main of the node. It makes available the services related to the file management.
     """
-    print("Initializing node... ")
+    rospy.loginfo("Initializing node... ")
     rospy.init_node('pbr_server_filesys')
 
 
     service1 = rospy.Service('files', ListFiles, list_files_handler)
     service2 = rospy.Service('delete_file', DeleteFile, delete_file_handler)
     service3 = rospy.Service('rename_file', RenameFile, rename_file_handler)
-    print "PBR node executed -> providing file management services."
+    rospy.loginfo("PBR node executed -> providing file management services.")
 
     rospy.spin()
 

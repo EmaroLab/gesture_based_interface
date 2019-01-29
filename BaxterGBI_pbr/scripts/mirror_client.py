@@ -25,11 +25,9 @@ from math import sin
 #Mirror client -> publish data on a topic
 def main():
 
-    print("Initializing node... ")
+    rospy.loginfo("Initializing node... ")
     rospy.init_node('mirror_client', anonymous=True)
     pub = rospy.Publisher('mirror_end_effector', mirror_end_effector, queue_size=2)
-
-    #TODO -> open file and change the hz
     
     rate = rospy.Rate(10) # 10hz
     state = 0

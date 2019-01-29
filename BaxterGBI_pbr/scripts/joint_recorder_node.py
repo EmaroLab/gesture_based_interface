@@ -30,19 +30,19 @@ def callback(data):
     
     @returns: 0 on success, 1 on errors
     """
-    print("Called!!")
+    rospy.loginfo("Called!!")
     rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.mode)
     global recorder, state, rate
     if data.mode == "stop":
         if state == 1:
            #Stop the recording
-           print("Stop!")
+           rospy.loginfo("Stop!")
            recorder.stop()
            del recorder
            state = 0
     elif data.mode == "start":
         if state == 0:
-           print("Start")
+           rospy.loginfo("Start")
            #Start recording
            rate = rospy.Rate(data.record_rate)
            recorder = JointRecorder(data.filename)
@@ -53,12 +53,12 @@ def main():
     """
     Node used for the recording mode.
     """
-    print("Initializing node... ")
+    rospy.loginfo("Initializing node... ")
     rospy.init_node('joint_recorder_node', anonymous=True)
     rospy.Subscriber("recording_status", record_status, callback)
-    print("Getting robot state... ")
+    rospy.loginfo("Getting robot state... ")
     rs = baxter_interface.RobotEnable(CHECK_VERSION)
-    print("Enabling robot... ")
+    rospy.loginfo("Enabling robot... ")
     rs.enable()
     global state, recorder, rate
     rate = rospy.Rate(100)

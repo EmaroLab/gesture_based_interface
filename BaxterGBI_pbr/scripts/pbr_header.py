@@ -73,7 +73,7 @@ def map_file(filename, loops=1, scale_vel=100):
         grip_right.type() != 'custom'):
         grip_right.calibrate()
 
-    print("Playing back: %s" % (filename,))
+    rospy.loginfo("Playing back: %s" % (filename,))
     with open(filename, 'r') as f:
         lines = f.readlines()
     keys = lines[0].rstrip().split(',')
@@ -83,7 +83,7 @@ def map_file(filename, loops=1, scale_vel=100):
     while loops < 1 or l < loops:
         i = 0
         l += 1
-        print("Moving to start position...")
+        rospy.loginfo("Moving to start position...")
 
         _cmd, lcmd_start, rcmd_start, _raw = clean_line(lines[1], keys)
         left.move_to_joint_positions(lcmd_start)
@@ -100,7 +100,7 @@ def map_file(filename, loops=1, scale_vel=100):
             #command this set of commands until the next frame
             while (rospy.get_time() - start_time) < values[0]*(100.0/scale_vel):
                 if rospy.is_shutdown():
-                    print("\n Aborting - ROS shutdown")
+                    rospy.loginfo("\n Aborting - ROS shutdown")
                     return False
                 if len(lcmd):
                     left.set_joint_positions(lcmd)
@@ -113,6 +113,5 @@ def map_file(filename, loops=1, scale_vel=100):
                     grip_right.type() != 'custom'):
                     grip_right.command_position(cmd['right_gripper'])
                 rate.sleep()
-            print("-- "+str(rospy.get_time()))	
-        print
+            rospy.loginfo("-- "+str(rospy.get_time()))
     return True

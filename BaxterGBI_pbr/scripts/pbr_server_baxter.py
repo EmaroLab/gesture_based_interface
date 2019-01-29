@@ -34,16 +34,16 @@ def playback_handler(req):
     
     @returns: 0 on success, 1 on errors
     """
-    print "Called!!!"
+    rospy.loginfo("Called!!!")
 
     #Check if the file exists
     file_path_string = "src/BaxterGBI_pbr/RecordedFile/"+req.msg.filename
-    print(file_path_string)
+    rospy.loginfo(file_path_string)
     if os.path.isfile(file_path_string) :
         map_file(file_path_string, req.msg.loops, req.msg.scale_vel)
         return 0
     else:
-        print("The file doesn't exist!!")
+        rospy.logerr("The file doesn't exist!!")
         return 1
 
 
@@ -58,7 +58,7 @@ def record_start_handler(req):
     
     @returns: 0 on success, 1 on errors
     """
-    print "Called !!!"
+    rospy.loginfo("Called !!!")
      
     msg = record_status()
     
@@ -76,7 +76,7 @@ def record_stop_handler(req):
     @returns: 0 on success, 1 on errors
     """
     
-    print "Called !!!"
+    rospy.loginfo("Called !!!")
     msg = record_status()
     msg.filename = " "
     msg.mode = "stop"
@@ -146,20 +146,20 @@ def reach_goal_handler(req):
             joint_solution = ik_tracking(req.limb,pos,orient)   #joint_solution is an object type ReturnValue
             
             if joint_solution.isError == 1:
-                print("Cannot reach the goal")
+                rospy.logwarn("Cannot reach the goal")
             else:
                 # set arm joint positions to solution
                 arm.move_to_joint_positions(joint_solution.limb_joints)
         except rospy.ServiceException, e:
-            print("Error in Inverse Kinematic problem")
+            rospy.logerr("Error in Inverse Kinematic problem")
 
 #pbr_node initialization
 def pbr_server_baxter():
     """Main of the node. It makes available the services and wait for requests.
     """
-    print("Initializing node... ")
+    rospy.loginfo("Initializing node... ")
     rospy.init_node('pbr_server_baxter')
-    print("Getting robot state... ")
+    rospy.loginfo("Getting robot state... ")
     rs = baxter_interface.RobotEnable(CHECK_VERSION)
     init_state = rs.state().enabled
     
@@ -168,11 +168,10 @@ def pbr_server_baxter():
     left_gripper = baxter_interface.Gripper('left', CHECK_VERSION)
     right_gripper = baxter_interface.Gripper('right', CHECK_VERSION)
     
-    #TODO -> check the queue size
     global pub
-    pub = rospy.Publisher('recording_status', record_status, queue_size=5)
+    pub = rospy.Publisher('recording_status', record_status, queue_size=2)
 
-    print("Enabling robot... ")
+    rospy.loginfo("Enabling robot... ")
     rs.enable()
 
     service1 = rospy.Service('playback', Playback, playback_handler)
@@ -180,12 +179,12 @@ def pbr_server_baxter():
     service3 = rospy.Service('record_start', RecordStart, record_start_handler)
     service4 = rospy.Service('gripper', Gripper, gripper_handler)
     service5 = rospy.Service('reach_goal', ReachGoal, reach_goal_handler)
-    print "PBR node executed -> providing playback/record services."
+    rospy.loginfo("PBR node executed -> providing playback/record services.")
 
     def clean_shutdown():
-        print("\nExiting example...")
+        rospy.loginfo("\nExiting example...")
         if not init_state:
-            print("Disabling robot...")
+            rospy.loginfo("Disabling robot...")
             rs.disable()
     rospy.on_shutdown(clean_shutdown)
 
