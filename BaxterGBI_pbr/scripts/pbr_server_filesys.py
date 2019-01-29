@@ -17,7 +17,7 @@ from os import listdir
 from BaxterGBI_pbr.msg import *
 from baxter_interface import CHECK_VERSION
 from BaxterGBI_pbr.srv import *
-from pbr_header import *
+from BaxterGBI_pbr import pbr_header
 
 
 def list_files_handler(req):

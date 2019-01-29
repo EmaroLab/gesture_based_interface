@@ -17,8 +17,7 @@ from os import listdir
 from BaxterGBI_pbr.msg import *
 from baxter_interface import CHECK_VERSION
 from BaxterGBI_pbr.srv import *
-from pbr_header import *
-from ik_header import *
+from BaxterGBI_pbr import *
 
 
 def playback_handler(req):

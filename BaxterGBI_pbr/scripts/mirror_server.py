@@ -10,12 +10,10 @@ import sys
 import struct
 import rospy
 
-
 from BaxterGBI_pbr.msg import *
 from baxter_interface import CHECK_VERSION
 from BaxterGBI_pbr.srv import *
-from ik_header import *
-from pbr_header import *
+from BaxterGBI_pbr import *
 
 import tf
 
@@ -33,13 +31,57 @@ from baxter_core_msgs.srv import (
 )
 
 
-global init_pose_hand, init_orient_hand, first_data, init_pose_baxter, init_orient_baxter
-first_data = False
+global init_pose_hand, init_orient_hand, calibrated, init_pose_baxter, init_orient_baxter
+calibrated = False
 init_pose_hand = []
 init_orient_hand = []
 init_pose_baxter = []
 init_orient_baxter = []
 
+
+def calibrate(req):
+    """
+    Service used to initialize the initial posture of the baxter end effector.
+    
+    
+    @type req.limb: string
+    @param req.limb: "left" or "right" arm.
+    @type data.position: float[]
+    @param data.position: position we want to achieve.
+    @type data.quaternion: float[]
+    @param data.quaternion: orientation we want to achieve (Quaternion).
+    """
+    
+    global arm, calibrated, init_pose_hand, init_orient_hand, init_pose_baxter, init_orient_baxter, first_data
+        
+    if req.limb == "left" or req.limb == "right":
+        limb = req.limb
+        arm = Limb(limb)  
+        
+        
+        #Acquire initial position/orientation of the human hand (The first value published)
+        init_pose_hand.append(req.position[0])
+        init_pose_hand.append(req.position[1])
+        init_pose_hand.append(req.position[2])
+        init_orient_hand.append(req.quaternion[0])
+        init_orient_hand.append(req.quaternion[1])
+        init_orient_hand.append(req.quaternion[2])
+        init_orient_hand.append(req.quaternion[3])
+        
+        resp = arm.endpoint_pose()
+        #Acquire initial position/orientation of the baxter
+        init_pose_baxter = resp['position']
+        init_orient_baxter = resp['orientation']
+        rospy.loginfo("Pose: "+ str(init_pose_baxter))
+        rospy.loginfo("Orient: "+str(init_orient_baxter))
+        rospy.loginfo("Calibration completed!")
+        calibrated = True
+        return 0    
+    else:
+        rospy.logerr("Invalid limb value")
+        return 1
+        
+   
 def mirror_callback(data):
     """
     Callback function associated with the topic 'mirror_end_effector'.
@@ -51,33 +93,15 @@ def mirror_callback(data):
     @type data.quaternion: float[]
     @param data.quaternion: orientation we want to achieve (Quaternion).
     """
-    #TODO -> make as parameter
-    limb = "left"
     
-    arm = Limb(limb)
     
-    #TODO -> create a sevice "calibrate" for acquiring initial values
-    global init_pose_hand, init_orient_hand, init_pose_baxter, init_orient_baxter, first_data
-    if first_data == False:
-        first_data = True
-        #Acquire initial position/orientation of the human hand (The first value published)
-        init_pose_hand.append(data.position[0])
-        init_pose_hand.append(data.position[1])
-        init_pose_hand.append(data.position[2])
-        init_orient_hand.append(data.quaternion[0])
-        init_orient_hand.append(data.quaternion[1])
-        init_orient_hand.append(data.quaternion[2])
-        init_orient_hand.append(data.quaternion[3])
-        
-        resp = arm.endpoint_pose()
-        #Acquire initial position/orientation of the baxter
-        init_pose_baxter = resp['position']
-        init_orient_baxter = resp['orientation']
-        rospy.loginfo("Pose: "+ str(init_pose_baxter))
-        rospy.loginfo("Orient: "+str(init_orient_baxter))
-        
-        
     
+    global arm, init_pose_hand, init_orient_hand, init_pose_baxter, init_orient_baxter, first_data
+    
+    if calibrated == False:
+        rospy.logwarn("You need to calibrate first!")
+        return
+        
     #Evaluate the relative movement of the hand
     pos = []
     pos.append(init_pose_baxter[0] + (data.position[0] - init_pose_hand[0]))
