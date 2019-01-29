@@ -39,7 +39,7 @@ void MenuPanel::update(QString &title,
 
   //add options buttons to scroll area
   for (auto option: options){
-      auto button = new QPushButton(option);
+      auto button = new QPushButton(option, this);
       optionsButtons.push_back(button);
       ui->optionsContainer->addWidget(button);
   }
@@ -49,7 +49,7 @@ void MenuPanel::update(QString &title,
 	
 	//add fixed options buttons to bottom area
   for (auto option: fixed_options){
-      auto button = new QPushButton(option);
+      auto button = new QPushButton(option, this);
       optionsButtons.push_back(button);
       ui->fixedOptionsContainer->addWidget(button);
   }

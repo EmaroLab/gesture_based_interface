@@ -10,6 +10,7 @@
 
 #include "ros/ros.h"
 #include "ros/master.h"
+#include "std_srvs/Trigger.h"
 
 #include <QDebug>
 #include <QInputDialog>
@@ -103,6 +104,7 @@ void ConfigPanel::enableLoadButton(int tab, int mappings){
 }
 
 void ConfigPanel::sendConfig(){
+	ros::NodeHandle n;
 	for(int i = 0; i < 6; i++){
 		auto selections = tabs[i]->getSelectedTopics();
 		qInfo() << "Tab " << i << " mappings: ";
@@ -113,11 +115,11 @@ void ConfigPanel::sendConfig(){
 			serializedTopics.push_back(topic.toStdString());
 			qInfo() << "\t" << topic;
 		}
-		ros::NodeHandle n;
 		n.setParam("key_" + std::to_string(i+1) + "_topics", serializedTopics);
 	}
 	// call service /fsm_config of type std_srvs/Trigger
-	ros::ServiceClient client = nh.serviceClient<std_srvs::Trigger>("/fsm_config");
+	
+	ros::ServiceClient client = n.serviceClient<std_srvs::Trigger>("/fsm_config");
 	std_srvs::Trigger trigger;
 	client.call(trigger);
 }

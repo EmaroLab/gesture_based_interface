@@ -22,7 +22,7 @@ ActionPanel::~ActionPanel(){
 
 void ActionPanel::update(QString action, QString msg){
   QPixmap logo;
-  static QList<QString> actions{"play", "pause", "stop", "rec", "wait"};
+  static QList<QString> actions{"play", "pause", "stop", "rec", "wait","config"};
   if(actions.contains(action))
     logo.load(QString(":/images/%1.png").arg(action));
 	ui->label->setPixmap(logo);

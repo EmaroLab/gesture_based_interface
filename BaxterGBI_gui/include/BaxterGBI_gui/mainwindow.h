@@ -35,6 +35,7 @@ private:
 	ActionPanel action_page;
 	MenuPanel menu_page;
 	QWidget *current_page;
+    ros::Publisher display_pub;
 
 private slots:
 	void updateMainWindow(const boost::shared_ptr<BaxterGBI_core_msgs::status> msg);

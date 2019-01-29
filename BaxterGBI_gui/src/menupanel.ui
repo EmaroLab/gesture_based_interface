@@ -6,31 +6,52 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>564</width>
-    <height>541</height>
+    <width>1024</width>
+    <height>600</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1024</width>
+    <height>600</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1024</width>
+    <height>600</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">/*QPushButton#back {
-	background-color:#FF756E;
+   <string notr="true">QWidget#MenuPanel{
+	background-color:#FFE3E2;
 }
 
-QPushButton#back:hover{
-	background-color:#FF483E;
+QPushButton{
+		font: 17pt Comic Sans MS;
+		background-color:#FFFEFE;
+		height: 50px;
+		border-radius:10px;
+		border: 2px solid #FF483E;
+		padding: 6px;
+		margin:2px;
 }
 
-QPushButton#select{
-	background-color:#A4ED8D;
-	border:2px solid #6FD64E;
+QPushButton:hover{
+	background-color: #FFC9C3;
 }
 
-QPushButton#select:hover{
-	background-color:#6FD64E;
-}
-*/</string>
+QPushButton#selection{
+		font: 17pt Comic Sans MS;
+		background-color:#FF483E;
+		border: 2px solid #FF483E;
+		border-radius: 10px;
+		height: 50px;
+		padding: 6px;
+}</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
@@ -91,13 +112,13 @@ font-style:bold;
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>546</width>
-        <height>473</height>
+        <width>1006</width>
+        <height>514</height>
        </rect>
       </property>
       <property name="styleSheet">
        <string notr="true">#scrollAreaWidgetContents{
-background-color:#FFE3E2;
+	background-color:#FFE3E2;
 }</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -109,7 +130,13 @@ background-color:#FFE3E2;
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="fixedOptionsContainer"/>
+    <widget class="QWidget" name="widget" native="true">
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QHBoxLayout" name="fixedOptionsContainer"/>
+      </item>
+     </layout>
+    </widget>
    </item>
   </layout>
  </widget>

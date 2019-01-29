@@ -15,14 +15,15 @@ find_package(Qt5 REQUIRED Widgets)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rosmaster
-  std_msgs
+  std_srvs
+  sensor_msgs
   BaxterGBI_input_msgs
 )
 
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES BaxterGBI_gui
-  CATKIN_DEPENDS roscpp rosmaster std_msgs
+  CATKIN_DEPENDS roscpp rosmaster std_srvs sensor_msgs
 )
 
 include_directories(
