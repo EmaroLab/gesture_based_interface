@@ -6,19 +6,14 @@
 
 //transformation from Baxter to Kinect
 
-/** 
- * Callback of the /move_kinect service
- * @param[in]  req  Request Message
-	* @param[in]  req.angle Desired Orientation angle of the Kinect
- * @param[out]  res    Response of the service
-	* @param[out]  res.result If the operation is completed successfully
- */
 double x_kinect = 0.0;
 double y_kinect = 0.0;
 double z_kinect = 0.0;
 
 double angle = 20.0;
 
+/** @brief Class to get the current tilt angle of the Kinect
+ */
 class TF_Broadcaster{
     /** TF_Broadcaster:
      * - subscribe to /cur_tilt_angle to know the current tilt angle of the Kinect
@@ -29,7 +24,7 @@ class TF_Broadcaster{
     }
     /**
      * Angle callback function
-     * acquires the current tilt angle of the Kinect that is useful to know the right background to remove
+     * acquires the current tilt angle of the Kinect that is useful to know how the world frame should be oriented
      * @param[in]  angle_msg	current tilt angle of the Kinect
      */
     void angleCB(const std_msgs::Float64& angle_msg){
@@ -45,17 +40,22 @@ protected:
 };
     
 /**
- * Main
+ * Main function: 
+ * a TF broadcaster is created in order to add the world frame to the tree. The world frame is in correspondence of the control board and it has the same orientation of the Kinect.
  */
 main(int argc, char** argv)
 {
     ros::init(argc, argv, "tf_broadcaster");
 	ros::NodeHandle n;
 	
+	// position of the Kinect with respect to the control board
 	n.param<double>("x_kinect", x_kinect, 0.3);
 	n.param<double>("y_kinect", y_kinect, 0.3);
 	n.param<double>("z_kinect", z_kinect, 0.3);
 	
+	// current tilt angle of the Kinect in radians
+    float rad_angle;
+    
 	TF_Broadcaster tf_broadcaster;
 	
 	ros::Rate r(10000);
@@ -65,11 +65,11 @@ main(int argc, char** argv)
     change_frame.setOrigin(tf::Vector3(x_kinect, y_kinect, z_kinect));
 
 	tf::Quaternion frame_rotation;
-        
-    float rad_angle;
+    
 	while(ros::ok()){
 		rad_angle = angle * M_PI / -180;
-		frame_rotation.setRPY(0, rad_angle, 0); //pitch = current tilt angle of the Kinect
+		
+		frame_rotation.setRPY(0, rad_angle, 0); // pitch = current tilt angle of the Kinect
 		change_frame.setRotation(frame_rotation);
 		
 		broadcaster.sendTransform(
