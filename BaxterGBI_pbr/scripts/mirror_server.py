@@ -10,11 +10,11 @@ import sys
 import struct
 import rospy
 
-from baxter_interface import *
 
 from BaxterGBI_pbr.msg import *
 from baxter_interface import CHECK_VERSION
 from BaxterGBI_pbr.srv import *
+from ik_header import *
 from pbr_header import *
 
 import tf
@@ -33,110 +33,12 @@ from baxter_core_msgs.srv import (
 )
 
 
-class ReturnValue(object):
-    """
-    Class used to collapse in a single structure the joints value and a boolean for the error.
-    """
-    def __init__(self, limb_joints, isError):
-        self.limb_joints = limb_joints
-        self.isError = isError
-
-
 global init_pose_hand, init_orient_hand, first_data, init_pose_baxter, init_orient_baxter
 first_data = False
 init_pose_hand = []
 init_orient_hand = []
 init_pose_baxter = []
 init_orient_baxter = []
-
-#limb -> left or right
-#parameterized poses
-def ik_tracking(limb, pos, orient):
-    """
-    Method used to solve the Inverse Kinematic Problem and provide a solution, which is returned as output.
-    
-    @type limb: string
-    @param limb: specify left or right limb.
-    @type pos: float[]
-    @param pos: position we want to achieve.
-    @type orient: float[]
-    @param orient: orientation we want to achieve (Quaternion).
-    
-    @returns: ReturnValue object: limb joints position and 0 is ok, None and 1 if there is an error.
-    """
-    ns = "ExternalTools/" + limb + "/PositionKinematicsNode/IKService"
-    iksvc = rospy.ServiceProxy(ns, SolvePositionIK)
-    ikreq = SolvePositionIKRequest()
-    hdr = Header(stamp=rospy.Time.now(), frame_id='base')
-    poses = {
-        'left': PoseStamped(
-            header=hdr,
-            pose=Pose(
-                position=Point(
-                    x = pos[0],
-                    y = pos[1],
-                    z = pos[2],
-                ),
-                orientation=Quaternion(
-                    x = orient[0],
-                    y = orient[1],
-                    z = orient[2],
-                    w = orient[3],
-                ),
-            ),
-        ),
-        'right': PoseStamped(
-            header=hdr,
-            pose=Pose(
-                position=Point(
-                    x=0,
-                    y=-0,
-                    z=0,
-                ),
-                orientation=Quaternion(
-                    x=0.367048116303,
-                    y=0.885911751787,
-                    z=-0.108908281936,
-                    w=0.261868353356,
-                ),
-            ),
-        ),
-    }
-
-    ikreq.pose_stamp.append(poses[limb])
-    try:
-        rospy.wait_for_service(ns, 5.0)
-        resp = iksvc(ikreq)
-    except (rospy.ServiceException, rospy.ROSException), e:
-        rospy.logerr("Service call failed: %s" % (e,))
-        return 1
-
-    # Check if result valid, and type of seed ultimately used to get solution
-    # convert rospy's string representation of uint8[]'s to int's
-    resp_seeds = struct.unpack('<%dB' % len(resp.result_type),
-                               resp.result_type)
-                               
-    if (resp_seeds[0] != resp.RESULT_INVALID):
-        seed_str = {
-                    ikreq.SEED_USER: 'User Provided Seed',
-                    ikreq.SEED_CURRENT: 'Current Joint Angles',
-                    ikreq.SEED_NS_MAP: 'Nullspace Setpoints',
-                   }.get(resp_seeds[0], 'None')
-
-        # Format solution into Limb API-compatible dictionary
-        limb_joints = dict(zip(resp.joints[0].name, resp.joints[0].position))
-        print "\nIK Joint Solution:\n", limb_joints
-        print "------------------"
-        print "Response Message:\n", resp
-
-        return ReturnValue(limb_joints,0)
-    else:
-        print("INVALID POSE - No Valid Joint Solution Found.")
-
-    return ReturnValue(None,1)
-
-
-
 
 def mirror_callback(data):
     """
@@ -149,11 +51,12 @@ def mirror_callback(data):
     @type data.quaternion: float[]
     @param data.quaternion: orientation we want to achieve (Quaternion).
     """
-      #TODO -> make as parameter
+    #TODO -> make as parameter
     limb = "left"
     
     arm = Limb(limb)
     
+    #TODO -> create a sevice "calibrate" for acquiring initial values
     global init_pose_hand, init_orient_hand, init_pose_baxter, init_orient_baxter, first_data
     if first_data == False:
         first_data = True
@@ -207,7 +110,7 @@ def mirror_callback(data):
             print("Cannot reach the goal")
         else:
             # set arm joint positions to solution
-            arm = Limb(limb)
+            #arm = Limb(limb) #TODO -> remove (?) there is at the beginning of the funtion
             arm.move_to_joint_positions(joint_solution.limb_joints)
     except rospy.ServiceException, e:
         print("Ahahah speravi andasse bene!!")

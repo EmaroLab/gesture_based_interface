@@ -85,6 +85,41 @@ def call_rename_file(old,new):
     except rospy.ServiceException, e:
         print "Service call failed: %s"%e
 
+
+def call_gripper(limb, mode):
+    rospy.wait_for_service('gripper')
+    try:
+        gripper = rospy.ServiceProxy('gripper', Gripper)
+        response = gripper(limb,mode)
+        if response.isError == 0:
+            print("Open/Close correctly!")
+        else:
+            print("Error during opening/closing gripper")
+        
+    except rospy.ServiceException, e:
+        print "Service call failed: %s"%e
+
+
+def call_reach_goal(limb, pos_x, pos_y, pos_z, orient_x, orient_y, orient_z, orient_w):
+    rospy.wait_for_service('reach_goal')
+    try:
+        reach_goal = rospy.ServiceProxy('reach_goal', ReachGoal)
+        pos = [pos_x, pos_y, pos_z]
+        orient = [orient_x, orient_y, orient_z, orient_w]
+        
+        #posture = mirror_end_effector()
+        #posture.position = pos
+        #posture.quaternion = orient
+        response = reach_goal(limb, pos, orient)
+        if response.isError == 0:
+            print("Position Reached !")
+        else:
+            print("Cannot reach the position")
+        
+    except rospy.ServiceException, e:
+        print "Service call failed: %s"%e
+
+
 if __name__ == "__main__":
     """Acquire paramater specified in the command line and based on them ask for the specified service."""
     type_service = int(sys.argv[1])
@@ -114,4 +149,8 @@ if __name__ == "__main__":
         old_filename = sys.argv[2]
         new_filename = sys.argv[3]
         call_rename_file(old_filename,new_filename)
+    elif type_service == 7: #Gripper
+        call_gripper(sys.argv[2],int(sys.argv[3]))
+    elif type_service == 8: #Reach Goal
+        call_reach_goal(sys.argv[2], float(sys.argv[3]), float(sys.argv[4]), float(sys.argv[5]), float(sys.argv[6]), float(sys.argv[7]), float(sys.argv[8]), float(sys.argv[9]))
 	sys.exit(1)

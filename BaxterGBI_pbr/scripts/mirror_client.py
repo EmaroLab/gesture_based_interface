@@ -31,15 +31,15 @@ def main():
 
     #TODO -> open file and change the hz
     
-    rate = rospy.Rate(1) # 10hz
+    rate = rospy.Rate(10) # 10hz
     state = 0
     i = 0
     while not rospy.is_shutdown():
         #TODO -> set up the message and publish it
         pos = []
-        pos.append(0.163716+sin(i)/2.0)
+        pos.append(0.163716+sin(i))
         pos.append(0.421201)
-        pos.append(-0.440442+sin(i)/2.0)
+        pos.append(-0.440442+sin(i))
 
 
         orient = []

@@ -31,9 +31,14 @@ def list_files_handler(req):
 
     resp = ListFilesResponse()
     
+    print(os.getcwd())
+    
     path = "src/BaxterGBI_pbr/RecordedFile"
     files = os.listdir(path)
-
+    
+    #TODO -> check if folder exists (?)
+    
+    
     resp.n_files = len(files)
     files_name = list()
 
@@ -80,6 +85,7 @@ def rename_file_handler(req):
         os.rename(path+req.old_filename,path+req.new_filename)
     else:
         print("There is no file with this name!")
+        #TODO -> Return 1 ???
     return 0
 
 #pbr_node initialization

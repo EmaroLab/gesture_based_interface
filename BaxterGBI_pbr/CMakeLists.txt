@@ -33,6 +33,8 @@ add_service_files(
   ListFiles.srv
   DeleteFile.srv
   RenameFile.srv
+  Gripper.srv
+  ReachGoal.srv
 )
 
 generate_messages(
