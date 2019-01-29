@@ -35,6 +35,6 @@ rosservice call /move_kinect "angle: <float>"
 
 ```
 rviz -> topic : /camera/pcl_filtered
-	fixed frame: camera_link
+	fixed frame: world_frame
 	orbit: fixed frame (on the right)
 ```
