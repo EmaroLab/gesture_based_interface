@@ -11,7 +11,10 @@
 #include <Eigen/Geometry>
 #include <ros/package.h>
 #include <pwd.h>
-
+/**
+ * @file
+ */
+ 
 using namespace std;
 
 std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr> backgrounds (61);

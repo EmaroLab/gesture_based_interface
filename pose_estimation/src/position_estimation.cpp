@@ -11,6 +11,9 @@
 #include <geometry_msgs/Vector3.h>
 #include <tf/transform_datatypes.h>
 #include <tf/transform_broadcaster.h>
+/**
+ * @file
+ */
 
 /**@brief Class for estimating the Center of Mass 
  * 
@@ -130,7 +133,7 @@ protected:
     ros::Subscriber pcl_sub; /**< Subscriber to /camera/pcl_filtered */
     ros::Publisher pcl_pub; /**< Publisher of odometry data on /odometry/kinect/center_of_mass */
 };
-/**
+/** 
  * Main:
  * Initialization of the handler
  */

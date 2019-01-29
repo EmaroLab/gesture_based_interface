@@ -9,7 +9,10 @@
 #include <pcl/filters/voxel_grid.h>
 #include "pose_estimation/SetFilter.h"
 #include "pose_estimation/SetFilterParam.h"
-
+/**
+ * @file
+ */
+ 
 bool use_downsampling = true;
 bool use_filter_z = true;
 bool use_filter_y = true;

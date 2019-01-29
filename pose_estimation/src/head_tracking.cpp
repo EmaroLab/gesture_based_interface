@@ -12,7 +12,9 @@
 #include <tf/transform_datatypes.h>
 #include <tf/transform_broadcaster.h>
 #include "kinect_setup/RegulateKinectByHead.h"
-
+/**
+ * @file
+ */
 
 ros::ServiceClient client_move;  
 

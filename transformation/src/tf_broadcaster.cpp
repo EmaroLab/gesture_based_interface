@@ -3,8 +3,9 @@
 #include "std_msgs/Float64.h"
 #include <tf/transform_broadcaster.h>
 #include <math.h>
-
-//transformation from Baxter to Kinect
+/**
+ * @file
+ */
 
 double x_kinect = 0.0;
 double y_kinect = 0.0;

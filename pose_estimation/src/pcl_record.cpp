@@ -13,7 +13,10 @@
 #include <sys/types.h>
 #include <pwd.h>
 #include "kinect_setup/MoveKinect.h"
-
+/**
+ * @file
+ */
+ 
 double granularity = 1.0;
 
 float angle = -30.0;
