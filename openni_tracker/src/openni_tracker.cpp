@@ -11,6 +11,8 @@
 #include <geometry_msgs/Vector3.h>
 #include <tf/transform_datatypes.h>
 
+#include <std_srvs/Empty.h>
+
 using std::string;
 
 xn::Context        g_Context;
@@ -28,6 +30,10 @@ ros::Publisher head_baxter_pub;
 ros::Publisher left_hand_baxter_pub;
 ros::Publisher right_hand_baxter_pub;
 
+ros::ServiceClient client_reset;  
+
+XnUserID operatorId = -1;
+
 void XN_CALLBACK_TYPE User_NewUser(xn::UserGenerator& generator, XnUserID nId, void* pCookie) {
 	ROS_INFO("New User %d", nId);
 
@@ -39,6 +45,11 @@ void XN_CALLBACK_TYPE User_NewUser(xn::UserGenerator& generator, XnUserID nId, v
 
 void XN_CALLBACK_TYPE User_LostUser(xn::UserGenerator& generator, XnUserID nId, void* pCookie) {
 	ROS_INFO("Lost user %d", nId);
+	if(nId == operatorId){
+		operatorId = -1;
+		std_srvs::Empty srv;
+		client_reset.call(srv);
+	}
 }
 
 void XN_CALLBACK_TYPE UserCalibration_CalibrationStart(xn::SkeletonCapability& capability, XnUserID nId, void* pCookie) {
@@ -49,9 +60,13 @@ void XN_CALLBACK_TYPE UserCalibration_CalibrationEnd(xn::SkeletonCapability& cap
 	if (bSuccess) {
 		ROS_INFO("Calibration complete, start tracking user %d", nId);
 		g_UserGenerator.GetSkeletonCap().StartTracking(nId);
+		operatorId = nId;
 	}
 	else {
 		ROS_INFO("Calibration failed for user %d", nId);
+		if(nId == operatorId){
+			operatorId = -1;
+		}
 		if (g_bNeedPose)
 			g_UserGenerator.GetPoseDetectionCap().StartPoseDetection(g_strPose, nId);
 		else
@@ -85,7 +100,7 @@ void publishTransform(XnUserID const& user, XnSkeletonJoint const& joint, string
     rotation.GetQuaternion(qx, qy, qz, qw);
 
     char child_frame_no[128];
-    snprintf(child_frame_no, sizeof(child_frame_no), "%s_%d", child_frame_id.c_str(), user);
+    snprintf(child_frame_no, sizeof(child_frame_no), "%s", child_frame_id.c_str());
 
     tf::Transform transform;
     transform.setOrigin(tf::Vector3(x, y, z));
@@ -179,6 +194,8 @@ int main(int argc, char **argv) {
 	head_baxter_pub = nh.advertise<nav_msgs::Odometry>("/odometry/baxter/head", 10);
 	left_hand_baxter_pub = nh.advertise<nav_msgs::Odometry>("/odometry/baxter/right_hand", 10);
 	right_hand_baxter_pub = nh.advertise<nav_msgs::Odometry>("/odometry/baxter/left_hand", 10);
+                
+    client_reset = nh.serviceClient<std_srvs::Empty>("reset_kinect_filters");  
 
     string configFilename = ros::package::getPath("openni_tracker") + "/openni_tracker.xml";
     XnStatus nRetVal = g_Context.InitFromXmlFile(configFilename.c_str());
@@ -230,10 +247,10 @@ int main(int argc, char **argv) {
 	ros::NodeHandle pnh("~");
 	string frame_id("camera_link");
 	pnh.getParam("camera_frame_id", frame_id);
-                
 	while (ros::ok()) {
 		g_Context.WaitAndUpdateAll();
 		publishTransforms(frame_id);
+		ros::spinOnce();
 		r.sleep();
 	}
 

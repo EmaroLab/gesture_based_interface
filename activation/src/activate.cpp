@@ -99,7 +99,7 @@ protected:
 main(int argc, char** argv)
 {
     ros::init(argc, argv, "kinect_activate");
-	ros::NodeHandle nh;
+	ros::NodeHandle nh("~");
 	
 	KinectActivate kinectActivate;
 	
@@ -111,8 +111,9 @@ main(int argc, char** argv)
     ros::Publisher presence_pub;  /**< Publisher of presence signal on /presence */
     ros::Publisher security_pub;  /**< Publisher of security signal on /secure */ 
 
-	presence_pub = nh.advertise<std_msgs::Header>("/presence", 1);
-	security_pub = nh.advertise<std_msgs::Header>("/secure", 1);
+    ros::NodeHandle n;
+	presence_pub = n.advertise<std_msgs::Header>("/presence", 1);
+	security_pub = n.advertise<std_msgs::Header>("/secure", 1);
 	
 	ros::Time now;
 	// Header msgs

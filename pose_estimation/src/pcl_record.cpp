@@ -96,12 +96,13 @@ int main(int argc, char **argv)
 
 	PclRecord handler;
 
-	ros::NodeHandle n;
-	n.param<int>("granularity", granularity, 1); 
+	ros::NodeHandle nh("~");
+	nh.param<int>("granularity", granularity, 1); 
 
 	ros::AsyncSpinner spinner(4); // Use 4 threads
 	spinner.start();
 		
+	ros::NodeHandle n;
 	ros::ServiceClient client_move = n.serviceClient<kinect_setup::MoveKinect>("move_kinect");
 	angle = -30.0;
 	kinect_setup::MoveKinect srv;
