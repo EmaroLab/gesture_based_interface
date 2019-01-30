@@ -31,8 +31,13 @@ ConfigPanel::ConfigPanel(QWidget *parent) :
 		tabs[i] = new TabContent(model);
 		ui->tabWidget->addTab(tabs[i], QString("Action %1").arg(i+1));
 		connect(tabs[i], &TabContent::numberOfMappings, 
-						[=](const int &mappings){enableLoadButton(i, mappings);
+                        [=](const int &mappings){enableLoadButton(i, mappings);
 						});
+        connect(tabs[i], &TabContent::mappingRemoved,
+                        [&](){
+                              ++n_topics;
+                              ui->addMappingButton->setEnabled(n_topics);
+                        });
 	}
 	connect(ui->scanButton, &QPushButton::clicked, this, &ConfigPanel::scan);
 	connect(ui->addMappingButton, &QPushButton::clicked, this, &ConfigPanel::addMappingToActiveTab);
@@ -48,7 +53,6 @@ void ConfigPanel::scan(){
   std::regex regex("^\\/([a-zA-Z][0-9a-zA-Z_]*)\\/([0-9a-zA-Z_]+)$"); //to match topics
   std::smatch match;
   ros::master::getTopics(topicMap);
-  int n_topics = 0;
 
   for (int i = 0; i < 6; i++){
     tabs[i]->clear();
@@ -80,21 +84,23 @@ void ConfigPanel::scan(){
     ROS_INFO("Topic %s:", a.first.c_str());
     auto topic = new QStandardItem(a.first.c_str());
     model->appendRow(topic);
-	  for(auto b: a.second){
+    for(auto b: a.second){
       qInfo() << "\t%s:" << b.c_str();
       ROS_INFO("\t%s", b.c_str());
       topic->appendRow(new QStandardItem(b.c_str()));
-	  }
+    }
   }
-	ui->addMappingButton->setEnabled(model->rowCount());
+  ui->addMappingButton->setEnabled(n_topics >= 6);
 }
 
 void ConfigPanel::addMappingToActiveTab(){
-	tabs[ui->tabWidget->currentIndex()]->addMapping();
+  tabs[ui->tabWidget->currentIndex()]->addMapping();
+  --n_topics;
+  ui->addMappingButton->setEnabled(n_topics);
 }
 
 void ConfigPanel::enableLoadButton(int tab, int mappings){
-	isFilled[tab] = mappings > 0; //set array element to true
+  isFilled[tab] = mappings > 0; //set array element to true
 	
   bool ok = true;
   for(int i = 0; i < 6 and ok; i++)
@@ -104,22 +110,22 @@ void ConfigPanel::enableLoadButton(int tab, int mappings){
 }
 
 void ConfigPanel::sendConfig(){
-	ros::NodeHandle n;
-	for(int i = 0; i < 6; i++){
-		auto selections = tabs[i]->getSelectedTopics();
-		qInfo() << "Tab " << i << " mappings: ";
-		std::vector<std::string> serializedTopics;
-		 
-		for(auto selection : selections){
-			QString topic = QString("/%1/%2").arg(selection.first).arg(selection.second);
-			serializedTopics.push_back(topic.toStdString());
-			qInfo() << "\t" << topic;
-		}
-		n.setParam("key_" + std::to_string(i+1) + "_topics", serializedTopics);
-	}
-	// call service /fsm_config of type std_srvs/Trigger
-	
-	ros::ServiceClient client = n.serviceClient<std_srvs::Trigger>("/fsm_config");
-	std_srvs::Trigger trigger;
-	client.call(trigger);
+  ros::NodeHandle n;
+  for(int i = 0; i < 6; i++){
+    auto selections = tabs[i]->getSelectedTopics();
+    qInfo() << "Tab " << i << " mappings: ";
+    std::vector<std::string> serializedTopics;
+
+    for(auto selection : selections){
+      QString topic = QString("/%1/%2").arg(selection.first).arg(selection.second);
+      serializedTopics.push_back(topic.toStdString());
+      qInfo() << "\t" << topic;
+    }
+    n.setParam("key_" + std::to_string(i+1) + "_topics", serializedTopics);
+  }
+  // call service /fsm_config of type std_srvs/Trigger
+
+  ros::ServiceClient client = n.serviceClient<std_srvs::Trigger>("/fsm_config");
+  std_srvs::Trigger trigger;
+  client.call(trigger);
 }

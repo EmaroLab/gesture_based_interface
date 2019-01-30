@@ -29,6 +29,7 @@ private:
 	QStandardItemModel* model;
 	std::map<std::string, std::vector<std::string>> compatibleSubtopics;
 	QVector<bool> isFilled;
+    int n_topics = 0;
 
 private slots:
 	void scan();

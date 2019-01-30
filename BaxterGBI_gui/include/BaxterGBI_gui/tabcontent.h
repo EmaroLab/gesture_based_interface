@@ -30,6 +30,7 @@ private:
 	int count;
 
 signals:
+    void mappingRemoved();
 	void numberOfMappings(int count);
 };
 

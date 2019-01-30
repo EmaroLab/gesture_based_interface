@@ -41,13 +41,12 @@ void TabContent::removeMapping(Mapping* mapping){
 	delete mapping;
 	count--;
 	emit numberOfMappings(count);
+    emit mappingRemoved();
 }
 
 void TabContent::clear(){
-	QLayoutItem* item;
-	for(auto item : mappings){
-		ui->topicsContainer->removeWidget(item);
-		delete item;
+    for(auto mapping : mappings){
+        removeMapping(mapping);
 	}
 	mappings.clear();
     count = 0;
