@@ -44,88 +44,86 @@ public:
      */
     void poseCB(const sensor_msgs::PointCloud2 &input)
     {
-	pcl::PointCloud<pcl::PointXYZ> cloud;
+		pcl::PointCloud<pcl::PointXYZ> cloud;
 
-	pcl::fromROSMsg(input, cloud);
+		pcl::fromROSMsg(input, cloud);
+		
+		if(cloud.size() < 10)
+			return;
 
-	nav_msgs::Odometry msg;
+		nav_msgs::Odometry msg;
+		msg.header.stamp = ros::Time::now();
+		geometry_msgs::Vector3 new_point;
+		float x = 0, y = 0, z = 0;
 
-
-	msg.header.stamp = ros::Time::now();
-
-	geometry_msgs::Vector3 new_point;
-
-
-	float x = 0, y = 0, z = 0;
-
-	for (size_t i = 0; i < cloud.points.size (); i++)
-	{
-		x += cloud.at(i).x;
-		y += cloud.at(i).y;
-		z += cloud.at(i).z;
-	}
-	
-	x = x / (cloud.size() + 0.0);
-	y = y / (cloud.size() + 0.0);
-	z = z / (cloud.size() + 0.0);
+		for (size_t i = 0; i < cloud.points.size (); i++)
+		{
+			x += cloud.at(i).x;
+			y += cloud.at(i).y;
+			z += cloud.at(i).z;
+		}
+		
+		x = x / (cloud.size() + 0.0);
+		y = y / (cloud.size() + 0.0);
+		z = z / (cloud.size() + 0.0);
 
 
-	msg.header.frame_id =  "camera_depth_optical_frame";
-	msg.child_frame_id =  "position_com_frame";
+		msg.header.frame_id =  "camera_depth_optical_frame";
+		msg.child_frame_id =  "position_com_frame";
 
-	msg.pose.pose.orientation.x = 1 ;              	// identity quaternion
-	msg.pose.pose.orientation.y = 0  ;             	// identity quaternion
-	msg.pose.pose.orientation.z = 0   ;            	// identity quaternion
-	msg.pose.pose.orientation.w = 0    ;           	// identity quaternion
-	msg.pose.covariance = {0.001, 0, 0, 0, 0, 0,  	// covariance on x
-							0, 0.001, 0, 0, 0, 0,  	// covariance on y
-							0, 0, 0.001, 0, 0, 0,  	// covariance on z
-							0, 0, 0, 99999, 0, 0,  	// large covariance on rot x
-							0, 0, 0, 0, 99999, 0,  	// large covariance on rot y
-							0, 0, 0, 0, 0, 99999} ; // large covariance on rot z
+		msg.pose.pose.orientation.x = 1 ;              	// identity quaternion
+		msg.pose.pose.orientation.y = 0  ;             	// identity quaternion
+		msg.pose.pose.orientation.z = 0   ;            	// identity quaternion
+		msg.pose.pose.orientation.w = 0    ;           	// identity quaternion
+		msg.pose.covariance = {0.001, 0, 0, 0, 0, 0,  	// covariance on x
+								0, 0.001, 0, 0, 0, 0,  	// covariance on y
+								0, 0, 0.001, 0, 0, 0,  	// covariance on z
+								0, 0, 0, 99999, 0, 0,  	// large covariance on rot x
+								0, 0, 0, 0, 99999, 0,  	// large covariance on rot y
+								0, 0, 0, 0, 0, 99999} ; // large covariance on rot z
 
 
-	tf::StampedTransform transformation;
-	try{    
-		listener.lookupTransform("world_frame", "camera_link",  
-		ros::Time(0.0), transformation);
-	}
+		tf::StampedTransform transformation;
+		try{    
+			listener.lookupTransform("world_frame", "camera_link",  
+			ros::Time(0.0), transformation);
+		}
 
-	catch (tf::TransformException ex){
+		catch (tf::TransformException ex){
 
-		ROS_WARN("Base to camera transform unavailable %s", ex.what());
-	}
-	
-	tf::StampedTransform transformation2;
-	try{    
-		listener.lookupTransform("camera_link", "camera_depth_optical_frame",  
-		ros::Time(0.0), transformation2);
-	}
+			ROS_WARN("Base to camera transform unavailable %s", ex.what());
+		}
+		
+		tf::StampedTransform transformation2;
+		try{    
+			listener.lookupTransform("camera_link", "camera_depth_optical_frame",  
+			ros::Time(0.0), transformation2);
+		}
 
-	catch (tf::TransformException ex){
+		catch (tf::TransformException ex){
 
-		ROS_WARN("Base to camera transform unavailable %s", ex.what());
-	}
-	tf::Vector3 point(x, y, z);
-	tf::Vector3 point_bl =  transformation * transformation2 * point;
+			ROS_WARN("Base to camera transform unavailable %s", ex.what());
+		}
+		tf::Vector3 point(x, y, z);
+		tf::Vector3 point_bl =  transformation * transformation2 * point;
 
-	tf::vector3TFToMsg (point_bl, new_point);
-	
-	
-	msg.pose.pose.position.x = new_point.x;
-	msg.pose.pose.position.y= new_point.y;
-	msg.pose.pose.position.z= new_point.z;
+		tf::vector3TFToMsg (point_bl, new_point);
+		
+		
+		msg.pose.pose.position.x = new_point.x;
+		msg.pose.pose.position.y= new_point.y;
+		msg.pose.pose.position.z= new_point.z;
 
-	com_baxter_pub.publish(msg);
-	
-	// Transformation matrix of com_frame with respect to the Kinect
-	tf::Transform transform;
-    transform.setOrigin(tf::Vector3(x, y, z));  //origin in the center of mass
-    transform.setRotation(tf::Quaternion(0, 0, 0, 1)); //same orientation
-    
-    // Publish the frame
-    static tf::TransformBroadcaster br;
-    br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), msg.header.frame_id , msg.child_frame_id));
+		com_baxter_pub.publish(msg);
+		
+		// Transformation matrix of com_frame with respect to the Kinect
+		tf::Transform transform;
+		transform.setOrigin(tf::Vector3(x, y, z));  //origin in the center of mass
+		transform.setRotation(tf::Quaternion(0, 0, 0, 1)); //same orientation
+		
+		// Publish the frame
+		static tf::TransformBroadcaster br;
+		br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), msg.header.frame_id , msg.child_frame_id));
 }
 
 protected:

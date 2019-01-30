@@ -47,7 +47,7 @@ protected:
 main(int argc, char** argv)
 {
     ros::init(argc, argv, "tf_broadcaster");
-	ros::NodeHandle n;
+	ros::NodeHandle n("~");
 	
 	// position of the Kinect with respect to the control board
 	n.param<double>("x_kinect", x_kinect, 0.3);

@@ -32,7 +32,6 @@ ros::Publisher right_hand_baxter_pub;
 
 ros::ServiceClient client_reset;  
 
-XnUserID operatorId = -1;
 
 void XN_CALLBACK_TYPE User_NewUser(xn::UserGenerator& generator, XnUserID nId, void* pCookie) {
 	ROS_INFO("New User %d", nId);
@@ -45,11 +44,8 @@ void XN_CALLBACK_TYPE User_NewUser(xn::UserGenerator& generator, XnUserID nId, v
 
 void XN_CALLBACK_TYPE User_LostUser(xn::UserGenerator& generator, XnUserID nId, void* pCookie) {
 	ROS_INFO("Lost user %d", nId);
-	if(nId == operatorId){
-		operatorId = -1;
-		std_srvs::Empty srv;
-		client_reset.call(srv);
-	}
+	std_srvs::Empty srv;
+	client_reset.call(srv);
 }
 
 void XN_CALLBACK_TYPE UserCalibration_CalibrationStart(xn::SkeletonCapability& capability, XnUserID nId, void* pCookie) {
@@ -60,13 +56,9 @@ void XN_CALLBACK_TYPE UserCalibration_CalibrationEnd(xn::SkeletonCapability& cap
 	if (bSuccess) {
 		ROS_INFO("Calibration complete, start tracking user %d", nId);
 		g_UserGenerator.GetSkeletonCap().StartTracking(nId);
-		operatorId = nId;
 	}
 	else {
 		ROS_INFO("Calibration failed for user %d", nId);
-		if(nId == operatorId){
-			operatorId = -1;
-		}
 		if (g_bNeedPose)
 			g_UserGenerator.GetPoseDetectionCap().StartPoseDetection(g_strPose, nId);
 		else
@@ -102,24 +94,25 @@ void publishTransform(XnUserID const& user, XnSkeletonJoint const& joint, string
     char child_frame_no[128];
     snprintf(child_frame_no, sizeof(child_frame_no), "%s", child_frame_id.c_str());
 
-    tf::Transform transform;
+    tf::Transform transform, transform_kinect, transform_baxter;
     transform.setOrigin(tf::Vector3(x, y, z));
     transform.setRotation(tf::Quaternion(qx, -qy, -qz, qw));
 
-    // Change from kinect depth camera frame and kinect frame
+    // Change from kinect depth camera frame to kinect frame
     tf::Transform change_frame;
     change_frame.setOrigin(tf::Vector3(0, 0, 0));
     tf::Quaternion frame_rotation;
     frame_rotation.setRPY(M_PI/2, 0, M_PI/2);
     change_frame.setRotation(frame_rotation);
     
-    br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), frame_id, child_frame_no));
+    transform_kinect = change_frame * transform;
+    br.sendTransform(tf::StampedTransform(transform_kinect, ros::Time::now(), frame_id, child_frame_no));
     
     // Publish odometry message onto the right topic
     nav_msgs::Odometry odom_msg;
 	odom_msg.header.stamp = ros::Time::now();
 	odom_msg.header.frame_id = frame_id;
-	tf::poseTFToMsg(transform, odom_msg.pose.pose);
+	tf::poseTFToMsg(transform_kinect, odom_msg.pose.pose);
     if(child_frame_id.compare("head") == 0){
 		head_kinect_pub.publish(odom_msg);
 	}
@@ -130,34 +123,35 @@ void publishTransform(XnUserID const& user, XnSkeletonJoint const& joint, string
 		right_hand_kinect_pub.publish(odom_msg);
 	}
 	
-    tf::TransformListener listener;
     // Trasformation from world_frame to camera_link
+	tf::TransformListener listener;
 	tf::StampedTransform transformation;
 	try{    
-		listener.lookupTransform("world_frame", "camera_link",  
-		ros::Time(0.0), transformation);
+		listener.waitForTransform("world_frame", "camera_link", ros::Time(0), ros::Duration(10.0) );
+		listener.lookupTransform("world_frame", "camera_link", ros::Time(0), transformation);
+		transform_baxter = transformation * change_frame * transform;
+		
+		char* world_frame = "world_frame";
+		br.sendTransform(tf::StampedTransform(transform_baxter, ros::Time::now(), world_frame, child_frame_no));
+		
+		// Publish odometry message onto the right topic
+		odom_msg.header.stamp = ros::Time::now();
+		odom_msg.header.frame_id = "world_frame";
+		tf::poseTFToMsg(transform_baxter, odom_msg.pose.pose);
+		if(child_frame_id.compare("head") == 0){
+			head_baxter_pub.publish(odom_msg);
+		}
+		else if(child_frame_id.compare("left_hand") == 0){
+			left_hand_baxter_pub.publish(odom_msg);
+		}
+		else if(child_frame_id.compare("right_hand") == 0){
+			right_hand_baxter_pub.publish(odom_msg);
+		}
 	}
 	catch (tf::TransformException ex){
 		ROS_WARN("Transform unavailable %s", ex.what());
 	}
 	
-    transform = transformation * change_frame * transform;
-    
-    br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world_frame", child_frame_no));
-    
-    // Publish odometry message onto the right topic
-	odom_msg.header.stamp = ros::Time::now();
-	odom_msg.header.frame_id = "world_frame";
-	tf::poseTFToMsg(transform, odom_msg.pose.pose);
-    if(child_frame_id.compare("head") == 0){
-		head_baxter_pub.publish(odom_msg);
-	}
-	else if(child_frame_id.compare("left_hand") == 0){
-		left_hand_baxter_pub.publish(odom_msg);
-	}
-	else if(child_frame_id.compare("right_hand") == 0){
-		right_hand_baxter_pub.publish(odom_msg);
-	}
     
 }
 
