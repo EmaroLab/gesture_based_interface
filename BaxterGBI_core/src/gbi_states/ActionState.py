@@ -26,7 +26,6 @@ class ActionState(BlockingState):
         ## attribute of type of action
         self.action = action
         ## attribute for the timeout
-        self.timeout_t=time.time()+self.timeout
 
     ## method user_left
     #  overide of BlockingState.user_left
@@ -38,7 +37,8 @@ class ActionState(BlockingState):
     #  overide of BlockingState.user_detected
     #  @param userdata data in input to the state
     def user_detected(self, userdata):
-        self.timeout_t=time.time()+self.timeout
+        self.t.cancel()
+        self.t.start()
         return None
 
     ## method publish_state

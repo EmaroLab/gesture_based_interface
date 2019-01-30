@@ -30,7 +30,6 @@ class MenuState(BlockingState):
         self.fixed_options = fixed_options
         self.selection = 0
         ## timeout_t for the MenuState
-        self.timeout_t=time.time()+self.timeout
 
     ## method action_1
     #  @param userdata 
@@ -80,7 +79,8 @@ class MenuState(BlockingState):
     #  override of BlockingState.action_1
     #  reset the timeout_t
     def user_detected(self, userdata):
-        self.timeout_t=time.time()+self.timeout
+        self.t.cancel()
+        self.t.start()
         return None
 
     ## method execute

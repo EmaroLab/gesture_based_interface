@@ -61,7 +61,7 @@ class FSMThread(threading.Thread):
                                     transitions={'user_missed':'WAIT_USER',
                                                 'selection':'PLAY',
                                                 'back':'MAIN_MENU',
-                                                'remove': 'REMOVE_MENU_RECORD',
+                                                'remove': 'REMOVE_MENU_PLAY',
                                                 'preempted':'EXIT'},
                                     remapping={'filename':'sm_data'})
             smach.StateMachine.add('REMOVE_MENU_PLAY', RemoveMenuState(self.event),
