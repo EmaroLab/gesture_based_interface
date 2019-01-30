@@ -36,7 +36,7 @@ public:
     {
         pcl_sub = nh.subscribe("/camera/pcl_filtered", 10, &PoseEstimation::poseCB, this);
 
-        pcl_pub = nh.advertise<nav_msgs::Odometry>("/odometry/kinect/center_of_mass", 10);
+        com_baxter_pub = nh.advertise<nav_msgs::Odometry>("/odometry/baxter/center_of_mass", 10);
     }
     /** 
      * Callback function
@@ -116,7 +116,7 @@ public:
 	msg.pose.pose.position.y= new_point.y;
 	msg.pose.pose.position.z= new_point.z;
 
-	pcl_pub.publish(msg);
+	com_baxter_pub.publish(msg);
 	
 	// Transformation matrix of com_frame with respect to the Kinect
 	tf::Transform transform;
@@ -131,7 +131,7 @@ public:
 protected:
     ros::NodeHandle nh;
     ros::Subscriber pcl_sub; /**< Subscriber to /camera/pcl_filtered */
-    ros::Publisher pcl_pub; /**< Publisher of odometry data on /odometry/kinect/center_of_mass */
+    ros::Publisher com_baxter_pub; /**< Publisher of odometry data on /odometry/baxter/center_of_mass */
 };
 /** 
  * Main:

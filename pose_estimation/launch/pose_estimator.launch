@@ -8,7 +8,7 @@
 
 	<node name="pcl_background_segmentation" pkg ="pose_estimation" type="pcl_background_segmentation" output="screen">
 		<param name="granularity" value="1"/>
-		<param name="delta" value="0.08"/>
+		<param name="delta" value="0.12"/>
 	</node>
 	
 	<node name="pcl_filter" pkg ="pose_estimation" type="pcl_filter" output="screen">

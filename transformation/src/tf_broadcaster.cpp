@@ -73,8 +73,7 @@ main(int argc, char** argv)
 		frame_rotation.setRPY(0, rad_angle, 0); // pitch = current tilt angle of the Kinect
 		change_frame.setRotation(frame_rotation);
 		
-		broadcaster.sendTransform(
-			tf::StampedTransform(change_frame, ros::Time::now(), "world_frame", "camera_link"));
+		broadcaster.sendTransform(tf::StampedTransform(change_frame, ros::Time::now(), "world_frame", "camera_link"));
 				
 		ros::spinOnce();
 		r.sleep();

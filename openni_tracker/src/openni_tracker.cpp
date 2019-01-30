@@ -20,9 +20,13 @@ xn::UserGenerator  g_UserGenerator;
 XnBool g_bNeedPose   = FALSE;
 XnChar g_strPose[20] = "";
 
-ros::Publisher head_pub;
-ros::Publisher left_hand_pub;
-ros::Publisher right_hand_pub;
+ros::Publisher head_kinect_pub;
+ros::Publisher left_hand_kinect_pub;
+ros::Publisher right_hand_kinect_pub;
+
+ros::Publisher head_baxter_pub;
+ros::Publisher left_hand_baxter_pub;
+ros::Publisher right_hand_baxter_pub;
 
 void XN_CALLBACK_TYPE User_NewUser(xn::UserGenerator& generator, XnUserID nId, void* pCookie) {
 	ROS_INFO("New User %d", nId);
@@ -94,14 +98,6 @@ void publishTransform(XnUserID const& user, XnSkeletonJoint const& joint, string
     frame_rotation.setRPY(M_PI/2, 0, M_PI/2);
     change_frame.setRotation(frame_rotation);
     
-    // Trasformation from world_frame to camera_link
-	tf::StampedTransform transformation;
-	try{    
-		listener.lookupTransform("world_frame", "camera_link",  
-		ros::Time(0.0), transformation);
-	}
-    transform = transformation * change_frame * transform;
-    
     br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), frame_id, child_frame_no));
     
     // Publish odometry message onto the right topic
@@ -110,13 +106,37 @@ void publishTransform(XnUserID const& user, XnSkeletonJoint const& joint, string
 	odom_msg.header.frame_id = frame_id;
 	tf::poseTFToMsg(transform, odom_msg.pose.pose);
     if(child_frame_id.compare("head") == 0){
-		head_pub.publish(odom_msg);
+		head_kinect_pub.publish(odom_msg);
 	}
 	else if(child_frame_id.compare("left_hand") == 0){
-		left_hand_pub.publish(odom_msg);
+		left_hand_kinect_pub.publish(odom_msg);
 	}
 	else if(child_frame_id.compare("right_hand") == 0){
-		right_hand_pub.publish(odom_msg);
+		right_hand_kinect_pub.publish(odom_msg);
+	}
+	
+    // Trasformation from world_frame to camera_link
+	tf::StampedTransform transformation;
+	try{    
+		listener.lookupTransform("world_frame", "camera_link",  
+		ros::Time(0.0), transformation);
+	}
+    transform = transformation * change_frame * transform;
+    
+    br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world_frame", child_frame_no));
+    
+    // Publish odometry message onto the right topic
+	odom_msg.header.stamp = ros::Time::now();
+	odom_msg.header.frame_id = "world_frame";
+	tf::poseTFToMsg(transform, odom_msg.pose.pose);
+    if(child_frame_id.compare("head") == 0){
+		head_baxter_pub.publish(odom_msg);
+	}
+	else if(child_frame_id.compare("left_hand") == 0){
+		left_hand_baxter_pub.publish(odom_msg);
+	}
+	else if(child_frame_id.compare("right_hand") == 0){
+		right_hand_baxter_pub.publish(odom_msg);
 	}
     
 }
@@ -147,9 +167,13 @@ int main(int argc, char **argv) {
     ros::init(argc, argv, "openni_tracker");
     ros::NodeHandle nh;
     
-	head_pub = nh.advertise<nav_msgs::Odometry>("/odometry/kinect/head", 10);
-	left_hand_pub = nh.advertise<nav_msgs::Odometry>("/odometry/kinect/right_hand", 10);
-	right_hand_pub = nh.advertise<nav_msgs::Odometry>("/odometry/kinect/left_hand", 10);
+	head_kinect_pub = nh.advertise<nav_msgs::Odometry>("/odometry/kinect/head", 10);
+	left_kinect_hand_pub = nh.advertise<nav_msgs::Odometry>("/odometry/kinect/right_hand", 10);
+	right_hand_kinect_pub = nh.advertise<nav_msgs::Odometry>("/odometry/kinect/left_hand", 10);
+	
+	head_baxter_pub = nh.advertise<nav_msgs::Odometry>("/odometry/baxter/head", 10);
+	left_hand_baxter_pub = nh.advertise<nav_msgs::Odometry>("/odometry/baxter/right_hand", 10);
+	right_hand_baxter_pub = nh.advertise<nav_msgs::Odometry>("/odometry/baxter/left_hand", 10);
 
     string configFilename = ros::package::getPath("openni_tracker") + "/openni_tracker.xml";
     XnStatus nRetVal = g_Context.InitFromXmlFile(configFilename.c_str());

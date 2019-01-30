@@ -21,7 +21,9 @@ std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr> backgrounds (61);
 pcl::PointCloud<pcl::PointXYZ>::Ptr actualImage(new pcl::PointCloud<pcl::PointXYZ>);
 
 double delta = 0.08;
+int granularity = 1;
 int angle = 0;
+
 /** @brief Class to implement Background Segmentation
  * 
  *  The class removes the background, associated to the current Kinect angle, from the raw Point Cloud acquired by the Kinect and saved in /camera/depth/points.
@@ -50,8 +52,9 @@ class PclBackgroundSegmentation{
         sensor_msgs::PointCloud2 output;
         pcl::fromROSMsg(input, *actualImage);
 
+		int index = (angle + 30) / ((int)granularity);
         for (size_t i = 0; i < actualImage->points.size (); ++i){
-                if( abs(actualImage->points[i].z - backgrounds[angle + 30]->points[i].z) < delta){
+                if( abs(actualImage->points[i].z - backgrounds[index]->points[i].z) < delta){
                         actualImage->points[i].x = NAN;
                         actualImage->points[i].y = NAN;
                         actualImage->points[i].z = NAN;
@@ -92,8 +95,9 @@ main(int argc, char** argv)
     ros::init(argc, argv, "pcl_background_segmentation");
     ros::NodeHandle n("~");
     n.param<double>("delta", delta, 0.08);
+    n.param<int>("granularity", granularity, 1);
+    
     const char *homedir;
-
     if ((homedir = getenv("HOME")) == NULL) {
             homedir = getpwuid(getuid())->pw_dir;
     }
@@ -101,12 +105,15 @@ main(int argc, char** argv)
     std::string prefix = "/.kinect_environments/environment";
     std::string suffix = ".pcd";
     std::string name;
-    for(int i = -30; i <= 30; i++)
+    
+    int index = 0;
+    for(int i = -30; i <= 30; i+=granularity)
     {
         pcl::PointCloud<pcl::PointXYZ>::Ptr curObj (new pcl::PointCloud<pcl::PointXYZ>);
-        backgrounds[i + 30] = curObj;
+        index = (i + 30) / granularity;
+        backgrounds[index] = curObj;
         name = homedir + prefix + std::to_string(i) + suffix;
-        if (pcl::io::loadPCDFile<pcl::PointXYZ> (name, *(backgrounds[i + 30])) == -1) {
+        if (pcl::io::loadPCDFile<pcl::PointXYZ> (name, *(backgrounds[index])) == -1) {
                 PCL_ERROR ("Couldn't read file \n");
                 return (-1);
         }

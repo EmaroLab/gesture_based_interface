@@ -151,12 +151,58 @@ bool regulateHead(kinect_setup::RegulateKinectByHead::Request  &req,
  * Main:
  * Initialization of the services for regulating the orientation of the Kinect according to the position of the wrist or the head.
  */
+ 
+ bool resetKinect(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response) {
+{
+	float angle = 20;
+	float min_z = 0.01;
+	float max_z = 4;
+	float min_y = -1;
+	float max_y = 1;
+	float min_x = -1;
+	float max_x = 1;
+	
+	kinect_setup::MoveKinect srv;
+	srv.request.angle = angle;
+	
+	client_move.call(srv);
+	
+	pose_estimation::SetFilterParam srv2;
+	
+	srv2.request.param_name = "min_z";
+	srv2.request.value = min_z;
+	client_filter.call(srv2);
+	
+	srv2.request.param_name = "max_z";
+	srv2.request.value = max_z;
+	client_filter.call(srv2);
+	
+	srv2.request.param_name = "min_y";
+	srv2.request.value = min_y;
+	client_filter.call(srv2);
+	
+	srv2.request.param_name = "max_y";
+	srv2.request.value = max_y;
+	client_filter.call(srv2);
+	
+	srv2.request.param_name = "min_x";
+	srv2.request.value = min_x;
+	client_filter.call(srv2);
+	
+	srv2.request.param_name = "max_x";
+	srv2.request.value = max_x;
+	client_filter.call(srv2);
+	
+	return true;
+}
+
 main(int argc, char** argv)
 {
     ros::init(argc, argv, "kinect_regulation_server");
 	ros::NodeHandle n;
 	ros::ServiceServer service = n.advertiseService("regulate_kinect_by_wrist", regulateWrist);
 	ros::ServiceServer service2 = n.advertiseService("regulate_kinect_by_head", regulateHead);
+	ros::ServiceServer service3 = n.advertiseService("reset_kinect_filters", resetKinect);
 	
 	client_move = n.serviceClient<kinect_setup::MoveKinect>("move_kinect");
 	client_filter = n.serviceClient<pose_estimation::SetFilterParam>("pcl_filter/set_filter_param");

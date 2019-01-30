@@ -17,7 +17,7 @@
  * @file
  */
  
-double granularity = 1.0;
+int granularity = 1;
 
 float angle = -30.0;
 
@@ -97,7 +97,7 @@ int main(int argc, char **argv)
 	PclRecord handler;
 
 	ros::NodeHandle n;
-	n.param<double>("granularity", granularity, 1.0); //!!!
+	n.param<int>("granularity", granularity, 1); 
 
 	ros::AsyncSpinner spinner(4); // Use 4 threads
 	spinner.start();
@@ -108,11 +108,8 @@ int main(int argc, char **argv)
 	srv.request.angle = angle;
 	client_move.call(srv);
 	
-	ros::WallDuration(1).sleep(); 
-	
-	srv.request.angle = angle;
-	client_move.call(srv);
 	ros::WallDuration(4).sleep(); 
+	ros::spinOnce();
 		
 	ROS_INFO ("Ready to start");
 	while (ros::ok())
