@@ -115,12 +115,17 @@ void publishTransform(XnUserID const& user, XnSkeletonJoint const& joint, string
 		right_hand_kinect_pub.publish(odom_msg);
 	}
 	
+    tf::TransformListener listener;
     // Trasformation from world_frame to camera_link
 	tf::StampedTransform transformation;
 	try{    
 		listener.lookupTransform("world_frame", "camera_link",  
 		ros::Time(0.0), transformation);
 	}
+	catch (tf::TransformException ex){
+		ROS_WARN("Transform unavailable %s", ex.what());
+	}
+	
     transform = transformation * change_frame * transform;
     
     br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world_frame", child_frame_no));
@@ -168,7 +173,7 @@ int main(int argc, char **argv) {
     ros::NodeHandle nh;
     
 	head_kinect_pub = nh.advertise<nav_msgs::Odometry>("/odometry/kinect/head", 10);
-	left_kinect_hand_pub = nh.advertise<nav_msgs::Odometry>("/odometry/kinect/right_hand", 10);
+	left_hand_kinect_pub = nh.advertise<nav_msgs::Odometry>("/odometry/kinect/right_hand", 10);
 	right_hand_kinect_pub = nh.advertise<nav_msgs::Odometry>("/odometry/kinect/left_hand", 10);
 	
 	head_baxter_pub = nh.advertise<nav_msgs::Odometry>("/odometry/baxter/head", 10);

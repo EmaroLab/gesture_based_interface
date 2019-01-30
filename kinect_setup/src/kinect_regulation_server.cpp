@@ -13,6 +13,7 @@
 #include "kinect_setup/RegulateKinectByWrist.h"
 #include "pose_estimation/SetFilterParam.h"
 #include <math.h>
+#include <std_srvs/Empty.h>
 
 /** 
  * Publisher, to control the tilt angle of the Kinect
@@ -152,7 +153,7 @@ bool regulateHead(kinect_setup::RegulateKinectByHead::Request  &req,
  * Initialization of the services for regulating the orientation of the Kinect according to the position of the wrist or the head.
  */
  
- bool resetKinect(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response) {
+bool resetKinect(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response)
 {
 	float angle = 20;
 	float min_z = 0.01;
@@ -196,7 +197,7 @@ bool regulateHead(kinect_setup::RegulateKinectByHead::Request  &req,
 	return true;
 }
 
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     ros::init(argc, argv, "kinect_regulation_server");
 	ros::NodeHandle n;
