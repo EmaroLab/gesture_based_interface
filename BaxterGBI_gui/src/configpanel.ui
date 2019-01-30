@@ -13,6 +13,22 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">
+QPushButton{
+		font: 17pt Comic Sans MS;
+		background-color:#FFFEFE;
+		height: 50px;
+		border-radius:10px;
+		border: 2px solid #FF483E;
+		padding: 6px;
+		margin:2px;
+}
+
+QPushButton:hover{
+	background-color: #FFC9C3;
+}</string>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">

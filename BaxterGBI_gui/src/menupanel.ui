@@ -77,7 +77,7 @@ font-style:bold;
 </string>
        </property>
        <property name="text">
-        <string>TextLabel</string>
+        <string>Menu Title</string>
        </property>
       </widget>
      </item>
