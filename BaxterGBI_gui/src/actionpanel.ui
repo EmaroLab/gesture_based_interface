@@ -37,7 +37,7 @@
         <bool>false</bool>
        </property>
        <property name="text">
-        <string>image</string>
+        <string>Image</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -67,7 +67,7 @@
 }</string>
      </property>
      <property name="text">
-      <string>message</string>
+      <string>Message</string>
      </property>
      <property name="textFormat">
       <enum>Qt::AutoText</enum>
