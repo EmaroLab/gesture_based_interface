@@ -14,7 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   laser_geometry
   roslaunch
   pcl_ros
-
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -99,7 +99,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES retrorov_model_bathymetric
- CATKIN_DEPENDS pcl pcl_ros roscpp rospy sensor_msgs std_msgs message_runtime geometry_msgs
+ CATKIN_DEPENDS pcl_ros roscpp rospy sensor_msgs std_msgs message_runtime geometry_msgs
 #  DEPENDS system_lib
 )
 
@@ -127,7 +127,8 @@ add_executable(kinect_regulation_server src/kinect_regulation_server.cpp)
  
  ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-# add_dependencies(retrorov_model_bathymetric_node retrorov_model_bathymetric_generate_messages_cpp)
+add_dependencies(kinect_move_server kinect_setup_generate_messages_cpp)
+add_dependencies(kinect_regulation_server kinect_setup_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(kinect_regulation_server ${catkin_LIBRARIES} ${PCL_LIBRARIES})
