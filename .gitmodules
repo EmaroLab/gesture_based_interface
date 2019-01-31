@@ -1,0 +1,3 @@
+[submodule "openni_camera"]
+	path = openni_camera
+	url = https://github.com/ros-drivers/openni_camera.git
