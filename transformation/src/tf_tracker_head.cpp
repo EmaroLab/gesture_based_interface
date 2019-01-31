@@ -6,6 +6,7 @@
 #include <tf/transform_listener.h>
 #include <geometry_msgs/Vector3.h>
 #include <tf/transform_datatypes.h>
+#include <std_srvs/Empty.h>
 /**
  * @file
  */
@@ -14,6 +15,7 @@ ros::Publisher head_kinect_pub;  /**< Publisher to /odometry/kinect/head */
 
 ros::Publisher head_baxter_pub;   /**< Publisher to /odometry/baxter/head */
     
+ros::ServiceClient client_reset;  /**< Client to reset filters */
 /**
  * Main function: 
  * 
@@ -32,17 +34,22 @@ main(int argc, char** argv)
 	// Initilize Publishers for the odometry wrt Baxter
 	head_baxter_pub = nh.advertise<nav_msgs::Odometry>("/odometry/baxter/head", 10);
 	
+    // Initialize Client to reset kinect
+    client_reset = nh.serviceClient<std_srvs::Empty>("reset_kinect_filters");  
+    
 	tf::StampedTransform t_camera_to_head;
 	tf::StampedTransform t_world_to_camera;
 	
 	tf::Transform transform_kinect;
 	tf::Transform transform_baxter;
 	
+	ros::Rate r(50);
 	
-	ros::Rate r(10000);
+	bool tracking = false;
+
 	while(ros::ok()){
 		try{    
-			listener.waitForTransform("camera_link", "head", ros::Time::now(), ros::Duration(3.0) );
+			listener.waitForTransform("camera_link", "head", ros::Time::now(), ros::Duration(10.0) );
 			listener.lookupTransform("camera_link", "head", ros::Time(0), t_camera_to_head);
 			
 			// Update tranformation from camera_link frame (kinect) to head frame
@@ -54,6 +61,8 @@ main(int argc, char** argv)
 			odom_msg.header.frame_id = "camera_link";
 			odom_msg.child_frame_id = "head";
 			tf::poseTFToMsg(transform_kinect, odom_msg.pose.pose);
+			
+			tracking = true;
 			
 			// publish message
 			head_kinect_pub.publish(odom_msg);
@@ -82,6 +91,12 @@ main(int argc, char** argv)
 		}
 		catch (tf::TransformException ex){
 			ROS_WARN("Transform unavailable %s", ex.what());
+			
+			if(tracking){
+				std_srvs::Empty srv;
+				client_reset.call(srv);
+				tracking = false;
+			}
 		}
 		
 		ros::spinOnce();

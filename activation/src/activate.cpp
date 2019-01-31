@@ -13,7 +13,7 @@ using namespace std;
 // Flags
 bool beacon_presence = false;
 bool attention = false;
-bool secure = false;
+bool secure = true;
 
 // Parameters
 double security_distance = 1.5;

@@ -43,7 +43,7 @@ main(int argc, char** argv)
 	ros::Rate r(10000);
 	while(ros::ok()){
 		try{    
-			listener.waitForTransform("camera_link", "right_hand", ros::Time::now(), ros::Duration(3.0) );
+			listener.waitForTransform("camera_link", "right_hand", ros::Time::now(), ros::Duration(10.0) );
 			listener.lookupTransform("camera_link", "right_hand", ros::Time(0), t_camera_to_right_hand);
 			
 			// Update tranformation from camera_link frame (kinect) to head frame
@@ -64,9 +64,6 @@ main(int argc, char** argv)
 				listener.lookupTransform("world_frame", "camera_link", ros::Time(0), t_world_to_camera);
 				// Update tranformation from world frame (Baxter) to head frame
 				transform_baxter = t_world_to_camera * transform_kinect;
-				
-				// Publish in broadcast the transformation
-				br.sendTransform(tf::StampedTransform(transform_baxter, ros::Time::now(), "world_frame", "right_hand"));
 
 				// Inizialize odometry message (wrt Baxter)
 				odom_msg.header.stamp = ros::Time::now();
