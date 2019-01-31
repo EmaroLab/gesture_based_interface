@@ -24,8 +24,7 @@ class BlockingState(smach.State):
         self.type = None
         ## timeout for the user presence
         self.timeout=5
-        self.t = Tim
-        er(self.timeout, self.timeout_cb)
+        self.t = Timer(self.timeout, self.timeout_cb)
         ## publisher of topic fsm_status
         self.pub = rospy.Publisher('fsm_status', pub_status.status, queue_size=10)
         ## message status
