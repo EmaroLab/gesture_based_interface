@@ -113,7 +113,7 @@ main(int argc, char** argv)
         backgrounds[index] = curObj;
         name = homedir + prefix + std::to_string(i) + suffix;
         if (pcl::io::loadPCDFile<pcl::PointXYZ> (name, *(backgrounds[index])) == -1) {
-                PCL_ERROR ("Couldn't read file \n");
+                PCL_ERROR ("Couldn't read file");
                 return (-1);
         }
     }

@@ -74,7 +74,7 @@ link_directories(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES retrorov_model_bathymetric
- CATKIN_DEPENDS pcl pcl_ros roscpp rospy sensor_msgs std_msgs message_runtime geometry_msgs
+ CATKIN_DEPENDS pcl_ros roscpp rospy sensor_msgs std_msgs message_runtime geometry_msgs
 #  DEPENDS system_lib
 )
 
@@ -97,6 +97,9 @@ include_directories(
 ## Declare a cpp executable
 
 add_executable(tf_broadcaster src/tf_broadcaster.cpp)
+add_executable(tf_tracker_head src/tf_tracker_head.cpp)
+add_executable(tf_tracker_left_hand src/tf_tracker_left_hand.cpp)
+add_executable(tf_tracker_right_hand src/tf_tracker_right_hand.cpp)
 
  
  ## Add cmake target dependencies of the executable/library
@@ -105,6 +108,9 @@ add_executable(tf_broadcaster src/tf_broadcaster.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(tf_broadcaster ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+target_link_libraries(tf_tracker_head ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+target_link_libraries(tf_tracker_left_hand ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+target_link_libraries(tf_tracker_right_hand ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 #############
 ## Install ##
 #############

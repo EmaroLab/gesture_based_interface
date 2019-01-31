@@ -8,7 +8,7 @@
 	</node>
 
 	<node name="pcl_background_segmentation" pkg ="pose_estimation" type="pcl_background_segmentation" output="screen">
-		<param name="granularity" value="12"/>
+		<param name="granularity" value="5"/>
 		<param name="delta" value="0.12"/>
 	</node>
 	
@@ -50,7 +50,6 @@
 		<param name="y_kinect" value="0.3"/>
 		<param name="z_kinect" value="0.3"/>
 	</node>
-
 
 	<node name="activate" pkg="activation" type="activate" output="screen">
 		<param name="security_distance" value="1.0"/>

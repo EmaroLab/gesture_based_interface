@@ -35,7 +35,11 @@ class PclRecord{
 	 * - save environments in ~/.kinect_environments
 	 */
 	PclRecord(){
-                pcl_sub = nh.subscribe("/camera/depth/points", 10, &PclRecord::PclRecordCB, this);
+		pcl_sub = nh.subscribe("/camera/depth/points", 10, &PclRecord::PclRecordCB, this);
+		
+		if ((homedir = getenv("HOME")) == NULL) {
+			homedir = getpwuid(getuid())->pw_dir;
+		}
 	}
 	/** 
 	 * Callback function to save environments in a file environment<angle>.pcd in the folder /.kinect_environments
@@ -50,21 +54,19 @@ class PclRecord{
 			return;
 		go = 0;
 		
-		if ((homedir = getenv("HOME")) == NULL) {
-			homedir = getpwuid(getuid())->pw_dir;
-		}
-		
 		print_angle = (int)angle;
-		ss2 << homedir << "/.kinect_environments/environment" << print_angle << ".pcd";
+		save_path << homedir << "/.kinect_environments/environment" << print_angle << ".pcd";
 		
-		ROS_INFO ("Data saved to %s", ss2.str ().c_str ());
-		pcl::io::savePCDFile (ss2.str (), *cloud, Eigen::Vector4f::Zero (), Eigen::Quaternionf::Identity (), false);
+		ROS_INFO ("Data saved to %s", save_path.str ().c_str ());
+		pcl::io::savePCDFile (save_path.str (), *cloud, Eigen::Vector4f::Zero (), Eigen::Quaternionf::Identity (), false);
+		
+		save_path.str(std::string());
 	}
 
 	protected:		
-		std::stringstream ss2;
-		int print_angle;
+		std::stringstream save_path;
 		const char *homedir;
+		int print_angle;
 		ros::NodeHandle nh;
         ros::Subscriber pcl_sub; /**< Subscriber to /camera/depth/points */
 
