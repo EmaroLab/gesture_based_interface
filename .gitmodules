@@ -1,3 +1,6 @@
 [submodule "openni_camera"]
 	path = openni_camera
 	url = https://github.com/ros-drivers/openni_camera.git
+[submodule "kinect_aux"]
+	path = kinect_aux
+	url = https://github.com/muhrix/kinect_aux.git
