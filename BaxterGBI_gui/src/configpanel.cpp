@@ -99,6 +99,7 @@ void ConfigPanel::addMappingToActiveTab(){
   ui->addMappingButton->setEnabled(n_topics);
 }
 
+
 void ConfigPanel::enableLoadButton(int tab, int mappings){
   isFilled[tab] = mappings > 0; //set array element to true
 	

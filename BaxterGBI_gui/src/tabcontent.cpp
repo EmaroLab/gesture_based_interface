@@ -26,7 +26,7 @@ QVector<QPair<QString, QString>> TabContent::getSelectedTopics(){
 }
 
 void TabContent::addMapping(){
-	Mapping *mapping = new Mapping(model);
+    Mapping *mapping = new Mapping(model);
 	mappings.append(mapping);
 	ui->topicsContainer->addWidget(mapping);
 	connect(mapping, &Mapping::removed, this, &TabContent::removeMapping);
@@ -36,19 +36,15 @@ void TabContent::addMapping(){
 
 void TabContent::removeMapping(Mapping* mapping){
 	ui->topicsContainer->removeWidget(mapping);
-	mapping->setParent(nullptr);
-	mappings.removeOne(mapping);
-	delete mapping;
-	count--;
-	emit numberOfMappings(count);
+    //mapping->setParent(nullptr);
+    mappings.removeOne(mapping);
+    count--;
+    delete mapping;
+    emit numberOfMappings(count);
     emit mappingRemoved();
 }
 
 void TabContent::clear(){
-    for(auto mapping : mappings){
-        removeMapping(mapping);
-	}
-	mappings.clear();
-    count = 0;
-    emit numberOfMappings(count);
+    while(not mappings.isEmpty())
+        removeMapping(mappings[0]);
 }
