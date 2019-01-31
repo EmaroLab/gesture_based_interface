@@ -4,11 +4,8 @@
 #include <pcl_conversions/pcl_conversions.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <geometry_msgs/Vector3.h>
-#include <pcl/common/centroid.h>
-#include <iostream>
 #include <nav_msgs/Odometry.h>
 #include <tf/transform_listener.h>
-#include <geometry_msgs/Vector3.h>
 #include <tf/transform_datatypes.h>
 #include <tf/transform_broadcaster.h>
 /**
@@ -28,8 +25,8 @@ public:
     tf::TransformListener listener;
      
     /** Handler:
-     * - subscribe to /camera/pcl_filtered to get filtered point cloud sent by plc_filter
-     * - publish odometry data on /odometry/kinect/center_of_mass
+     * - subscribe to /camera/pcl_filtered to get filtered point cloud sent by pcl_filter
+     * - publish odometry data on /odometry/baxter/center_of_mass
      * - publish a frame with origin in the computed center of mass and the same orientation of the Kinect 
      */
     PoseEstimation()
@@ -44,90 +41,87 @@ public:
      */
     void poseCB(const sensor_msgs::PointCloud2 &input)
     {
-		pcl::PointCloud<pcl::PointXYZ> cloud;
-
 		pcl::fromROSMsg(input, cloud);
 		
-		if(cloud.size() < 10)
+		if(cloud.size() < 25)
 			return;
 
-		nav_msgs::Odometry msg;
 		msg.header.stamp = ros::Time::now();
-		geometry_msgs::Vector3 new_point;
-		float x = 0, y = 0, z = 0;
+		x = 0, y = 0, z = 0;
 
+		// Compute Center of Mass from statistical mean of all points
 		for (size_t i = 0; i < cloud.points.size (); i++)
 		{
 			x += cloud.at(i).x;
 			y += cloud.at(i).y;
 			z += cloud.at(i).z;
 		}
-		
 		x = x / (cloud.size() + 0.0);
 		y = y / (cloud.size() + 0.0);
 		z = z / (cloud.size() + 0.0);
 
-
 		msg.header.frame_id =  "camera_depth_optical_frame";
 		msg.child_frame_id =  "position_com_frame";
 
-		msg.pose.pose.orientation.x = 1 ;              	// identity quaternion
-		msg.pose.pose.orientation.y = 0  ;             	// identity quaternion
-		msg.pose.pose.orientation.z = 0   ;            	// identity quaternion
-		msg.pose.pose.orientation.w = 0    ;           	// identity quaternion
+		msg.pose.pose.orientation.x = 0;              	// identity quaternion
+		msg.pose.pose.orientation.y = 0;             	// identity quaternion
+		msg.pose.pose.orientation.z = 0;            	// identity quaternion
+		msg.pose.pose.orientation.w = 1;           		// identity quaternion
 		msg.pose.covariance = {0.001, 0, 0, 0, 0, 0,  	// covariance on x
 								0, 0.001, 0, 0, 0, 0,  	// covariance on y
 								0, 0, 0.001, 0, 0, 0,  	// covariance on z
-								0, 0, 0, 99999, 0, 0,  	// large covariance on rot x
-								0, 0, 0, 0, 99999, 0,  	// large covariance on rot y
-								0, 0, 0, 0, 0, 99999} ; // large covariance on rot z
+								0, 0, 0, 99999, 0, 0,  	// large covariance on rot x (not calculated)
+								0, 0, 0, 0, 99999, 0,  	// large covariance on rot y (not calculated)
+								0, 0, 0, 0, 0, 99999} ; // large covariance on rot z (not calculated)
 
-
-		tf::StampedTransform transformation;
 		try{    
-			listener.lookupTransform("world_frame", "camera_link",  
-			ros::Time(0.0), transformation);
+			listener.waitForTransform("world_frame", "camera_link", ros::Time(0), ros::Duration(10.0) );
+			listener.lookupTransform("world_frame", "camera_link", ros::Time(0), t_world_to_camera);
+			
+			try{    
+				listener.waitForTransform("camera_link", "camera_depth_optical_frame", ros::Time(0), ros::Duration(10.0) );
+				listener.lookupTransform("camera_link", "camera_depth_optical_frame",  ros::Time(0), t_camera_to_depth);
+				tf::Vector3 point(x, y, z);
+				tf::Vector3 point_bl =  t_world_to_camera * t_camera_to_depth * point;
+
+				tf::vector3TFToMsg (point_bl, new_point);
+				
+				// Publish Odometry message with respect to the world frame
+				msg.pose.pose.position.x = new_point.x;
+				msg.pose.pose.position.y= new_point.y;
+				msg.pose.pose.position.z= new_point.z;
+				com_baxter_pub.publish(msg);
+
+				// Transformation matrix of com_frame with respect to the camera
+				tf::Transform transform;
+				transform.setOrigin(tf::Vector3(x, y, z));  //origin in the center of mass
+				transform.setRotation(tf::Quaternion(0, 0, 0, 1)); //same orientation
+
+				// Publish the frame
+				br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), msg.header.frame_id , msg.child_frame_id));
+			}
+			catch (tf::TransformException ex){
+				ROS_WARN("Base to camera transform unavailable %s", ex.what());
+			}
 		}
 
 		catch (tf::TransformException ex){
 
 			ROS_WARN("Base to camera transform unavailable %s", ex.what());
-		}
-		
-		tf::StampedTransform transformation2;
-		try{    
-			listener.lookupTransform("camera_link", "camera_depth_optical_frame",  
-			ros::Time(0.0), transformation2);
-		}
-
-		catch (tf::TransformException ex){
-
-			ROS_WARN("Base to camera transform unavailable %s", ex.what());
-		}
-		tf::Vector3 point(x, y, z);
-		tf::Vector3 point_bl =  transformation * transformation2 * point;
-
-		tf::vector3TFToMsg (point_bl, new_point);
-		
-		
-		msg.pose.pose.position.x = new_point.x;
-		msg.pose.pose.position.y= new_point.y;
-		msg.pose.pose.position.z= new_point.z;
-
-		com_baxter_pub.publish(msg);
-		
-		// Transformation matrix of com_frame with respect to the Kinect
-		tf::Transform transform;
-		transform.setOrigin(tf::Vector3(x, y, z));  //origin in the center of mass
-		transform.setRotation(tf::Quaternion(0, 0, 0, 1)); //same orientation
-		
-		// Publish the frame
-		static tf::TransformBroadcaster br;
-		br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), msg.header.frame_id , msg.child_frame_id));
+		}		
 }
 
 protected:
-    ros::NodeHandle nh;
+	float x; /**< X coordinate of the Center Of Mass */
+	float y; /**< Y coordinate of the Center Of Mass */
+	float z; /**< Z coordinate of the Center Of Mass */	
+	geometry_msgs::Vector3 new_point; /**< Point to publish */
+	nav_msgs::Odometry msg;			  /**< Message to Publish */
+	pcl::PointCloud<pcl::PointXYZ> cloud;	/**< Input cloud from /camera/pcl_filtered */
+	tf::StampedTransform t_world_to_camera;	/**< Transformation from world frame to camera link frame*/
+	tf::StampedTransform t_camera_to_depth;	/**< Transformation from camera link frame to camera depth optical frame*/
+	tf::TransformBroadcaster br;			/**< Transformation Broadcaster for the center of mass frame */
+    ros::NodeHandle nh;		/**< Node Handler */
     ros::Subscriber pcl_sub; /**< Subscriber to /camera/pcl_filtered */
     ros::Publisher com_baxter_pub; /**< Publisher of odometry data on /odometry/baxter/center_of_mass */
 };

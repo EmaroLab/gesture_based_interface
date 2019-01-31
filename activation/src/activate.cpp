@@ -10,28 +10,27 @@
  
 using namespace std;
 
-double distance_head = 0.0;
-double distance_com = 0.0;
-
+// Flags
 bool beacon_presence = false;
 bool attention = false;
 bool secure = false;
 
+// Parameters
 double security_distance = 1.5;
 double threshold = 0.7;
 
 
 /** @brief Class to send the activate signal to the control board and the proximity alert
  * 
- * - check presense of a human in the area using beacons
- * - check attention computing the rotation of the head with respect to the Kinect (yaw angle of the head)
- * - check security computing the position of the head with respect to the world frame
+ * - check presence of a human in the area using beacons
+ * - check attention, computing the rotation of the head with respect to the Kinect (yaw angle of the head)
+ * - check security, computing the position of the head and the center of mass with respect to the world frame 
  */
 class KinectActivate{
     /** KinectActivate:
      * - subscribe to /beacon/presence
-     * - subscribe to /odometry/kinect/head
-     * - subscribe to /odometry/kinect/center_of_mass
+     * - subscribe to /odometry/baxter/head
+     * - subscribe to /odometry/baxter/center_of_mass
      */
     public:
     KinectActivate(){
@@ -41,11 +40,11 @@ class KinectActivate{
     }
     /**
      * Presence callback function:
-     *  sets a flag to true if beacon takes over the presence of a human in the area 
-     * @param[in]	input	presense of a human in the area (provided by beacon)
+     *  sets a flag to true if beacons take over the presence of a human in the area 
+     * @param[in]	input	presence of a human in the area (provided by beacon)
      */
     void beaconCB(const std_msgs::Float64 &input){
-		// check presense
+		// check presence
 		if(input.data == 1.0){
 			beacon_presence = true;
 		}
@@ -57,13 +56,10 @@ class KinectActivate{
      * @param[in]	head_odom	odometry messages of the head
      */
     void headCB(const nav_msgs::Odometry &head_odom){
-		double roll, pitch, yaw;
-		
 		// check attention
-		tf::Pose pose;
 		tf::poseMsgToTF(head_odom.pose.pose, pose);
 		yaw = fmod(tf::getYaw(pose.getRotation()), 2*M_PI);
-		//ROS_INFO("%lf", yaw);
+		
 		if(abs(yaw - M_PI/2) < threshold){
 			ROS_INFO("Attention");
 			attention = true;
@@ -79,12 +75,15 @@ class KinectActivate{
      * @param[in]	com_odom	odometry messages of the center of mass
      */
     void comCB(const nav_msgs::Odometry &com_odom){
+		// check security
 		if(com_odom.pose.pose.position.x < security_distance)
 		    secure = false;
     }
 
 protected:
-    ros::NodeHandle nh;
+	tf::Pose pose;				/**< Current Odometry of the head */
+	double yaw;					/**< Yaw angle of the head frame */
+    ros::NodeHandle nh;			/**< Private node handler */
     ros::Subscriber beacon_sub;  /**< Subscriber to /beacon/presence */
     ros::Subscriber head_sub;  /**< Subscriber to /odometry/kinect/head */
     ros::Subscriber com_sub;  /**< Subscriber to /odometry/kinect/center_of_mass */ 
@@ -106,7 +105,7 @@ main(int argc, char** argv)
 	nh.param<double>("security_distance", security_distance, 1.5);
 	nh.param<double>("threshold", threshold, 0.7);
 	
-	ros::Rate r(1000);
+	ros::Rate r(10);
 	
     ros::Publisher presence_pub;  /**< Publisher of presence signal on /presence */
     ros::Publisher security_pub;  /**< Publisher of security signal on /secure */ 
@@ -115,10 +114,10 @@ main(int argc, char** argv)
 	presence_pub = n.advertise<std_msgs::Header>("/presence", 1);
 	security_pub = n.advertise<std_msgs::Header>("/secure", 1);
 	
-	ros::Time now;
-	// Header msgs
+	// Messages to publish
 	std_msgs::Header presence_msg;
 	std_msgs::Header security_msg;
+	
 	while(ros::ok())
 	{	
 		if(beacon_presence && attention)
@@ -130,10 +129,13 @@ main(int argc, char** argv)
 			security_msg.stamp = ros::Time::now();
 			security_pub.publish(security_msg);
 		}
+		
+		// Reset flags to false
 		beacon_presence = false;
 		attention = false;
 		secure = true;
 		
+		// Callbacks will reset flags to true if they match conditions
 		ros::spinOnce();
 		r.sleep();
 	}

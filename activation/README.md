@@ -11,8 +11,7 @@
 
 It is requested to install [freenect]
 
-# Launching the nodes:
-You can start the all the nodes by launching:
-```
-roslaunch 
+# The node check if the beacons reveal operator's presence, and if the operator is in front of the Baxter.
+* If both the conditions are satisfied, it sends an activate signal to the Baxter.
+* Additionally, it checks continuously the security distance between the operator and the baxter.
 ```

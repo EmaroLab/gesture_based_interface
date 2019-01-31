@@ -1,5 +1,4 @@
 #include <ros/ros.h>
-#include "std_msgs/String.h"
 #include "std_msgs/Float64.h"
 #include <tf/transform_broadcaster.h>
 #include <math.h>
@@ -13,7 +12,7 @@ double z_kinect = 0.0;
 
 double angle = 20.0;
 
-/** @brief Class to get the current tilt angle of the Kinect
+/** @brief Class to publish periodically the transformation between Baxter and Kinect
  */
 class TF_Broadcaster{
     /** TF_Broadcaster:
@@ -31,7 +30,7 @@ class TF_Broadcaster{
     void angleCB(const std_msgs::Float64& angle_msg){
         if(angle_msg.data <= 30.0 && angle_msg.data >= -30.0)
         {
-                angle = round(angle_msg.data);
+                angle = floor(angle_msg.data);
         }
     }
 
@@ -68,6 +67,7 @@ main(int argc, char** argv)
 	tf::Quaternion frame_rotation;
     
 	while(ros::ok()){
+		// Negative because of the y axis grows downwards
 		rad_angle = angle * M_PI / -180;
 		
 		frame_rotation.setRPY(0, rad_angle, 0); // pitch = current tilt angle of the Kinect

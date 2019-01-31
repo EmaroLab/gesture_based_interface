@@ -5,9 +5,7 @@
 #include <pcl_conversions/pcl_conversions.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <iostream>
-#include <pcl/filters/statistical_outlier_removal.h>
 #include <math.h>
-#include <boost/filesystem.hpp>
 #include <Eigen/Geometry> 
 #include <unistd.h>
 #include <sys/types.h>
@@ -20,9 +18,7 @@
 int granularity = 1;
 
 float angle = -30.0;
-
 int go = 0;
-int check = 0;
 
 /** @brief Class to record environments
  * 
@@ -40,7 +36,6 @@ class PclRecord{
 	 */
 	PclRecord(){
                 pcl_sub = nh.subscribe("/camera/depth/points", 10, &PclRecord::PclRecordCB, this);
-                angle_sub = nh.subscribe("/cur_tilt_angle", 10, &PclRecord::AngleCB, this);
 	}
 	/** 
 	 * Callback function to save environments in a file environment<angle>.pcd in the folder /.kinect_environments
@@ -55,30 +50,23 @@ class PclRecord{
 			return;
 		go = 0;
 		
-		const char *homedir;
 		if ((homedir = getenv("HOME")) == NULL) {
 			homedir = getpwuid(getuid())->pw_dir;
 		}
 		
-		int print_angle = angle;
-		std::stringstream ss2;
+		print_angle = (int)angle;
 		ss2 << homedir << "/.kinect_environments/environment" << print_angle << ".pcd";
 		
 		ROS_INFO ("Data saved to %s", ss2.str ().c_str ());
-		pcl::io::savePCDFile (ss2.str (), *cloud, Eigen::Vector4f::Zero (),
-						 Eigen::Quaternionf::Identity (), false);
-	}
-	
-	void AngleCB (const std_msgs::Float64 msg_angle)
-	{
-		if(abs(msg_angle.data - angle) < 0.5)
-			check = 1;
+		pcl::io::savePCDFile (ss2.str (), *cloud, Eigen::Vector4f::Zero (), Eigen::Quaternionf::Identity (), false);
 	}
 
-	protected:
+	protected:		
+		std::stringstream ss2;
+		int print_angle;
+		const char *homedir;
 		ros::NodeHandle nh;
         ros::Subscriber pcl_sub; /**< Subscriber to /camera/depth/points */
-		ros::Subscriber angle_sub; /**< Subscriber to /cur_tilt_angle */
 
 };
 
@@ -99,33 +87,37 @@ int main(int argc, char **argv)
 	ros::NodeHandle nh("~");
 	nh.param<int>("granularity", granularity, 1); 
 
-	ros::AsyncSpinner spinner(4); // Use 4 threads
+	// Use 4 threads (to use WallDuration)
+	ros::AsyncSpinner spinner(4); 
 	spinner.start();
 		
 	ros::NodeHandle n;
 	ros::ServiceClient client_move = n.serviceClient<kinect_setup::MoveKinect>("move_kinect");
+	
+	// Move kinect to minimum angle
 	angle = -30.0;
 	kinect_setup::MoveKinect srv;
 	srv.request.angle = angle;
 	client_move.call(srv);
 	
+	// Wait for complete
 	ros::WallDuration(4).sleep(); 
 	ros::spinOnce();
-		
-	ROS_INFO ("Ready to start");
+	
 	while (ros::ok())
 	{
+		// Move to current angle
 		srv.request.angle = angle;
 		client_move.call(srv);
-		
-		ROS_INFO ("Cur Angle %lf", angle);
 		ros::WallDuration(2).sleep(); 
 		
+		// Acquire background
 		go = 1;
 		
 		ros::WallDuration(2).sleep(); 
 			
-		angle = angle + granularity; //!!!
+		// Update angle
+		angle = angle + granularity; 
 		
 		if(angle >= 31.0)
 			exit(0);

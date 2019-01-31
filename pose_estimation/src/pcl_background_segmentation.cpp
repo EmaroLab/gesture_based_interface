@@ -3,8 +3,6 @@
 #include <pcl/filters/extract_indices.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include <sensor_msgs/PointCloud2.h>
-#include <iostream>
-#include <pcl/filters/statistical_outlier_removal.h>
 #include <math.h>
 #include <string.h>
 #include "std_msgs/Float64.h"
@@ -26,7 +24,7 @@ int angle = 0;
 
 /** @brief Class to implement Background Segmentation
  * 
- *  The class removes the background, associated to the current Kinect angle, from the raw Point Cloud acquired by the Kinect and saved in /camera/depth/points.
+ *  The class removes the background, associated to the current Kinect angle, from the raw Point Cloud acquired by the Kinect and published on /camera/depth/points.
  * 	The filtered point cloud is published on the topic /camera/pcl_background_segmentation
  */
 class PclBackgroundSegmentation{
@@ -48,10 +46,9 @@ class PclBackgroundSegmentation{
      * @param[in]	input	point cloud data from the Kinect
      */
     void backCB(const sensor_msgs::PointCloud2& input){
-
-        sensor_msgs::PointCloud2 output;
         pcl::fromROSMsg(input, *actualImage);
 
+		// Set pointcloud to NAN to remove it
 		int index = (angle + 30) / ((int)granularity);
         for (size_t i = 0; i < actualImage->points.size (); ++i){
                 if( abs(actualImage->points[i].z - backgrounds[index]->points[i].z) < delta){
@@ -72,11 +69,12 @@ class PclBackgroundSegmentation{
     void angleCB(const std_msgs::Float64& angle_msg){
         if(angle_msg.data <= 30.0 && angle_msg.data >= -30.0)
         {
-                angle = round(angle_msg.data);
+                angle = floor(angle_msg.data);
         }
     }
 
 protected:
+	sensor_msgs::PointCloud2 output;
     ros::NodeHandle nh;
     ros::Subscriber pcl_sub;  /**< Subscriber to /camera/depth/points */
     ros::Subscriber angle_sub;  /**< Subscriber to /cur_tilt_angle */
@@ -102,6 +100,7 @@ main(int argc, char** argv)
             homedir = getpwuid(getuid())->pw_dir;
     }
 
+	// Read backgrounds
     std::string prefix = "/.kinect_environments/environment";
     std::string suffix = ".pcd";
     std::string name;
@@ -118,6 +117,7 @@ main(int argc, char** argv)
                 return (-1);
         }
     }
+    
     ROS_INFO ("Finish Loading Environments");
 
     PclBackgroundSegmentation handler;

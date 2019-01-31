@@ -269,7 +269,7 @@ int main(int argc, char **argv) {
 	nRetVal = g_Context.StartGeneratingAll();
 	CHECK_RC(nRetVal, "StartGenerating");
 
-	ros::Rate r(1000);
+	ros::Rate r(30);
 
 	// Acquire parameter
 	ros::NodeHandle pnh("~");

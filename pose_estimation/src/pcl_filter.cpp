@@ -13,6 +13,7 @@
  * @file
  */
  
+// Filter parameters
 bool use_downsampling = true;
 bool use_filter_z = true;
 bool use_filter_y = true;
@@ -71,6 +72,7 @@ bool set_filter(pose_estimation::SetFilter::Request  &req,
 	res.result = true;
 	return true;
 }
+
 /** Callback function of a service
  * to set filters parameters (leaf_size, range of XYZ filter, SOR filter parameters).
  */
@@ -86,6 +88,10 @@ bool set_filter_param(pose_estimation::SetFilterParam::Request  &req,
 	std::string str_max_x = "max_x";
 	std::string str_sor_k = "sor_k";
 	std::string str_sor_stddev = "sor_stddev";
+	
+	std::string str_revert_x = "revert_x";
+	std::string str_revert_y = "revert_y";
+	std::string str_revert_z = "revert_z";
 	
 	if(req.param_name.compare(str_leaf) == 0)
 	{
@@ -119,13 +125,25 @@ bool set_filter_param(pose_estimation::SetFilterParam::Request  &req,
 	{
 		sor_stddev = req.value;
 	}
+	else if(req.param_name.compare(str_revert_x) == 0)
+	{
+		revert_filter_x = req.value;
+	}
+	else if(req.param_name.compare(str_revert_y) == 0)
+	{
+		revert_filter_y = req.value;
+	}
+	else if(req.param_name.compare(str_revert_z) == 0)
+	{
+		revert_filter_z = req.value;
+	}
 	
 	res.result = true;
 	return true;
 }
 /**@brief Class to filter the Point Cloud
  * 
- * The class has the aim of filtering the Point Cloud obtained by the background segmentation and saved in /camera/pcl_background_segmentation.
+ * The class has the aim of filtering the Point Cloud obtained by the background segmentation and published on /camera/pcl_background_segmentation.
  * It uses different filters:
  * 		- Downsampling (with VoxelGrid)
  * 		- XYZ axes range filter
@@ -179,10 +197,9 @@ public:
 		// Downsampling filter with parameter leaf_size
 		if(use_downsampling)
 		{
-			pcl::VoxelGrid<pcl::PCLPointCloud2> sor;
-			sor.setInputCloud (input_pcl);
-			sor.setLeafSize (leaf_size, leaf_size, leaf_size);
-			sor.filter (*input_pcl_filtered);
+			voxel.setInputCloud (input_pcl);
+			voxel.setLeafSize (leaf_size, leaf_size, leaf_size);
+			voxel.filter (*input_pcl_filtered);
 		}
 		else
 		{
@@ -190,59 +207,63 @@ public:
 		}
 			
 		pcl::fromPCLPointCloud2(*input_pcl_filtered, cloud);
-        sensor_msgs::PointCloud2 output;
 		
 		if(!cloud.empty()){	
 			// Filter on z axis in range (min_z, max_z)		
 			if(use_filter_z)
 			{
-				pcl::PassThrough<pcl::PointXYZ> pass;
-				pass.setInputCloud (cloud.makeShared());
-				pass.setFilterFieldName ("z");
-				pass.setFilterLimits (min_z, max_z);
+				pass_z.setInputCloud (cloud.makeShared());
+				pass_z.setFilterFieldName ("z");
+				pass_z.setFilterLimits (min_z, max_z);
+				
 				// To use the complementar range
 				if(revert_filter_z)
-					pass.setFilterLimitsNegative (true);
-					
-				pass.filter (cloud_filtered);
+					pass_z.setFilterLimitsNegative (true);
+				else
+					pass_z.setFilterLimitsNegative (false);
+				
+				pass_z.filter (cloud_filtered);
 			}
 			if(!cloud_filtered.empty()){
 				// Filter on x axis in range (min_x, max_x)
 				if(use_filter_x)
 				{
-					pcl::PassThrough<pcl::PointXYZ> pass2;
-					pass2.setInputCloud (cloud_filtered.makeShared());
-					pass2.setFilterFieldName ("x");
-					pass2.setFilterLimits (min_x, max_x);
+					pass_x.setInputCloud (cloud_filtered.makeShared());
+					pass_x.setFilterFieldName ("x");
+					pass_x.setFilterLimits (min_x, max_x);
+					
 					// To use the complementar range
 					if(revert_filter_x)
-						pass2.setFilterLimitsNegative (true);
+						pass_x.setFilterLimitsNegative (true);
+					else
+						pass_x.setFilterLimitsNegative (false);
 					
-					pass2.filter (cloud_filtered);
+					pass_x.filter (cloud_filtered);
 				}
 				
 				if(!cloud_filtered.empty()){
 					// Filter on y axis in range (min_y, max_y)
 					if(use_filter_y)
 					{
-						pcl::PassThrough<pcl::PointXYZ> pass3;
-						pass3.setInputCloud (cloud_filtered.makeShared());
-						pass3.setFilterFieldName ("y");
-						pass3.setFilterLimits (min_y, max_y);
+						pass_y.setInputCloud (cloud_filtered.makeShared());
+						pass_y.setFilterFieldName ("y");
+						pass_y.setFilterLimits (min_y, max_y);
+						
 						// To use the complementar range
 						if(revert_filter_y)
-							pass3.setFilterLimitsNegative (true);
+							pass_y.setFilterLimitsNegative (true);
+						else
+							pass_y.setFilterLimitsNegative (false);
 					
-						pass3.filter (cloud_filtered);
+						pass_y.filter (cloud_filtered);
 					}
 					if(!cloud_filtered.empty()){
 						// Removing outliers using a StatisticalOutlierRemoval filter
 						if(use_filter_sor){
-							pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor2;
-							sor2.setInputCloud (cloud_filtered.makeShared());
-							sor2.setMeanK (sor_k);
-							sor2.setStddevMulThresh (sor_stddev);
-							sor2.filter (cloud_filtered);
+							sor.setInputCloud (cloud_filtered.makeShared());
+							sor.setMeanK (sor_k);
+							sor.setStddevMulThresh (sor_stddev);
+							sor.filter (cloud_filtered);
 						}
 					}
 				}
@@ -257,9 +278,15 @@ public:
     }
 
 protected:
-    ros::NodeHandle nh;
+    ros::NodeHandle nh;		/**< Node Handler */
     ros::Subscriber pcl_sub; /**< Subscriber to /camera/pcl_background_segmentation */
     ros::Publisher pcl_pub; /**< Publisher of filtered point cloud on /camera/pcl_filtered */
+	sensor_msgs::PointCloud2 output;		/**< Output Message to publish */
+	pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor;		/**< SOR Filter */
+	pcl::PassThrough<pcl::PointXYZ> pass_x;		/**< X Range Filter */
+	pcl::PassThrough<pcl::PointXYZ> pass_y;		/**< Y Range Filter */
+	pcl::PassThrough<pcl::PointXYZ> pass_z;		/**< Z Range Filter */
+	pcl::VoxelGrid<pcl::PCLPointCloud2> voxel;		/**< VoxelGrid Filter */
 };
 
 /**
@@ -282,10 +309,13 @@ protected:
  * @param[in]  use_filter_sor    Enable SOR filter
  * @param[in]  sor_k    Parameter of SOR filter
  * @param[in]  sor_stddev    Parameter of SOR filter
+ * 
+ * Advertise Services:
+	* set_filter: to enable/disable filters
+	* set_filter_param: to set a parameter of one filter
  */
 main(int argc, char** argv)
 {
-	
     ros::init(argc, argv, "pcl_filter");
 	ros::NodeHandle n("~");
     n.param<double>("min_z", min_z, 0.1);
