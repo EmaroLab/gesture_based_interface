@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-Baxter Mirror Node -> provides the mirroring service.
+ROS node used to allow the user to control the baxter via mirroring.
 """
 
 import argparse
@@ -32,7 +32,8 @@ from baxter_core_msgs.srv import (
 )
 
 
-global init_pose_hand, init_orient_hand, calibrated, init_pose_baxter, init_orient_baxter
+global start, init_pose_hand, init_orient_hand, calibrated, init_pose_baxter, init_orient_baxter
+start = 0
 calibrated = False
 init_pose_hand = []
 init_orient_hand = []
@@ -97,13 +98,10 @@ def mirror_callback(data):
     """
     
     
+    global arm, start, limb, init_pose_hand, init_orient_hand, init_pose_baxter, init_orient_baxter
     
-    global arm, limb, init_pose_hand, init_orient_hand, init_pose_baxter, init_orient_baxter
-    
-    if calibrated == False:
-        rospy.logwarn("You need to calibrate first!")
-    else:
-            
+    #If you start the mirroring you will read the messages in the topic
+    if start == 1:            
         #Evaluate the relative movement of the hand
         pos = []
         pos.append(init_pose_baxter[0] + (data.position[0] - init_pose_hand[0]))
@@ -139,7 +137,40 @@ def mirror_callback(data):
         except rospy.ServiceException, e:
             rospy.logerr("Error during Inverse Kinematic problem")
        
-
+  
+def enableMirroring(req):
+    """
+    Service to start and stop the mirroring.
+    
+    @type req.mode: uint8
+    @param req.mode: 1 to start and 0 to stop.
+    """
+    
+    global start, calibrated
+    if req.mode == 1: #Start Mirroring
+        if start == 0:
+            if calibrated == False:
+                rospy.logwarn("You need to calibrate first!")
+                return 1
+            else:
+                start = 1
+                rospy.loginfo("Mirroring Started!")
+                return 0
+        elif start == 1:
+            rospy.logwarn("Mirroring has already started!")
+            return 1
+    elif req.mode == 0: #Stop Mirroring
+        if start == 1:
+            start = 0
+            calibrated = False
+            rospy.loginfo("Mirroring Stopped!")
+            return 0
+        elif start == 0:
+            rospy.logwarn("Mirroring has already stopped!")
+            return 1
+    else:
+        rospy.logerr("Invalid mode!")
+        return 1
 
 def mirror_server():
     """
@@ -156,6 +187,7 @@ def mirror_server():
 
     #TODO -> add service to start/stop mirroring mode
     service1 = rospy.Service('calibrate_mirroring',CalibrateMirror, calibrate)
+    service2 = rospy.Service('enable_mirroring',EnableMirroring, enableMirroring)
     
     rospy.loginfo("Mirror Server executed -> mirror service available.")
 

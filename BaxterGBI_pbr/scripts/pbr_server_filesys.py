@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 """
-Baxter File Management node -> provides: list of records, rename, delete.
+ROS node used to provide file management services.
+Services provided: list of records, rename, delete.
 """
 
 import argparse

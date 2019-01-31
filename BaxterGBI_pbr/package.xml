@@ -17,6 +17,7 @@
   </maintainer>
   <license>BSD</license>
   <url type="repository">https://github.com/EmaroLab/gesture_based_interface</url>
+  
   <author>Alessio De Luca, Giulia Zaino, Luna Gava</author>
 
   <buildtool_depend>catkin</buildtool_depend>

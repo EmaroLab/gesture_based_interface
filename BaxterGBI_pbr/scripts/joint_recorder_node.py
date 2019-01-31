@@ -13,7 +13,9 @@ from BaxterGBI_pbr.msg import record_status
 
 
 """
+joint_recorder_node
 
+ROS node used to allow the user to record the baxter movements.
 """
 
 #Handle stop -> stop 

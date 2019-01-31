@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 """
-Baxter PBR node -> provides services for: playback and record baxter movements.
+ROS node used to provide services for interacting with Baxter.
+Services provided: playback, record, open/close gripper and reach goal position.
 """
 
 import argparse

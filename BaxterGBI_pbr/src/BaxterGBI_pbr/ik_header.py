@@ -86,11 +86,6 @@ def ik_tracking(limb, pos, orient):
                                resp.result_type)
                                
     if (resp_seeds[0] != resp.RESULT_INVALID):
-        seed_str = {
-                    ikreq.SEED_USER: 'User Provided Seed',
-                    ikreq.SEED_CURRENT: 'Current Joint Angles',
-                    ikreq.SEED_NS_MAP: 'Nullspace Setpoints',
-                   }.get(resp_seeds[0], 'None')
 
         # Format solution into Limb API-compatible dictionary
         limb_joints = dict(zip(resp.joints[0].name, resp.joints[0].position))

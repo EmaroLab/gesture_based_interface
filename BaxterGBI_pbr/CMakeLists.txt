@@ -36,6 +36,7 @@ add_service_files(
   Gripper.srv
   ReachGoal.srv
   CalibrateMirror.srv
+  EnableMirroring.srv
 )
 
 generate_messages(
