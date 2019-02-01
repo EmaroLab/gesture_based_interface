@@ -5,6 +5,8 @@
 #include "ros/ros.h"
 
 #include <QObject>
+#include <QVector>
+#include <QString>
 
 class Worker : public QObject{
 	Q_OBJECT
@@ -18,13 +20,19 @@ public:
 	~Worker();
 
 public slots:
-	void process();
+	void start();
 	void stop();
     
 signals:
-	void newStatus(const boost::shared_ptr<BaxterGBI_core_msgs::status>);
+    void configFrame();
+    void menuFrame(QString &title,
+                   QVector<QString> &options,
+                   QVector<QString> &fixed_options,
+                   int8_t selection);
+    void actionFrame(QString action, 
+                     QString msg);
 	void finished();
-    
+
 private:
 	void statusCb(const boost::shared_ptr<BaxterGBI_core_msgs::status>);
 };

@@ -11,6 +11,7 @@
 #include "actionpanel.h"
 #include "menupanel.h"
 #include "rosworker.h"
+#include "BaxterDisplay.h"
 #include "BaxterGBI_core_msgs/status.h"
 
 namespace Ui {
@@ -35,10 +36,18 @@ private:
 	ActionPanel action_page;
 	MenuPanel menu_page;
 	QWidget *current_page;
-    ros::Publisher display_pub;
+	BaxterDisplay display;
+
 
 private slots:
-	void updateMainWindow(const boost::shared_ptr<BaxterGBI_core_msgs::status> msg);
+	void showConfig();
+    void showMenu(QString &title,
+                  QVector<QString> &options,
+                  QVector<QString> &fixed_options,
+                  int8_t selection);
+    void showAction(QString action, 
+                    QString msg);
+    void switchPage(QWidget *target_page);
 	void __setConfigMode();
 	void __setActionMode();
 	void __setMenuMode();

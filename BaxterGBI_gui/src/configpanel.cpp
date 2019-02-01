@@ -70,7 +70,7 @@ void ConfigPanel::scan(){
         static std::string topic, subtopic;
         topic = match[1];
         subtopic = match[2];
-        auto [__discard, first_item] = compatibleSubtopics.try_emplace(topic, std::initializer_list<std::string>{subtopic});
+        auto [__discard, first_item] = compatibleSubtopics.try_emplace(topic, std::initializer_list<std::string>{subtopic}); (void) __discard;
         if (not first_item)
           compatibleSubtopics[topic].insert(std::upper_bound(compatibleSubtopics[topic].begin(),
                                                              compatibleSubtopics[topic].end(),
