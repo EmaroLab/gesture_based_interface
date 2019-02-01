@@ -1,16 +1,10 @@
 #include "configpanel.h"
 #include "ui_configpanel.h"
 
-#include <string>
-#include <map>
-#include <vector>
-#include <regex>
-#include <initializer_list>
-#include <algorithm>
+#include <QRegularExpression>
 
 #include "ros/ros.h"
 #include "ros/master.h"
-#include "std_srvs/Trigger.h"
 
 #include <QDebug>
 #include <QInputDialog>
@@ -50,11 +44,6 @@ ConfigPanel::~ConfigPanel(){
 }
 
 void ConfigPanel::scan(){
-  ros::master::V_TopicInfo topicMap;
-  std::regex regex("^\\/([a-zA-Z][0-9a-zA-Z_]*)\\/([0-9a-zA-Z_]+)$"); //to match topics
-  std::smatch match;
-  ros::master::getTopics(topicMap);
-
   for (int i = 0; i < 6; i++){
     tabs[i]->clear();
 	}
@@ -63,13 +52,19 @@ void ConfigPanel::scan(){
   compatibleSubtopics.clear(); //erases all elements from the container
   model->clear();
 
+  ros::master::V_TopicInfo topicMap;
+  QRegularExpression regex("^\\/([a-zA-Z][0-9a-zA-Z_]*)\\/([0-9a-zA-Z_]+)$"); //to match topics
+  QRegularExpressionMatch match;
+  ros::master::getTopics(topicMap);
+
   for (ros::master::TopicInfo ti: topicMap){
     if (ti.datatype == "BaxterGBI_input_msgs/signal"){
-      if (std::regex_match(ti.name, match, regex)){
+      QString name = QString::fromStdString(ti.name);
+      match = regex.match(name);
+      if (match.hasMatch()){
         ++n_topics;
-        static QString topic, subtopic;
-        topic = QString::fromStdString(match[1]);
-        subtopic = QString::fromStdString(match[2]);
+        auto topic = match.captured(1);
+        auto subtopic = match.captured(2);
         auto iterator = compatibleSubtopics.find(topic);
         if (iterator != compatibleSubtopics.end()){
             iterator.value().append(subtopic);

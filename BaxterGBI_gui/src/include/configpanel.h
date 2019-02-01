@@ -4,9 +4,6 @@
 #include "TriggerService.h"
 #include "tabcontent.h"
 #include "mapping.h"
-#include <map>
-#include <vector>
-#include <string>
 
 #include <QWidget>
 #include <QVector>
