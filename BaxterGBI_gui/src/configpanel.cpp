@@ -67,28 +67,28 @@ void ConfigPanel::scan(){
     if (ti.datatype == "BaxterGBI_input_msgs/signal"){
       if (std::regex_match(ti.name, match, regex)){
         ++n_topics;
-        static std::string topic, subtopic;
-        topic = match[1];
-        subtopic = match[2];
-        auto [__discard, first_item] = compatibleSubtopics.try_emplace(topic, std::initializer_list<std::string>{subtopic}); (void) __discard;
-        if (not first_item)
-          compatibleSubtopics[topic].insert(std::upper_bound(compatibleSubtopics[topic].begin(),
-                                                             compatibleSubtopics[topic].end(),
-                                                             subtopic),
-                                            subtopic);
+        static QString topic, subtopic;
+        topic = QString::fromStdString(match[1]);
+        subtopic = QString::fromStdString(match[2]);
+        auto iterator = compatibleSubtopics.find(topic);
+        if (iterator != compatibleSubtopics.end()){
+            iterator.value().append(subtopic);
+        } else {
+            compatibleSubtopics.insert(topic, QVector<QString>{subtopic});
+        }
       }
     }
   }
 
-  for(auto a: compatibleSubtopics){
-    qInfo() << "Topic %s:" << a.first.c_str();
-    ROS_INFO("Topic %s:", a.first.c_str());
-    auto topic = new QStandardItem(a.first.c_str());
+  for (auto a = compatibleSubtopics.begin(); a != compatibleSubtopics.end(); ++a){
+    qInfo() << "Topic %s:" << a.key();
+    ROS_INFO("Topic %s:", a.key().toLatin1().data());
+    auto topic = new QStandardItem(a.key());
     model->appendRow(topic);
-    for(auto b: a.second){
-      qInfo() << "\t%s:" << b.c_str();
-      ROS_INFO("\t%s", b.c_str());
-      topic->appendRow(new QStandardItem(b.c_str()));
+    for(auto b: a.value()){
+      qInfo() << "\t%s:" << b;
+      ROS_INFO("\t%s", b.toLatin1().data());
+      topic->appendRow(new QStandardItem(b));
     }
   }
   ui->addMappingButton->setEnabled(n_topics >= 6);

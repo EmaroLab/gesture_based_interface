@@ -10,6 +10,8 @@
 
 #include <QWidget>
 #include <QVector>
+#include <QMap>
+#include <QString>
 #include <QStandardItemModel>
 
 namespace Ui {
@@ -28,7 +30,7 @@ private:
 	Ui::ConfigPanel* ui;
 	TabContent *tabs[6];
 	QStandardItemModel* model;
-	std::map<std::string, std::vector<std::string>> compatibleSubtopics;
+	QMap<QString, QVector<QString>> compatibleSubtopics;
 	QVector<bool> isFilled;
     int n_topics = 0;
     TriggerService fsmReconfigure;
