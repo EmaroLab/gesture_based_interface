@@ -1,4 +1,4 @@
-#include "BaxterGBI_gui/rosworker.h"
+#include "rosworker.h"
 #include "ros/ros.h"
 
 #include <QMetaType>

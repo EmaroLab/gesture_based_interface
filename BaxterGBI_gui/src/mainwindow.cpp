@@ -1,4 +1,4 @@
-#include "BaxterGBI_gui/mainwindow.h"
+#include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "sensor_msgs/Image.h"
 
@@ -21,9 +21,9 @@ QVector<QString> cxx2qt_strvec(std::vector<std::string> &stdvstds){
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MainWindow),
-	current_page(nullptr),
 	rosThread(new QThread),
-	worker(new Worker)
+	worker(new Worker),
+	current_page(nullptr)
 {
 	ui->setupUi(this);
 	worker->moveToThread(rosThread);

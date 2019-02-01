@@ -1,4 +1,4 @@
-#include "BaxterGBI_gui/mapping.h"
+#include "mapping.h"
 #include "ui_mapping.h"
 
 #include <QInputDialog>
@@ -39,6 +39,7 @@ QModelIndex getSelectableIdx(QAbstractItemModel *model, const QModelIndex &root 
     if (flags & Qt::ItemIsSelectable)
       return model->index(i, 0, root);
   }
+  return {}; //Invalid index
 }
 
 unsigned int Mapping::_id = 0;

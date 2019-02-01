@@ -1,4 +1,4 @@
-#include "BaxterGBI_gui/menupanel.h"
+#include "menupanel.h"
 #include "ui_menupanel.h"
 
 #include <QDebug>
@@ -7,7 +7,7 @@
 
 void clearContainer(QLayout *w){
   QLayoutItem* item;
-  while (item = w->layout()->takeAt(0)){
+  while ((item = w->layout()->takeAt(0))){
     delete item->widget();
     delete item;
   }

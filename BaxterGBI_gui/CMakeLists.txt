@@ -7,10 +7,11 @@ set (CMAKE_CXX_STANDARD 17)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC_SEARCH_PATHS ${PROJECT_SOURCE_DIR}/src/ui)
 
-#set(Qt5_DIR "/usr/lib/x86_64-linux-gnu/cmake/Qt5")
-
-find_package(Qt5 REQUIRED Widgets)
+find_package(Qt5 REQUIRED COMPONENTS 
+  Widgets
+)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
@@ -21,43 +22,58 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES BaxterGBI_gui
   CATKIN_DEPENDS roscpp rosmaster std_srvs sensor_msgs
 )
 
-include_directories(
-  ${catkin_INCLUDE_DIRS} 
-  ${PROJECT_SOURCE_DIR}/include
-  ${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}
-)
+add_executable(gui
 
-file (
-  GLOB project_SOURCES 
-  "src/*.cpp" 
-  "src/*.ui"
-)
-
-file (
-  GLOB project_HEADERS 
-  "include/BaxterGBI_gui/*.h"
-)
-
-add_executable(
-  gui 
-  ${project_SOURCES} 
-  ${project_HEADERS}
   resources/resources.qrc
+
+  src/actionpanel.cpp
+  src/configpanel.cpp
+  src/main.cpp
+  src/mainwindow.cpp
+  src/mapping.cpp
+  src/menupanel.cpp
+  src/rosworker.cpp
+  src/selectionfiltermodel.cpp
+  src/tabcontent.cpp
+  src/TriggerService.cpp
+
+  src/include/actionpanel.h
+  src/include/configpanel.h
+  src/include/mainwindow.h
+  src/include/mapping.h
+  src/include/menupanel.h
+  src/include/rosworker.h
+  src/include/selectionfiltermodel.h
+  src/include/tabcontent.h
+  src/include/TriggerService.h
+  
+  src/ui/actionpanel.ui
+  src/ui/configpanel.ui
+  src/ui/mainwindow.ui
+  src/ui/mapping.ui
+  src/ui/menupanel.ui
+  src/ui/tabcontent.ui
 )
 
-target_link_libraries(
-  gui 
-  Qt5::Widgets 
+target_compile_options(gui 
+PRIVATE 
+  -Wall -Wextra -pedantic)
+
+target_include_directories(gui
+PUBLIC
+  ${catkin_INCLUDE_DIRS}
+  src/include
+)
+
+target_link_libraries(gui
+  Qt5::Widgets
   ${catkin_LIBRARIES}
 )
 
-add_dependencies(
-  gui 
-  ${${PROJECT_NAME}_EXPORTED_TARGETS} 
+add_dependencies(gui
+  ${${PROJECT_NAME}_EXPORTED_TARGETS}
   ${catkin_EXPORTED_TARGETS}
 )

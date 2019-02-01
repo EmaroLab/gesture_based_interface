@@ -1,7 +1,7 @@
 #ifndef MAPPING_H
 #define MAPPING_H
 
-#include "BaxterGBI_gui/selectionfiltermodel.h"
+#include "selectionfiltermodel.h"
 
 #include <QWidget>
 #include <QString>

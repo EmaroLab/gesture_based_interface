@@ -1,4 +1,4 @@
-#include "BaxterGBI_gui/selectionfiltermodel.h"
+#include "selectionfiltermodel.h"
 
 SelectionFilterModel::SelectionFilterModel(unsigned int id, QObject *parent)
   : QSortFilterProxyModel(parent)

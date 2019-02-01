@@ -1,4 +1,4 @@
-#include "BaxterGBI_gui/actionpanel.h"
+#include "actionpanel.h"
 #include "ui_actionpanel.h"
 
 #include <QDebug>

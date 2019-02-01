@@ -1,4 +1,4 @@
-#include "BaxterGBI_gui/configpanel.h"
+#include "configpanel.h"
 #include "ui_configpanel.h"
 
 #include <string>
@@ -70,8 +70,8 @@ void ConfigPanel::scan(){
         static std::string topic, subtopic;
         topic = match[1];
         subtopic = match[2];
-        auto [__discard, first_sub] = compatibleSubtopics.try_emplace(topic, std::initializer_list<std::string>{subtopic});
-        if (not first_sub)
+        auto [__discard, first_item] = compatibleSubtopics.try_emplace(topic, std::initializer_list<std::string>{subtopic});
+        if (not first_item)
           compatibleSubtopics[topic].insert(std::upper_bound(compatibleSubtopics[topic].begin(),
                                                              compatibleSubtopics[topic].end(),
                                                              subtopic),

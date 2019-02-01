@@ -1,5 +1,5 @@
-#include "BaxterGBI_gui/tabcontent.h"
-#include "BaxterGBI_gui/mapping.h"
+#include "tabcontent.h"
+#include "mapping.h"
 #include "ui_tabcontent.h"
 
 #include <QPushButton>

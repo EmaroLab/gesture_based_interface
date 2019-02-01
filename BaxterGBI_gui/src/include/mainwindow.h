@@ -7,10 +7,10 @@
 #include <QString>
 #include "ros/ros.h"
 
-#include "BaxterGBI_gui/configpanel.h"
-#include "BaxterGBI_gui/actionpanel.h"
-#include "BaxterGBI_gui/menupanel.h"
-#include "BaxterGBI_gui/rosworker.h"
+#include "configpanel.h"
+#include "actionpanel.h"
+#include "menupanel.h"
+#include "rosworker.h"
 #include "BaxterGBI_core_msgs/status.h"
 
 namespace Ui {
