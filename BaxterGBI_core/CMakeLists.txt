@@ -8,7 +8,6 @@ find_package(catkin REQUIRED COMPONENTS
   roslib
   std_msgs
   std_srvs
-  BaxterGBI_core_srvs
   BaxterGBI_input_msgs
 )
 
@@ -16,7 +15,7 @@ catkin_python_setup()
 
 catkin_package(
 
-  CATKIN_DEPENDS rospy smach std_msgs std_srvs BaxterGBI_core_srvs BaxterGBI_input_msgs
+  CATKIN_DEPENDS rospy smach std_msgs std_srvs BaxterGBI_input_msgs
 )
 
 include_directories(
