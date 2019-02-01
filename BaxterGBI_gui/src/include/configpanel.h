@@ -2,6 +2,7 @@
 #define CONFIGPANEL_H
 
 #include "TriggerService.h"
+#include "TopicScanner.h"
 #include "tabcontent.h"
 #include "mapping.h"
 
@@ -27,10 +28,10 @@ private:
 	Ui::ConfigPanel* ui;
 	TabContent *tabs[6];
 	QStandardItemModel* model;
-	QMap<QString, QVector<QString>> compatibleSubtopics;
 	QVector<bool> isFilled;
     int n_topics = 0;
     TriggerService fsmReconfigure;
+    TopicScanner scanner;
 
 private slots:
 	void scan();

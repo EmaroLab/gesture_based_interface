@@ -1,8 +1,6 @@
 #include "configpanel.h"
 #include "ui_configpanel.h"
 
-#include <QRegularExpression>
-
 #include "ros/ros.h"
 #include "ros/master.h"
 
@@ -14,7 +12,8 @@ ConfigPanel::ConfigPanel(QWidget *parent) :
 	ui(new Ui::ConfigPanel),
 	model(new QStandardItemModel),
 	isFilled(6, false) ,
-	fsmReconfigure("/fsm_config")
+	fsmReconfigure("/fsm_config"),
+	scanner("BaxterGBI_input_msgs/signal")
 {
 	ui->setupUi(this);
 	ui->loadConfigButton->setEnabled(false); //disable load button
@@ -49,33 +48,11 @@ void ConfigPanel::scan(){
 	}
   ui->addMappingButton->setEnabled(false);
   
-  compatibleSubtopics.clear(); //erases all elements from the container
   model->clear();
 
-  ros::master::V_TopicInfo topicMap;
-  QRegularExpression regex("^\\/([a-zA-Z][0-9a-zA-Z_]*)\\/([0-9a-zA-Z_]+)$"); //to match topics
-  QRegularExpressionMatch match;
-  ros::master::getTopics(topicMap);
+  scanner();
 
-  for (ros::master::TopicInfo ti: topicMap){
-    if (ti.datatype == "BaxterGBI_input_msgs/signal"){
-      QString name = QString::fromStdString(ti.name);
-      match = regex.match(name);
-      if (match.hasMatch()){
-        ++n_topics;
-        auto topic = match.captured(1);
-        auto subtopic = match.captured(2);
-        auto iterator = compatibleSubtopics.find(topic);
-        if (iterator != compatibleSubtopics.end()){
-            iterator.value().append(subtopic);
-        } else {
-            compatibleSubtopics.insert(topic, QVector<QString>{subtopic});
-        }
-      }
-    }
-  }
-
-  for (auto a = compatibleSubtopics.begin(); a != compatibleSubtopics.end(); ++a){
+  for (auto a = scanner.begin(); a != scanner.end(); ++a){
     qInfo() << "Topic %s:" << a.key();
     ROS_INFO("Topic %s:", a.key().toLatin1().data());
     auto topic = new QStandardItem(a.key());

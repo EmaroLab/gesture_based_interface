@@ -40,6 +40,7 @@ add_executable(gui
   src/tabcontent.cpp
   src/TriggerService.cpp
   src/BaxterDisplay.cpp
+  src/TopicScanner.cpp
 
   src/include/actionpanel.h
   src/include/configpanel.h
@@ -49,7 +50,9 @@ add_executable(gui
   src/include/rosworker.h
   src/include/selectionfiltermodel.h
   src/include/tabcontent.h
+  src/include/TriggerService.h
   src/include/BaxterDisplay.h
+  src/include/TopicScanner.h
   
   src/ui/actionpanel.ui
   src/ui/configpanel.ui
