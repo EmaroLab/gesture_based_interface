@@ -1,4 +1,5 @@
 #include "TopicScanner.h"
+#include <algorithm>
 
 TopicScanner::TopicScanner(QString datatype)
 : regex("^\\/([a-zA-Z][0-9a-zA-Z_]*)\\/([0-9a-zA-Z_]+)$")
@@ -22,7 +23,10 @@ void TopicScanner::operator()(){
         auto subtopic = match.captured(2);
         auto iterator = topics.find(topic);
         if (iterator != topics.end()){
-            iterator.value().append(subtopic);
+            iterator.value().insert(std::upper_bound(iterator.value().begin(),
+                                                     iterator.value().end(),
+                                                     subtopic),
+                                            subtopic);
         } else {
             topics.insert(topic, QVector<QString>{subtopic});
         }

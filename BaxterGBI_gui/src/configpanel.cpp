@@ -47,9 +47,7 @@ void ConfigPanel::scan(){
     tabs[i]->clear();
 	}
   ui->addMappingButton->setEnabled(false);
-  
   model->clear();
-
   scanner();
 
   for (auto a = scanner.begin(); a != scanner.end(); ++a){
