@@ -19,7 +19,8 @@ ConfigPanel::ConfigPanel(QWidget *parent) :
 	QWidget(parent),
 	ui(new Ui::ConfigPanel),
 	model(new QStandardItemModel),
-	isFilled(6, false) //inizialize elements to false
+	isFilled(6, false) ,
+	fsmReconfigure("/fsm_config")
 {
 	ui->setupUi(this);
 	ui->loadConfigButton->setEnabled(false); //disable load button
@@ -124,9 +125,6 @@ void ConfigPanel::sendConfig(){
     }
     n.setParam("key_" + std::to_string(i+1) + "_topics", serializedTopics);
   }
-  // call service /fsm_config of type std_srvs/Trigger
 
-  ros::ServiceClient client = n.serviceClient<std_srvs::Trigger>("/fsm_config");
-  std_srvs::Trigger trigger;
-  client.call(trigger);
+  fsmReconfigure();
 }
