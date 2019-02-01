@@ -81,28 +81,15 @@ void MainWindow::closeEvent(QCloseEvent *event){
 }
 
 void MainWindow::__setConfigMode(){
-	if (current_page) {
-		ui->innerLayout->removeWidget(current_page);
-		current_page->setParent(nullptr);
-	}
-	ui->innerLayout->addWidget(&conf_page);
-	current_page = &conf_page;
+	showConfig();
 }
 
 void MainWindow::__setActionMode(){
-	if (current_page) {
-		ui->innerLayout->removeWidget(current_page);
-		current_page->setParent(nullptr);
-	}
-		ui->innerLayout->addWidget(&action_page);
-		current_page = &action_page;
+    QVector<QString> a{"Test 1", "Test 2"};
+    QString t("title");
+    showMenu(t, a, a, 0);
 }
 
 void MainWindow::__setMenuMode(){
-	if (current_page) {
-		ui->innerLayout->removeWidget(current_page);
-		current_page->setParent(nullptr);
-	}
-	ui->innerLayout->addWidget(&menu_page);
-	current_page = &menu_page;
+    showAction("play", "Example text");
 }
