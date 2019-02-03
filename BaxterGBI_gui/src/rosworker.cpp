@@ -5,20 +5,7 @@
 #include <QDebug>
 #include <QThread>
 
-#include <string>
-#include <vector>
-
-
-QVector<QString> cxx2qt_strvec(std::vector<std::string> &stdvstds){
-  std::vector<QString> v;
-  v.clear();
-  v.reserve(stdvstds.size());
-  std::transform(stdvstds.begin(),
-                 stdvstds.end(),
-                 std::back_inserter(v),
-                 QString::fromStdString);
-  return QVector<QString>::fromStdVector(v);
-}
+#include "general_utilities.h"
 
 Worker::Worker(QWidget* parent){
 }

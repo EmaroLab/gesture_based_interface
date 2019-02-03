@@ -29,6 +29,7 @@ add_executable(gui
 
   resources/resources.qrc
 
+  src/general_utilities.cpp
   src/actionpanel.cpp
   src/configpanel.cpp
   src/main.cpp
@@ -43,6 +44,7 @@ add_executable(gui
   src/TopicScanner.cpp
   src/FsmInputConfigurator.cpp
 
+  src/include/general_utilities.h
   src/include/actionpanel.h
   src/include/configpanel.h
   src/include/mainwindow.h

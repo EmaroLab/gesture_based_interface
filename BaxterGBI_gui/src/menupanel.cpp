@@ -5,13 +5,7 @@
 #include <QLabel>
 #include <QVector>
 
-void clearContainer(QLayout *w){
-  QLayoutItem* item;
-  while ((item = w->layout()->takeAt(0))){
-    delete item->widget();
-    delete item;
-  }
-}
+#include "general_utilities.h"
 
 MenuPanel::MenuPanel(QWidget *parent) :
 	QWidget(parent),

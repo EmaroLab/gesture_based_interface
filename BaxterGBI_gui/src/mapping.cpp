@@ -6,41 +6,7 @@
 #include <QComboBox>
 #include <QtGlobal>
 
-void tagItem(QStandardItem *item, int id){
-  auto data = item->data(Qt::UserRole);
-  if (data.typeName() == 0){ //invalid variant
-    item->setData(QVariant(QList<QVariant>{id}), Qt::UserRole);
-  } else {
-    auto list = data.toList();
-    list.append(id);
-    item->setData(list, Qt::UserRole);
-  }
-}
-
-void untagItem(QStandardItem *item, int id){
-  auto data = item->data(Qt::UserRole);
-  auto list = data.toList();
-  list.removeOne(id);
-  item->setData(list, Qt::UserRole);
-}
-
-void markSelectable(QStandardItem *item, bool selectable){
-  auto flags = item->flags();
-  if (selectable)
-    flags |= Qt::ItemIsSelectable;
-  else
-    flags &= ~Qt::ItemIsSelectable;
-  item->setFlags(flags);
-}
-
-QModelIndex getSelectableIdx(QAbstractItemModel *model, const QModelIndex &root = QModelIndex()){
-  for (int i = 0; i < model->rowCount(root); i++){
-    auto flags = model->flags(model->index(i, 0, root));
-    if (flags & Qt::ItemIsSelectable)
-      return model->index(i, 0, root);
-  }
-  return {}; //Invalid index
-}
+#include "general_utilities.h"
 
 unsigned int Mapping::_id = 0;
 
