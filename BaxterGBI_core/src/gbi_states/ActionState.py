@@ -17,7 +17,7 @@ class ActionState(ExpiringState):
     # @param input_keys set of the data in input
     def __init__(self, outcomes, trigger_event, action, output_keys=[], input_keys=[]):
         ExpiringState.__init__(self,
-                               outcomes = ['done', 'user_missed', 'preempted'] + outcomes,
+                               outcomes = ['done'] + outcomes,
                                trigger_event = trigger_event,
                                output_keys= output_keys,
                                input_keys=input_keys)

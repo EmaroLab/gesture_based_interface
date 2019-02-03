@@ -17,7 +17,7 @@ class MenuState(ExpiringState):
     #  @param fixed_options fixed options of the menu
     def __init__(self, outcomes, trigger_event, page_title, output_keys=[], input_keys=[], fixed_options=['back', 'play']):
         ExpiringState.__init__(self,
-                               outcomes = ['user_missed', 'selection'] + outcomes,
+                               outcomes = ['selection'] + outcomes,
                                trigger_event = trigger_event,
                                output_keys=['selection'] + output_keys,
                                input_keys = input_keys)
