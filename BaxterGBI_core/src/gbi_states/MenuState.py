@@ -3,12 +3,11 @@
 #  of the menu states 
 
 import rospy
-from BlockingState import BlockingState
-import time
+from ExpiringState import ExpiringState
 
 ##  MenuState
-#   inerithed form BlockingState
-class MenuState(BlockingState):
+#   inherithed form BlockingState
+class MenuState(ExpiringState):
     ## the constructor
     #  @param outcomes outcomes of the state
     #  @param trigger_event istance of the class FsmEvent
@@ -17,7 +16,7 @@ class MenuState(BlockingState):
     #  @param input_keys set of data in the input state
     #  @param fixed_options fixed options of the menu
     def __init__(self, outcomes, trigger_event, page_title, output_keys=[], input_keys=[], fixed_options=['back', 'play']):
-        BlockingState.__init__(self,
+        ExpiringState.__init__(self,
                                outcomes = ['user_missed', 'selection'] + outcomes,
                                trigger_event = trigger_event,
                                output_keys=['selection'] + output_keys,
@@ -65,23 +64,7 @@ class MenuState(BlockingState):
             item = self.fixed_options[self.selection - len(self.variable_options)]
             return self.on_fixed_selection(self.selection - len(self.variable_options), item, userdata)
 
-    ## method user_left
-    #  @param userdata 
-    #  
-    #  override of BlockingState.user_left
-    #  return in putcome user_missed
-    def user_left(self, userdata):
-        return 'user_missed'
 
-    ## method user_detected
-    #  @param userdata 
-    #  
-    #  override of BlockingState.action_1
-    #  reset the timeout_t
-    def user_detected(self, userdata):
-        self.t.cancel()
-        self.t.start()
-        return None
 
     ## method execute
     #  @param userdata 
@@ -89,7 +72,7 @@ class MenuState(BlockingState):
     #  override of BlockingState.execute
     def execute(self, userdata):
         self.variable_options = self.update_variable_options(userdata)
-        return BlockingState.execute(self, userdata)
+        return ExpiringState.execute(self, userdata)
 
     ## method publish_state
     #  

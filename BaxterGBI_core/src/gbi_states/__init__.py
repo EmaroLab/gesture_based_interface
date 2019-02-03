@@ -5,6 +5,8 @@ from FsmEvent import *
 
 from BlockingState import *
 
+from ExpiringState import *
+
 from MenuState import *
 from ActionState import *
 

@@ -176,7 +176,6 @@ class FSMThread(threading.Thread):
     ## method graph_gen
     #  graph generation
     def graph_gen(self):
-        global f
         tr_edge=self.sm.get_internal_edges()
         self.f.node(self.sm.get_initial_states()[0])
         for i in range(0,len(tr_edge)):
