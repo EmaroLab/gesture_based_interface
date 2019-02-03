@@ -41,6 +41,7 @@ add_executable(gui
   src/TriggerService.cpp
   src/BaxterDisplay.cpp
   src/TopicScanner.cpp
+  src/FsmInputConfigurator.cpp
 
   src/include/actionpanel.h
   src/include/configpanel.h
@@ -53,6 +54,7 @@ add_executable(gui
   src/include/TriggerService.h
   src/include/BaxterDisplay.h
   src/include/TopicScanner.h
+  src/include/FsmInputConfigurator.h
   
   src/ui/actionpanel.ui
   src/ui/configpanel.ui

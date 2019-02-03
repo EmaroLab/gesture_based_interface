@@ -1,7 +1,7 @@
 #ifndef CONFIGPANEL_H
 #define CONFIGPANEL_H
 
-#include "TriggerService.h"
+#include "FsmInputConfigurator.h"
 #include "TopicScanner.h"
 #include "tabcontent.h"
 #include "mapping.h"
@@ -30,8 +30,8 @@ private:
 	QStandardItemModel* model;
 	QVector<bool> isFilled;
     int n_topics = 0;
-    TriggerService fsmReconfigure;
     TopicScanner scanner;
+    FsmInputConfigurator fsmInputConfigurator;
 
 private slots:
 	void scan();

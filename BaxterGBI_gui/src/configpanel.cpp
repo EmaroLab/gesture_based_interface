@@ -7,19 +7,18 @@
 #include <QDebug>
 #include <QInputDialog>
 
-ConfigPanel::ConfigPanel(QWidget *parent) :
-	QWidget(parent),
-	ui(new Ui::ConfigPanel),
-	model(new QStandardItemModel),
-	isFilled(6, false) ,
-	fsmReconfigure("/fsm_config"),
-	scanner("BaxterGBI_input_msgs/signal")
+ConfigPanel::ConfigPanel(QWidget *parent)
+: QWidget(parent)
+, ui(new Ui::ConfigPanel)
+, model(new QStandardItemModel)
+, isFilled(6, false)
+, scanner("BaxterGBI_input_msgs/signal")
+, fsmInputConfigurator("key_", "_topics")
 {
 	ui->setupUi(this);
-	ui->loadConfigButton->setEnabled(false); //disable load button
+	ui->loadConfigButton->setEnabled(false);
+	ui->addMappingButton->setEnabled(false);
 	ui->tabWidget->clear();
-	
-	ui->addMappingButton->setEnabled(false); //disable add button
 
 	for (int i = 0; i < 6; i++){
 		tabs[i] = new TabContent(model);
@@ -72,7 +71,7 @@ void ConfigPanel::addMappingToActiveTab(){
 
 
 void ConfigPanel::enableLoadButton(int tab, int mappings){
-  isFilled[tab] = mappings > 0; //set array element to true
+  isFilled[tab] = mappings > 0;
 	
   bool ok = true;
   for(int i = 0; i < 6 and ok; i++)
@@ -82,19 +81,8 @@ void ConfigPanel::enableLoadButton(int tab, int mappings){
 }
 
 void ConfigPanel::sendConfig(){
-  ros::NodeHandle n;
-  for(int i = 0; i < 6; i++){
-    auto selections = tabs[i]->getSelectedTopics();
-    qInfo() << "Tab " << i << " mappings: ";
-    std::vector<std::string> serializedTopics;
+  for(int i = 0; i < 6; i++)
+    fsmInputConfigurator(i+1, tabs[i]->getSelectedTopics());
 
-    for(auto selection : selections){
-      QString topic = QString("/%1/%2").arg(selection.first).arg(selection.second);
-      serializedTopics.push_back(topic.toStdString());
-      qInfo() << "\t" << topic;
-    }
-    n.setParam("key_" + std::to_string(i+1) + "_topics", serializedTopics);
-  }
-
-  fsmReconfigure();
+  fsmInputConfigurator.commit();
 }

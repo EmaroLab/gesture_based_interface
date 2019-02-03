@@ -5,6 +5,6 @@ TriggerService::TriggerService(std::string srv_name)
     client = n.serviceClient<std_srvs::Trigger>(srv_name);
 }
 
-void TriggerService::operator()(){
+void TriggerService::operator()() {
     client.call(request);
 }
