@@ -2,10 +2,14 @@
 #include "kinect_setup/MoveKinect.h"
 #include "kinect_setup/RegulateKinectByHead.h"
 #include "kinect_setup/RegulateKinectByWrist.h"
-#include "pose_estimation/SetFilterParam.h"
-#include "pose_estimation/SetFilter.h"
+#include "kinect_pcl_tools/SetFilterParam.h"
+#include "kinect_pcl_tools/SetFilter.h"
 #include <math.h>
 #include <std_srvs/Empty.h>
+#include <iostream>
+#include <unistd.h>
+#include <sys/types.h>
+#include <string> 
 
 /** 
  * Publisher, to control the tilt angle of the Kinect
@@ -27,20 +31,20 @@ ros::ServiceClient client_filter_enable;
 int initial_angle = 0;
 
 //
-void set_filter_param(ServiceClient srv, string param, float value)
+void set_filter_param(std::string param, float value)
 {
-    static SetFilterParam srv_data;
-    srv_data.request.param_name = param;
-    srv_data.request.value = value;
-    srv.call(srv_data); 
+	kinect_pcl_tools::SetFilterParam srv;
+    srv.request.param_name = param;
+    srv.request.value = value;
+    client_filter.call(srv); 
 }
 
-void set_filter(ServiceClient srv, string param, bool enable)
+void set_filter(std::string param, bool enable)
 {
-    static SetFilter srv_data;
-    srv_data.request.filter_name = param;
-    srv_data.request.enable = enable;
-    srv.call(srv_data); 
+	kinect_pcl_tools::SetFilter srv;
+    srv.request.filter_name = param;
+    srv.request.enable = enable;
+    client_filter_enable.call(srv); 
 }
 
 /** Callback of the regulate_kinect_by_wrist service
@@ -73,14 +77,12 @@ bool regulateWrist(kinect_setup::RegulateKinectByWrist::Request  &req,
 	
 	client_move.call(srv_angle);
 	
-	pose_estimation::SetFilterParam srv;
-	
-	set_filter_param(srv, "min_z", min_z);
-	set_filter_param(srv, "max_z", max_z);
-	set_filter_param(srv, "min_y", min_y);
-	set_filter_param(srv, "max_y", max_y);
-	set_filter_param(srv, "min_x", min_x);
-	set_filter_param(srv, "max_x", max_x);
+	set_filter_param("min_z", min_z);
+	set_filter_param("max_z", max_z);
+	set_filter_param("min_y", min_y);
+	set_filter_param("max_y", max_y);
+	set_filter_param("min_x", min_x);
+	set_filter_param("max_x", max_x);
 
 	res.result = true;
 	return true;
@@ -117,14 +119,13 @@ bool regulateHead(kinect_setup::RegulateKinectByHead::Request  &req,
 	
 	client_move.call(srv_angle);
 	
-	pose_estimation::SetFilterParam srv;
 	
-	set_filter_param(srv, "min_z", min_z);
-	set_filter_param(srv, "max_z", max_z);
-	set_filter_param(srv, "min_y", min_y);
-	set_filter_param(srv, "max_y", max_y);
-	set_filter_param(srv, "min_x", min_x);
-	set_filter_param(srv, "max_x", max_x);
+	set_filter_param("min_z", min_z);
+	set_filter_param("max_z", max_z);
+	set_filter_param("min_y", min_y);
+	set_filter_param("max_y", max_y);
+	set_filter_param("min_x", min_x);
+	set_filter_param("max_x", max_x);
 
 	res.result = true;
 	return true;
@@ -150,28 +151,24 @@ bool resetKinect(std_srvs::Empty::Request& request, std_srvs::Empty::Response& r
 	srv_angle.request.angle = initial_angle;
 	client_move.call(srv_angle);
 	
-	// Reset filter params
-	pose_estimation::SetFilterParam srv;
+	// Reset filter params	
+	set_filter_param("min_z", min_z);
+	set_filter_param("max_z", max_z);
+	set_filter_param("min_y", min_y);
+	set_filter_param("max_y", max_y);
+	set_filter_param("min_x", min_x);
+	set_filter_param("max_x", max_x);
 	
-	set_filter_param(srv, "min_z", min_z);
-	set_filter_param(srv, "max_z", max_z);
-	set_filter_param(srv, "min_y", min_y);
-	set_filter_param(srv, "max_y", max_y);
-	set_filter_param(srv, "min_x", min_x);
-	set_filter_param(srv, "max_x", max_x);
+	set_filter_param("revert_x", 1.0);
+	set_filter_param("revert_y", 1.0);
+	set_filter_param("revert_z", 1.0);
 	
-	set_filter_param(srv, "revert_x", 1.0);
-	set_filter_param(srv, "revert_y", 1.0);
-	set_filter_param(srv, "revert_z", 1.0);
-	
-	// Reset all filters to true
-	pose_estimation::SetFilter srv2;
-	
-	set_filter(srv2, "downsampling_filter", true);
-	set_filter(srv2, "x_filter", true);
-	set_filter(srv2, "y_filter", true);
-	set_filter(srv2, "z_filter", true);
-	set_filter(srv2, "sor_filter", true);
+	// Reset all filters to true	
+	set_filter("downsampling_filter", true);
+	set_filter("x_filter", true);
+	set_filter("y_filter", true);
+	set_filter("z_filter", true);
+	set_filter("sor_filter", true);
 
 	return true;
 }
@@ -188,8 +185,8 @@ int main(int argc, char** argv)
 	
 	// Initialize clients
 	client_move = n.serviceClient<kinect_setup::MoveKinect>("move_kinect");
-	client_filter = n.serviceClient<pose_estimation::SetFilterParam>("pcl_filter/set_filter_param");
-	client_filter_enable = n.serviceClient<pose_estimation::SetFilter>("pcl_filter/set_filter");
+	client_filter = n.serviceClient<kinect_pcl_tools::SetFilterParam>("pcl_filter/set_filter_param");
+	client_filter_enable = n.serviceClient<kinect_pcl_tools::SetFilter>("pcl_filter/set_filter");
 	
 	// Acquire param
 	ros::NodeHandle nh("~");

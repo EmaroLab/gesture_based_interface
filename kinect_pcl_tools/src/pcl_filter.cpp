@@ -7,8 +7,8 @@
 #include <pcl/filters/statistical_outlier_removal.h>
 #include <pcl/filters/passthrough.h>
 #include <pcl/filters/voxel_grid.h>
-#include "pose_estimation/SetFilter.h"
-#include "pose_estimation/SetFilterParam.h"
+#include "kinect_pcl_tools/SetFilter.h"
+#include "kinect_pcl_tools/SetFilterParam.h"
 /**
  * @file
  */
@@ -41,8 +41,8 @@ double sor_stddev = 1.0;
 /** Callback function of enable_service
  * for enabling filters.
  */
-bool set_filter(pose_estimation::SetFilter::Request  &req,
-         pose_estimation::SetFilter::Response &res)
+bool set_filter(kinect_pcl_tools::SetFilter::Request  &req,
+         kinect_pcl_tools::SetFilter::Response &res)
 {
 	std::string str_z = "z_filter";
 	std::string str_y = "y_filter";
@@ -76,8 +76,8 @@ bool set_filter(pose_estimation::SetFilter::Request  &req,
 /** Callback function of a service
  * to set filters parameters (leaf_size, range of XYZ filter, SOR filter parameters).
  */
-bool set_filter_param(pose_estimation::SetFilterParam::Request  &req,
-         pose_estimation::SetFilterParam::Response &res)
+bool set_filter_param(kinect_pcl_tools::SetFilterParam::Request  &req,
+         kinect_pcl_tools::SetFilterParam::Response &res)
 {
 	std::string str_leaf = "leaf_size";
 	std::string str_min_z = "min_z";

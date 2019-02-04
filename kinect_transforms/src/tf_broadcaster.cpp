@@ -10,14 +10,6 @@ double x_kinect = 0.0;
 double y_kinect = 0.0;
 double z_kinect = 0.0;
 
-float TF_Broadcaster::radians(void){ 
-	return angle * M_PI / 180;
-}
-
-float TF_Broadcaster::degrees(void){ 
-	return angle;
-}
-
 /** @brief Class to publish periodically the transformation between Baxter and Kinect
  */
 class TF_Broadcaster{
@@ -49,6 +41,14 @@ protected:
     
     double angle = 20.0;
 };
+
+float TF_Broadcaster::radians(void){ 
+	return angle * M_PI / 180;
+}
+
+float TF_Broadcaster::degrees(void){ 
+	return angle;
+}
     
 /**
  * Main function: 

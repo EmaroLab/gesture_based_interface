@@ -96,7 +96,7 @@ add_executable(pcl_filter src/pcl_filter.cpp)
  
  ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-add_dependencies(pcl_filter pose_estimation_generate_messages_cpp)	
+add_dependencies(pcl_filter kinect_pcl_tools_generate_messages_cpp)	
 add_dependencies(pcl_record ${catkin_EXPORTED_TARGETS})	
 add_dependencies(pcl_filter ${catkin_EXPORTED_TARGETS})			
 
@@ -104,8 +104,6 @@ add_dependencies(pcl_filter ${catkin_EXPORTED_TARGETS})
 target_link_libraries(pcl_background_segmentation ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 target_link_libraries(pcl_record ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 target_link_libraries(pcl_filter ${catkin_LIBRARIES} ${PCL_LIBRARIES})
-target_link_libraries(position_estimation ${catkin_LIBRARIES} ${PCL_LIBRARIES})
-target_link_libraries(head_tracking ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 #############
 ## Install ##
 #############

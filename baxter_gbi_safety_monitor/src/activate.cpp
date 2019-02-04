@@ -14,15 +14,6 @@ using namespace std;
 double security_distance = 1.5;
 double threshold = 0.7;
 
-KinectActivate::reset(){ beacon_presence = false; attention = false; secure = true; }
-
-bool KinectActivate::isSecure(void){ 
-	return beacon_presence && attention;
-}
-
-bool KinectActivate::hasAttention(void){ 
-	return secure;
-}
 
 /** @brief Class to send the activate signal to the control board and the proximity alert
  * 
@@ -43,7 +34,7 @@ class KinectActivate{
         beacon_sub = nh.subscribe("/odometry/baxter/center_of_mass", 10, &KinectActivate::comCB, this);
     }
     
-    reset(); /**< Metod to reset flags */
+    void reset(); /**< Metod to reset flags */
 	bool isSecure(void); /**< Metod to check security */
 	bool hasAttention(void); /**< Metod to check attention */
     /**
@@ -102,6 +93,21 @@ protected:
     ros::Subscriber head_sub;  /**< Subscriber to /odometry/kinect/head */
     ros::Subscriber com_sub;  /**< Subscriber to /odometry/kinect/center_of_mass */ 
 };
+
+
+void KinectActivate::reset(){ 
+	beacon_presence = false; 
+	attention = false; 
+	secure = true; 
+}
+
+bool KinectActivate::isSecure(void){ 
+	return beacon_presence && attention;
+}
+
+bool KinectActivate::hasAttention(void){ 
+	return secure;
+}
 
 /**
  * Main:

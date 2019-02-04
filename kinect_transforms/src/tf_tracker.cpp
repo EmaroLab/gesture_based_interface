@@ -7,6 +7,10 @@
 #include <geometry_msgs/Vector3.h>
 #include <tf/transform_datatypes.h>
 #include <std_srvs/Empty.h>
+#include <iostream>
+#include <unistd.h>
+#include <sys/types.h>
+#include <string> 
 /**
  * @file
  */
@@ -22,17 +26,17 @@ ros::ServiceClient client_reset;  /**< Client to reset filters */
  */
 main(int argc, char** argv)
 {
-    ros::init(argc, argv, "tf_tracker", ros::init_option::AnonymousName);
+    ros::init(argc, argv, "tf_tracker", ros::init_options::AnonymousName);
 	ros::NodeHandle n("~");    
 	static tf::TransformBroadcaster br;
 	tf::TransformListener listener;
 	
-	ros::string frame;
-	n.param<string>("frame", frame, "head");
+	std::string frame;
+	n.param<std::string>("frame", frame, "head");
 	
-	ros::stringstream kinect_path;
+	std::stringstream kinect_path;
 	kinect_path << "/odometry/kinect/" << frame;
-	ros::stringstream baxter_path;
+	std::stringstream baxter_path;
 	baxter_path << "/odometry/baxter/" << frame;
 	
 	ros::NodeHandle nh;  
