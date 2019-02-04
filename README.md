@@ -17,15 +17,15 @@ roscore
 ```
 Launch nodes for the Kinect
 ```
-roslaunch openni_launch openni.launch device_id:=A00362A07684107A
+roslaunch openni_launch openni.launch device_id:= A00362A07684107A
 ```
 Configuration: generation of environments according to the orientation angle of the Kinect
 ```
-roslaunch pose_estimation config.launch
+roslaunch kinect_pcl_tools configuration.launch
 ```
 Estimation of the position of human's center of mass
 ```
-roslaunch pose_estimation pose_estimator.launch
+roslaunch kinect_pcl_tools kinect_to_fsm.launch
 ```
 Service for setting the orientation angle of the Kinect: 
 A node inside the package kinect_setup publishes the angle on the topic tilt_angle

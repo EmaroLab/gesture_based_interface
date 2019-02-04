@@ -10,7 +10,13 @@ double x_kinect = 0.0;
 double y_kinect = 0.0;
 double z_kinect = 0.0;
 
-double angle = 20.0;
+float TF_Broadcaster::radians(void){ 
+	return angle * M_PI / 180;
+}
+
+float TF_Broadcaster::degrees(void){ 
+	return angle;
+}
 
 /** @brief Class to publish periodically the transformation between Baxter and Kinect
  */
@@ -34,9 +40,14 @@ class TF_Broadcaster{
         }
     }
 
+	float radians(void);
+	float degrees(void);
+	
 protected:
     ros::NodeHandle nh;
     ros::Subscriber angle_sub;  /**< Subscriber to /cur_tilt_angle */
+    
+    double angle = 20.0;
 };
     
 /**
@@ -67,8 +78,9 @@ main(int argc, char** argv)
 	tf::Quaternion frame_rotation;
     
 	while(ros::ok()){
+		
 		// Negative because of the y axis grows downwards
-		rad_angle = angle * M_PI / -180;
+		rad_angle = - tf_broadcaster.radians();
 		
 		frame_rotation.setRPY(0, rad_angle, 0); // pitch = current tilt angle of the Kinect
 		change_frame.setRotation(frame_rotation);

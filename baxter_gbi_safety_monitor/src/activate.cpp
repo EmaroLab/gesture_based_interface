@@ -10,15 +10,19 @@
  
 using namespace std;
 
-// Flags
-bool beacon_presence = false;
-bool attention = false;
-bool secure = true;
-
 // Parameters
 double security_distance = 1.5;
 double threshold = 0.7;
 
+KinectActivate::reset(){ beacon_presence = false; attention = false; secure = true; }
+
+bool KinectActivate::isSecure(void){ 
+	return beacon_presence && attention;
+}
+
+bool KinectActivate::hasAttention(void){ 
+	return secure;
+}
 
 /** @brief Class to send the activate signal to the control board and the proximity alert
  * 
@@ -38,6 +42,10 @@ class KinectActivate{
         head_sub = nh.subscribe("/odometry/baxter/head", 10, &KinectActivate::headCB, this);
         beacon_sub = nh.subscribe("/odometry/baxter/center_of_mass", 10, &KinectActivate::comCB, this);
     }
+    
+    reset(); /**< Metod to reset flags */
+	bool isSecure(void); /**< Metod to check security */
+	bool hasAttention(void); /**< Metod to check attention */
     /**
      * Presence callback function:
      *  sets a flag to true if beacons take over the presence of a human in the area 
@@ -83,6 +91,12 @@ class KinectActivate{
 protected:
 	tf::Pose pose;				/**< Current Odometry of the head */
 	double yaw;					/**< Yaw angle of the head frame */
+	
+	// Flags
+	bool beacon_presence = false;
+	bool attention = false;
+	bool secure = true;
+	
     ros::NodeHandle nh;			/**< Private node handler */
     ros::Subscriber beacon_sub;  /**< Subscriber to /beacon/presence */
     ros::Subscriber head_sub;  /**< Subscriber to /odometry/kinect/head */
@@ -120,20 +134,18 @@ main(int argc, char** argv)
 	
 	while(ros::ok())
 	{	
-		if(beacon_presence && attention)
+		if(kinectActivate.hasAttention())
 		{
 			presence_msg.stamp = ros::Time::now();
 			presence_pub.publish(presence_msg);
 		}
-		if(secure){
+		if(kinectActivate.isSecure()){
 			security_msg.stamp = ros::Time::now();
 			security_pub.publish(security_msg);
 		}
 		
 		// Reset flags to false
-		beacon_presence = false;
-		attention = false;
-		secure = true;
+		kinectActivate.reset();
 		
 		// Callbacks will reset flags to true if they match conditions
 		ros::spinOnce();

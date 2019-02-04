@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(transformation)
+project(baxter_gbi_safety_monitor)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -74,7 +74,7 @@ link_directories(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES retrorov_model_bathymetric
- CATKIN_DEPENDS pcl_ros roscpp rospy sensor_msgs std_msgs message_runtime geometry_msgs
+ CATKIN_DEPENDS pcl pcl_ros roscpp rospy sensor_msgs std_msgs message_runtime geometry_msgs
 #  DEPENDS system_lib
 )
 
@@ -96,10 +96,7 @@ include_directories(
 
 ## Declare a cpp executable
 
-add_executable(tf_broadcaster src/tf_broadcaster.cpp)
-add_executable(tf_tracker_head src/tf_tracker_head.cpp)
-add_executable(tf_tracker_left_hand src/tf_tracker_left_hand.cpp)
-add_executable(tf_tracker_right_hand src/tf_tracker_right_hand.cpp)
+add_executable(activate src/activate.cpp)
 
  
  ## Add cmake target dependencies of the executable/library
@@ -107,10 +104,7 @@ add_executable(tf_tracker_right_hand src/tf_tracker_right_hand.cpp)
 # add_dependencies(retrorov_model_bathymetric_node retrorov_model_bathymetric_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(tf_broadcaster ${catkin_LIBRARIES} ${PCL_LIBRARIES})
-target_link_libraries(tf_tracker_head ${catkin_LIBRARIES} ${PCL_LIBRARIES})
-target_link_libraries(tf_tracker_left_hand ${catkin_LIBRARIES} ${PCL_LIBRARIES})
-target_link_libraries(tf_tracker_right_hand ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+target_link_libraries(activate ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 #############
 ## Install ##
 #############
