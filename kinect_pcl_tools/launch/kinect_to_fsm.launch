@@ -47,13 +47,13 @@
 		<param name="camera_frame_id" value="camera_link"/>
 	</node>
 
-	<node name="tf_tracker" pkg="kinect_transforms" type="tf_tracker" output="screen">
+	<node name="tf_tracker_head" pkg="kinect_transforms" type="tf_tracker" output="screen">
 		<param name="frame" value="head"/>
 	</node>
-	<node name="tf_tracker" pkg="kinect_transforms" type="tf_tracker" output="screen">
+	<node name="tf_tracker_left_hand" pkg="kinect_transforms" type="tf_tracker" output="screen">
 		<param name="frame" value="left_hand"/>
 	</node>
-	<node name="tf_tracker" pkg="kinect_transforms" type="tf_tracker" output="screen">
+	<node name="tf_tracker_right_hand" pkg="kinect_transforms" type="tf_tracker" output="screen">
 		<param name="frame" value="right_hand"/>
 	</node>
 
