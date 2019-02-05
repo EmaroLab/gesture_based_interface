@@ -48,6 +48,7 @@ void ConfigPanel::scan(){
   ui->addMappingButton->setEnabled(false);
   model->clear();
   scanner();
+  if (scanner.count() < 6) return;
 
   for (auto a = scanner.begin(); a != scanner.end(); ++a){
     qInfo() << "Topic " << a.key() << ": ";
@@ -60,7 +61,7 @@ void ConfigPanel::scan(){
       topic->appendRow(new QStandardItem(b));
     }
   }
-  ui->addMappingButton->setEnabled(scanner.count() >= 6);
+  ui->addMappingButton->setEnabled(true);
 }
 
 void ConfigPanel::addMappingToActiveTab(){
