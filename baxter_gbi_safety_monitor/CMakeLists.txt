@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(kinect_setup)
+project(baxter_gbi_safety_monitor)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -14,7 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   laser_geometry
   roslaunch
   pcl_ros
-  message_generation
+
 )
 
 ## System dependencies are found with CMake's conventions
@@ -60,30 +60,7 @@ link_directories(
 ##   * uncomment the generate_messages entry below
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
-## Generate messages in the 'msg' folder
 
-## Generate services in the 'srv' folder
- add_service_files(
-   FILES
-   MoveKinect.srv
-   RegulateKinectByWrist.srv
-   RegulateKinectByHead.srv
- )
-
-## Generate actions in the 'action' folder
-# add_action_files(
-#   FILES
-#   Action1.action
-#   Action2.action
-# )
-
-## Generate added messages and services with any dependencies listed here
-generate_messages(
-  DEPENDENCIES
-   std_msgs
-   geometry_msgs
-	
- )
 
 ###################################
 ## catkin specific configuration ##
@@ -97,7 +74,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES retrorov_model_bathymetric
- CATKIN_DEPENDS pcl_ros roscpp rospy sensor_msgs std_msgs message_runtime geometry_msgs
+ CATKIN_DEPENDS pcl pcl_ros roscpp rospy sensor_msgs std_msgs message_runtime geometry_msgs
 #  DEPENDS system_lib
 )
 
@@ -119,18 +96,15 @@ include_directories(
 
 ## Declare a cpp executable
 
-add_executable(kinect_move_server src/kinect_move_server.cpp)
-add_executable(kinect_regulation_server src/kinect_regulation_server.cpp)
+add_executable(activate src/activate.cpp)
 
  
  ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-add_dependencies(kinect_move_server kinect_setup_generate_messages_cpp)
-add_dependencies(kinect_regulation_server kinect_setup_generate_messages_cpp)
+# add_dependencies(retrorov_model_bathymetric_node retrorov_model_bathymetric_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(kinect_regulation_server ${catkin_LIBRARIES} ${PCL_LIBRARIES})
-target_link_libraries(kinect_move_server ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+target_link_libraries(activate ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 #############
 ## Install ##
 #############

@@ -1,5 +1,10 @@
 <launch>
-	
+	<node name="kinect_broadcaster" pkg="kinect_transforms" type="kinect_broadcaster" output="screen">
+		<param name="x_kinect" value="0.3"/>
+		<param name="y_kinect" value="0.3"/>
+		<param name="z_kinect" value="0.3"/>
+	</node>
+
 	<node name="kinect_aux_node" pkg ="kinect_aux" type="kinect_aux_node" output="screen" />
 	<node name="kinect_move_server" pkg="kinect_setup" type="kinect_move_server" output="screen"/>
 
@@ -7,12 +12,12 @@
 		<param name="initial_angle" value="20"/>
 	</node>
 
-	<node name="pcl_background_segmentation" pkg ="pose_estimation" type="pcl_background_segmentation" output="screen">
+	<node name="pcl_background_segmentation" pkg ="kinect_pcl_tools" type="pcl_background_segmentation" output="screen">
 		<param name="granularity" value="5"/>
 		<param name="delta" value="0.12"/>
 	</node>
 	
-	<node name="pcl_filter" pkg ="pose_estimation" type="pcl_filter" output="screen">
+	<node name="pcl_filter" pkg ="kinect_pcl_tools" type="pcl_filter" output="screen">
 		<param name="use_downsampling" value="true"/>
 		<param name="downsampling_leaf_size" value="0.05"/>
 
@@ -34,7 +39,6 @@
 		<param name="use_filter_sor" value="true"/>
 		<param name="sor_k" value="40"/>
 		<param name="sor_stddev" value="1.0"/>
-
 	</node>
 
 	<node name="position_estimation" pkg="pose_estimation" type="position_estimation" output="screen"/>
@@ -43,17 +47,26 @@
 		<param name="camera_frame_id" value="camera_link"/>
 	</node>
 
-	<node name="head_tracking" pkg="pose_estimation" type="head_tracking" output="screen"/>
-
-	<node name="tf_broadcaster" pkg="transformation" type="tf_broadcaster" output="screen">
-		<param name="x_kinect" value="0.3"/>
-		<param name="y_kinect" value="0.3"/>
-		<param name="z_kinect" value="0.3"/>
+	<node name="tf_tracker_head" pkg="kinect_transforms" type="tf_tracker" output="screen">
+		<param name="frame" value="kinect_head"/>
+	</node>
+	<node name="tf_tracker_left_hand" pkg="kinect_transforms" type="tf_tracker" output="screen">
+		<param name="frame" value="kinect_left_hand"/>
+	</node>
+	<node name="tf_tracker_right_hand" pkg="kinect_transforms" type="tf_tracker" output="screen">
+		<param name="frame" value="kinect_right_hand"/>
 	</node>
 
-	<node name="activate" pkg="activation" type="activate" output="screen">
+	<node name="head_tracking" pkg="kinect_transforms" type="head_tracking" output="screen"/>
+
+	<node name="activate" pkg="baxter_gbi_safety_monitor" type="activate" output="screen">
 		<param name="security_distance" value="1.0"/>
 		<param name="threshold" value="0.7"/>
+	</node>
+
+
+	<node name="rviz" pkg="rviz" type="rviz">
+		<param name="d" value="/home/marco/catkin_ws/src/rviz_conf.rviz"/>
 	</node>
 
 </launch>

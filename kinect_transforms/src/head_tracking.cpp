@@ -5,7 +5,7 @@
  * @file
  */
 
-ros::ServiceClient client_move;  
+
 
 /**@brief Class for tracking the head from the Kinect
  * 
@@ -22,7 +22,8 @@ public:
      */
     HeadTracking()
     {
-        head_sub = nh.subscribe("/odometry/kinect/head", 10, &HeadTracking::trackCB, this);
+   	client_move = nh.serviceClient<kinect_setup::RegulateKinectByHead>("regulate_kinect_by_head"); 
+        head_sub = nh.subscribe("/odometry/kinect/kinect_head", 10, &HeadTracking::trackCB, this);
     }
     /** 
      * Callback function
@@ -39,6 +40,7 @@ public:
 	}
 
 	protected:
+		ros::ServiceClient client_move; 
 		ros::NodeHandle nh;
 		ros::Subscriber head_sub; /**< Subscriber to /odometry/kinect/head */
 };
@@ -49,9 +51,6 @@ public:
 main(int argc, char **argv)
 {
     ros::init(argc, argv, "head_tracking");
-    
-    ros::NodeHandle pnh;
-    client_move = pnh.serviceClient<kinect_setup::RegulateKinectByHead>("regulate_kinect_by_head");  
 
     HeadTracking handler;
 
