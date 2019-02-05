@@ -21,6 +21,12 @@ from BaxterGBI_pbr.srv import *
 from BaxterGBI_pbr import *
 
 
+global pb, playbacking, starting_pause
+
+starting_pause = 0
+playbacking = False
+pb = PlaybackObj()
+
 def playback_handler(req):
     """
     Service used to activate the playback mode on the baxter.
@@ -36,11 +42,15 @@ def playback_handler(req):
     """
     rospy.loginfo("Called!!!")
 
+    
     #Check if the file exists
     file_path_string = "src/BaxterGBI_pbr/RecordedFile/"+req.msg.filename
     rospy.loginfo(file_path_string)
     if os.path.isfile(file_path_string) :
-        map_file(file_path_string, req.msg.loops, req.msg.scale_vel)
+        global pb, playbacking
+        playbacking = True
+        pb.map_file(file_path_string, req.msg.loops, req.msg.scale_vel)
+        playbacking = False
         return 0
     else:
         rospy.logerr("The file doesn't exist!!")
@@ -153,6 +163,37 @@ def reach_goal_handler(req):
         except rospy.ServiceException, e:
             rospy.logerr("Error in Inverse Kinematic problem")
 
+def pause_resume_handler(req):
+    """
+    Service used to pause and resume a playback.
+    
+    @type req.mode: uint8
+    @param req.mode: 0 to pause, 1 to resume.
+    
+    @returns: 0 on success, 1 on errors
+    """
+    global pb, playbacking, starting_pause
+    
+    #Every time we change from Resume to Pause -> We start counting the the time passed, then we add it to the pb.paused_time when resuming
+    if playbacking == True:
+        if req.mode != pb.pause_state:
+            if req.mode == 1: #Pausing
+                pb.pause_state = req.mode
+                rospy.loginfo("Paused!")
+                starting_pause = rospy.get_time()
+                return 0
+            elif req.mode == 0: #Resuming
+                pb.pause_state = req.mode
+                rospy.loginfo("Resumed!")
+                pb.paused_time += rospy.get_time() - starting_pause
+                
+        else:
+            rospy.logwarn("Cannot change to state to the same one!")
+            return 1
+    else:
+        rospy.logwarn("Playback is stop running!")
+        return 1
+
 #pbr_node initialization
 def pbr_server_baxter():
     """Main of the node. It makes available the services and wait for requests.
@@ -179,6 +220,7 @@ def pbr_server_baxter():
     service3 = rospy.Service('record_start', RecordStart, record_start_handler)
     service4 = rospy.Service('gripper', Gripper, gripper_handler)
     service5 = rospy.Service('reach_goal', ReachGoal, reach_goal_handler)
+    service6 = rospy.Service('pause_resume', PauseResume, pause_resume_handler)
     rospy.loginfo("PBR node executed -> providing playback/record services.")
 
     def clean_shutdown():

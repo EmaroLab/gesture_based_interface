@@ -23,6 +23,7 @@ add_message_files(
    playback_msg.msg
    record_status.msg
    mirror_end_effector.msg
+   mirror_bag.msg
 )
 
 add_service_files(
@@ -37,11 +38,13 @@ add_service_files(
   ReachGoal.srv
   CalibrateMirror.srv
   EnableMirroring.srv
+  PauseResume.srv
 )
 
 generate_messages(
    DEPENDENCIES
    std_msgs
+   geometry_msgs
  )
 
 catkin_package(
