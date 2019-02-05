@@ -7,3 +7,6 @@
 *.config
 *.creator
 *.autosave
+/html
+/latex
+*.pcd

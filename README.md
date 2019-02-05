@@ -1,6 +1,5 @@
 # Gesture-based interface for Baxter Robot
 
-
 ## Download instructions
 ```
 mkdir ~/sofar_ws
@@ -10,4 +9,32 @@ catkin_make
 . devel/setup.bash
 cd src
 git status
+```
+
+## Kinect launcher
+```
+roscore
+```
+Launch nodes for the Kinect
+```
+roslaunch openni_launch openni.launch device_id:=A00362A07684107A
+```
+Configuration: generation of environments according to the orientation angle of the Kinect
+```
+roslaunch pose_estimation config.launch
+```
+Estimation of the position of human's center of mass
+```
+roslaunch pose_estimation pose_estimator.launch
+```
+Service for setting the orientation angle of the Kinect: 
+A node inside the package kinect_setup publishes the angle on the topic tilt_angle
+```
+rosservice call /move_kinect "angle: <float>"
+```
+
+```
+rviz -> topic : /camera/pcl_filtered
+	fixed frame: world_frame
+	orbit: fixed frame (on the right)
 ```
