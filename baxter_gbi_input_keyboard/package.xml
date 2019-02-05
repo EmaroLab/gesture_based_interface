@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>BaxterGBI_input_keyboard</name>
+  <name>baxter_gbi_input_keyboard</name>
   <version>0.0.0</version>
   <description>The BaxterGBI_input_keyboard package</description>
 
@@ -12,10 +12,10 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>rospy</build_depend>
-  <build_depend>BaxterGBI_input_msgs</build_depend>
+  <build_depend>baxter_gbi_input_msgs</build_depend>
   <build_export_depend>rospy</build_export_depend>
   <exec_depend>rospy</exec_depend>
-  <exec_depend>BaxterGBI_input_msgs</exec_depend>
+  <exec_depend>baxter_gbi_input_msgs</exec_depend>
 
   <export>
     <!-- Other tools can request additional information be placed here -->

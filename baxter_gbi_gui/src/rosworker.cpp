@@ -13,7 +13,7 @@ Worker::Worker(QWidget* parent){
 Worker::~Worker(){
 }
 
-void Worker::statusCb(const boost::shared_ptr<BaxterGBI_core_msgs::status> msg){
+void Worker::statusCb(const boost::shared_ptr<baxter_gbi_core_msgs::status> msg){
 	if(msg->context_type == "config_wait" or msg->context_type == "wait_user"){
 		emit configFrame();
 	} else if (msg->context_type == "menu"){

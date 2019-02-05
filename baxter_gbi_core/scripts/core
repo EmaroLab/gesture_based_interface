@@ -6,7 +6,7 @@
 
 import rospy
 import signal
-import BaxterGBI_input_msgs.msg as bgi_io
+import baxter_gbi_input_msgs.msg as bgi_io
 import smach
 from std_srvs.srv import Trigger, TriggerResponse
 import threading

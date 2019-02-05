@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>BaxterGBI_gui</name>
+  <name>baxter_gbi_gui</name>
   <version>0.0.0</version>
   <description>The BaxterGBI_gui package</description>
 
@@ -17,7 +17,7 @@
   <build_depend>rosmaster</build_depend>
   <build_depend>std_srvs</build_depend>
   <build_depend>sensor_msgs</build_depend>
-  <build_depend>BaxterGBI_input_msgs</build_depend>
+  <build_depend>baxter_gbi_input_msgs</build_depend>
   <build_export_depend>roscpp</build_export_depend>
   <build_export_depend>std_srvs</build_export_depend>
   <build_export_depend>sensor_msgs</build_export_depend>
@@ -27,6 +27,5 @@
   <exec_depend>sensor_msgs</exec_depend>
 
   <export>
-    <!-- Other tools can request additional information be placed here -->
   </export>
 </package>

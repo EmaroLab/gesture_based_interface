@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import rospy 
-import BaxterGBI_input_msgs.msg as input_msg
+import baxter_gbi_input_msgs.msg as input_msg
 from std_msgs.msg import String
   
 class _GetchUnix:

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 
-project(BaxterGBI_gui)
+project(baxter_gbi_gui)
 
 set (CMAKE_CXX_STANDARD 17)
 
@@ -18,7 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
   rosmaster
   std_srvs
   sensor_msgs
-  BaxterGBI_input_msgs
+  baxter_gbi_input_msgs
 )
 
 catkin_package(

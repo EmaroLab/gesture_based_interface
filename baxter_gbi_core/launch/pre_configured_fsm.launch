@@ -1,4 +1,4 @@
 <launch>
     <node name="core" pkg="BaxterGBI_core" type="core" output="screen" />
-    <rosparam command="load" file="$(find BaxterGBI_core)/config.yaml" />
+    <rosparam command="load" file="$(find baxter_gbi_core)/config.yaml" />
 </launch>	

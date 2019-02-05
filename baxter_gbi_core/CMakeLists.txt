@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(BaxterGBI_core)
+project(baxter_gbi_core)
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
@@ -8,14 +8,14 @@ find_package(catkin REQUIRED COMPONENTS
   roslib
   std_msgs
   std_srvs
-  BaxterGBI_input_msgs
+  baxter_gbi_input_msgs
 )
 
 catkin_python_setup()
 
 catkin_package(
 
-  CATKIN_DEPENDS rospy smach std_msgs std_srvs BaxterGBI_input_msgs
+  CATKIN_DEPENDS rospy smach std_msgs std_srvs baxter_gbi_input_msgs
 )
 
 include_directories(

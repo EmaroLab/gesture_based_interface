@@ -12,7 +12,6 @@
 #include "menupanel.h"
 #include "rosworker.h"
 #include "BaxterDisplay.h"
-#include "BaxterGBI_core_msgs/status.h"
 
 namespace Ui {
 class MainWindow;
