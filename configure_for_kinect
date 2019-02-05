@@ -100,7 +100,7 @@ cd
 git clone https://github.com/avin2/SensorKinect.git
 cd SensorKinect/Platform/Linux/CreateRedist
 ./RedistMaker
-cd ..//Redist/Sensor-Bin-Linux-<Kernel_Distribution>
+cd ../Redist/Sensor-Bin-Linux-<Kernel_Distribution>
 sudo ./install.sh
 
 sudo touch /etc/udev/rules.d/557-primesense-usb.rules
