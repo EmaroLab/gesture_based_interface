@@ -50,17 +50,17 @@ void ConfigPanel::scan(){
   scanner();
 
   for (auto a = scanner.begin(); a != scanner.end(); ++a){
-    qInfo() << "Topic %s:" << a.key();
+    qInfo() << "Topic " << a.key() << ": ";
     ROS_INFO("Topic %s:", a.key().toLatin1().data());
     auto topic = new QStandardItem(a.key());
     model->appendRow(topic);
     for(auto b: a.value()){
-      qInfo() << "\t%s:" << b;
+      qInfo() << "\t" << b;
       ROS_INFO("\t%s", b.toLatin1().data());
       topic->appendRow(new QStandardItem(b));
     }
   }
-  ui->addMappingButton->setEnabled(n_topics >= 6);
+  ui->addMappingButton->setEnabled(scanner.count() >= 6);
 }
 
 void ConfigPanel::addMappingToActiveTab(){
