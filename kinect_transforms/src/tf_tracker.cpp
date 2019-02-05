@@ -32,7 +32,7 @@ main(int argc, char** argv)
 	tf::TransformListener listener;
 	
 	std::string frame;
-	n.param<std::string>("frame", frame, "head");
+	n.param<std::string>("frame", frame, "kinect_head");
 	
 	std::stringstream kinect_path;
 	kinect_path << "/odometry/kinect/" << frame;

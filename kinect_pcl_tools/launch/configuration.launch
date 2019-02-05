@@ -1,5 +1,11 @@
 <launch>
 	
+	<node name="kinect_broadcaster" pkg="kinect_transforms" type="kinect_broadcaster" output="screen">
+		<param name="x_kinect" value="0.3"/>
+		<param name="y_kinect" value="0.3"/>
+		<param name="z_kinect" value="0.3"/>
+	</node>
+
 	<node name="kinect_aux_node" pkg ="kinect_aux" type="kinect_aux_node" output="screen" />
 	<node name="kinect_move_server" pkg="kinect_setup" type="kinect_move_server" output="screen"/>
 

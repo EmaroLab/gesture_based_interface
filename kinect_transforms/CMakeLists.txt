@@ -15,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   roslaunch
   pcl_ros
   kinect_setup
+  tf
 )
 
 ## System dependencies are found with CMake's conventions
@@ -74,7 +75,7 @@ link_directories(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES retrorov_model_bathymetric
- CATKIN_DEPENDS pcl_ros roscpp rospy sensor_msgs std_msgs message_runtime geometry_msgs kinect_setup
+ CATKIN_DEPENDS pcl_ros roscpp rospy sensor_msgs std_msgs message_runtime geometry_msgs kinect_setup tf
 #  DEPENDS system_lib
 )
 
@@ -95,7 +96,7 @@ include_directories(
 # )
 
 ## Declare a cpp executable
-add_executable(tf_broadcaster src/tf_broadcaster.cpp)
+add_executable(kinect_broadcaster src/kinect_broadcaster.cpp)
 add_executable(tf_tracker src/tf_tracker.cpp)
 add_executable(head_tracking src/head_tracking.cpp)
  
@@ -104,7 +105,7 @@ add_executable(head_tracking src/head_tracking.cpp)
 add_dependencies(head_tracking ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(tf_broadcaster ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+target_link_libraries(kinect_broadcaster ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 target_link_libraries(tf_tracker ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 target_link_libraries(head_tracking ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 
