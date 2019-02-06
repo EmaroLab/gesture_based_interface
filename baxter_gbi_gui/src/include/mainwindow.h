@@ -4,7 +4,10 @@
 #include <QMainWindow>
 #include <QDebug>
 #include <QThread>
+#include <QKeyEvent>
 #include <QString>
+#include <QMap>
+#include <QSharedPointer>
 #include "ros/ros.h"
 
 #include "configpanel.h"
@@ -37,18 +40,18 @@ private:
 	MenuPanel menu_page;
 	QWidget *current_page;
 	BaxterDisplay display;
-  KeystrokePublisher *key;
+  QMap<int, KeystrokePublisher*> map;
 
 
 private slots:
 	void showConfig();
-    void showMenu(QString &title,
+  void showMenu(QString &title,
                   QVector<QString> &options,
                   QVector<QString> &fixed_options,
                   int8_t selection);
-    void showAction(QString action, 
+  void showAction(QString action, 
                     QString msg);
-    void switchPage(QWidget *target_page);
+  void switchPage(QWidget *target_page);
 	void __setConfigMode();
 	void __setActionMode();
 	void __setMenuMode();

@@ -1,14 +1,9 @@
 #include "KeystrokePublisher.h"
 #include "baxter_gbi_input_msgs/signal.h"
 
-KeystrokePublisher::KeystrokePublisher(std::string topic)
-: topic(topic){
-    publisher = n.advertise<baxter_gbi_input_msgs::signal>(topic, 1);
+KeystrokePublisher::KeystrokePublisher(QString topic){
+    publisher = n.advertise<baxter_gbi_input_msgs::signal>(topic.toStdString(), 1);
 }
-
-KeystrokePublisher::KeystrokePublisher(QString topic)
-: KeystrokePublisher(topic.toStdString())
-{}
 
 void KeystrokePublisher::operator()(){
   msg.device_id = "123";

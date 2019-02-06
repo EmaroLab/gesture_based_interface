@@ -6,7 +6,6 @@
 class KeystrokePublisher {
 public:
     explicit KeystrokePublisher(QString topic);
-    explicit KeystrokePublisher(std::string topic);
     void operator()();
 private:
     ros::NodeHandle n;

@@ -14,6 +14,14 @@ MainWindow::MainWindow(QWidget *parent) :
 	rosThread(new QThread),
 	worker(new Worker),
 	current_page(nullptr),
+	map{
+		 {Qt::Key_1, new KeystrokePublisher("/keyboard/keystroke_1")},
+		 {Qt::Key_2, new KeystrokePublisher("/keyboard/keystroke_2")},
+		 {Qt::Key_3, new KeystrokePublisher("/keyboard/keystroke_3")},
+		 {Qt::Key_4, new KeystrokePublisher("/keyboard/keystroke_4")},
+		 {Qt::Key_5, new KeystrokePublisher("/keyboard/keystroke_5")},
+		 {Qt::Key_6, new KeystrokePublisher("/keyboard/keystroke_6")},
+	},
 	display(QString("/robot/xdisplay"))
 {
 	ui->setupUi(this);
@@ -96,30 +104,7 @@ void MainWindow::__setMenuMode(){
 }
 
 void MainWindow::keyReleaseEvent(QKeyEvent *event){
-	switch (event->ascii()) {
-        case '1':                              
-						key = new KeystrokePublisher("/keyboard/keystroke_1");
-						key.operator()();
-            break;
-        case '2':  
-						key = new KeystrokePublisher("/keyboard/keystroke_2");
-						key.operator()();
-            break;
-        case '3':                              
-						key = new KeystrokePublisher("/keyboard/keystroke_3");
-						key.operator()();
-            break;
-        case '4':                              
-						key = new KeystrokePublisher("/keyboard/keystroke_4");
-						key.operator()();
-            break;
-        case '5':                              
-						key = new KeystrokePublisher("/keyboard/keystroke_5");
-						key.operator()();
-            break;
-        case '6':                              
-						key = new KeystrokePublisher("/keyboard/keystroke_6");
-						key.operator()();
-            break;
-        default: break;
+
+		auto key = map.value(event->key(), nullptr);
+		if(key) (*key)();
 }
