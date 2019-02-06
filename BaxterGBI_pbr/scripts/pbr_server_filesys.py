@@ -33,7 +33,7 @@ def list_files_handler(req):
     resp = ListFilesResponse()
     
     #rospy.loginfo(os.getcwd())
-    
+    #TODO -> With roslaunch the current directory changes !!!
     path = "src/BaxterGBI_pbr/RecordedFile"
     files = os.listdir(path)
     
@@ -64,7 +64,10 @@ def delete_file_handler(req):
         
     if os.path.isfile(file_path_string) :
         os.remove(file_path_string)
-    return 0
+        return 0
+    else:
+        rospy.logwarn("No file with such name.")
+        return 1
     
 def rename_file_handler(req):
     """
@@ -83,7 +86,7 @@ def rename_file_handler(req):
     if os.path.isfile(path+req.old_filename) :
         os.rename(path+req.old_filename,path+req.new_filename)
     else:
-        rospy.logerr("There is no file with this name!")
+        rospy.logwarn("There is no file with this name!")
         return 1
     return 0
 

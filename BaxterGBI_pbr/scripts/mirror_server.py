@@ -32,6 +32,9 @@ from baxter_core_msgs.srv import (
 )
 
 
+"""
+Global variables for initial posture.
+"""
 global start, init_pose_hand, init_orient_hand, calibrated, init_pose_baxter, init_orient_baxter
 start = 0
 calibrated = False
@@ -185,7 +188,6 @@ def mirror_server():
     rospy.loginfo("Enabling robot... ")
     rs.enable()
 
-    #TODO -> add service to start/stop mirroring mode
     service1 = rospy.Service('calibrate_mirroring',CalibrateMirror, calibrate)
     service2 = rospy.Service('enable_mirroring',EnableMirroring, enableMirroring)
     

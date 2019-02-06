@@ -24,6 +24,7 @@ add_message_files(
    record_status.msg
    mirror_end_effector.msg
    mirror_bag.msg
+   modify_playback.msg
 )
 
 add_service_files(

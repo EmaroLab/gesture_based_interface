@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-ROS node used to allow the user to control the baxter via mirroring.
+ROS node used to allow the user to control the baxter via mirroring using the data provided by the kinect (Rosbag for testing).
 """
 
 import argparse
@@ -41,7 +41,7 @@ init_orient_baxter = []
 
    
 global steps, file_output
-steps = -1  
+steps = -1 
 
 def mirror_callback(data):
     """
@@ -61,7 +61,7 @@ def mirror_callback(data):
     global steps
     
     
-    steps = (steps+1)%15
+    steps = (steps+1)%5
     
     if first_data == 0:
         first_data = 1  
@@ -82,11 +82,12 @@ def mirror_callback(data):
         init_orient_baxter = resp['orientation']
         #rospy.loginfo("Pose: "+ str(init_pose_baxter))
         #rospy.loginfo("Orient: "+str(init_orient_baxter))
+        rospy.loginfo("First Data achieved -> Used as initial state")
     elif steps == 0:
         #Evaluate the relative movement of the hand
         pos = []
         pos.append(init_pose_baxter[0] - (data.pose.pose.position.x - init_pose_hand[0]))
-        pos.append(init_pose_baxter[1] - (data.pose.pose.position.y - init_pose_hand[1]))
+        pos.append(init_pose_baxter[1] + (data.pose.pose.position.y - init_pose_hand[1]))
         pos.append(init_pose_baxter[2] + (data.pose.pose.position.z - init_pose_hand[2]))
         
         
@@ -142,14 +143,14 @@ def mirror_server():
     file_output = open("baxter_data.csv","w+")
     
     global arm, limb
-    if sys.argv[1] == "left" or sys.argv[1] == "right":
+    if len(sys.argv) == 2 and (sys.argv[1] == "left" or sys.argv[1] == "right"):
         arm = Limb(sys.argv[1])
         limb = sys.argv[1]
     else:
         print("Insert as 1st param left or right")
         return
         
-    rospy.Subscriber("odometry/baxter/right_hand", mirror_bag, mirror_callback)
+    rospy.Subscriber("odometry/baxter/kinect_right_hand", mirror_bag, mirror_callback)
     
     def clean_shutdown():
         rospy.loginfo("\nExiting example...")

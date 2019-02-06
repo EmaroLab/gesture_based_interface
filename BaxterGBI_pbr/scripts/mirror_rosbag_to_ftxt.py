@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-ROS node used to allow the user to control the baxter via mirroring.
+ROS node used to translate the posture of the hand (obtained by the kinect) into a csv file.
 """
 
 import argparse
@@ -54,7 +54,7 @@ def mirror_server():
     file_name = open("rosbag_output.txt","w+")
     
         
-    rospy.Subscriber("odometry/baxter/right_hand", mirror_bag, mirror_callback)
+    rospy.Subscriber("odometry/baxter/kinect_right_hand", mirror_bag, mirror_callback)
     
     def clean_shutdown():
         rospy.loginfo("\nExiting example...")

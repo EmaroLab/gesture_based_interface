@@ -21,8 +21,15 @@ from BaxterGBI_pbr.srv import *
 from BaxterGBI_pbr import *
 
 
-global pb, playbacking, starting_pause
+"""
+Global Variables used to manage all the services.
+"""
 
+global pb, playbacking, starting_pause, pause_state
+global file_playback, line_executed #Information for recording after playback
+
+line_executed = 0
+pause_state = 0
 starting_pause = 0
 playbacking = False
 pb = PlaybackObj()
@@ -47,8 +54,9 @@ def playback_handler(req):
     file_path_string = "src/BaxterGBI_pbr/RecordedFile/"+req.msg.filename
     rospy.loginfo(file_path_string)
     if os.path.isfile(file_path_string) :
-        global pb, playbacking
+        global pb, playbacking, file_playback
         playbacking = True
+        file_playback = file_path_string
         pb.map_file(file_path_string, req.msg.loops, req.msg.scale_vel)
         playbacking = False
         return 0
@@ -63,25 +71,58 @@ def record_start_handler(req):
     
     @type req.filename: string
     @param req.filename: name of the recorderd file.
+    @type req.mode: string
+    @param req.mode: 'start' or 'stop'.
     @type req.record_rate: uint16
     @param req.record_rate: rate used for recording joints' data.
     
     @returns: 0 on success, 1 on errors
     """
-    rospy.loginfo("Called !!!")
-     
-    msg = record_status()
+    global pb, playbacking, pause_state, file_playback, line_executed
     
-    msg.filename = "src/BaxterGBI_pbr/RecordedFile/"+req.filename
-    msg.mode = "start"
-    msg.record_rate = req.record_rate
-    pub.publish(msg)
-    return 0
+    if playbacking == True and pause_state == 1:
+        playbacking = False
+        pause_state = 0
+        
+        msg = modify_playback()
+        msg.old_filename = file_playback
+        msg.new_filename = "src/BaxterGBI_pbr/RecordedFile/"+req.filename
+        msg.mode = "start"
+        msg.line_number = line_executed
+        msg.record_rate = req.record_rate
+        
+        #Stop the playbacking
+        pb.stop = 1
+        
+        
+        pub2.publish(msg)
+        return 0
+        
+    elif playbacking == True:
+        rospy.logwarn("Cannot record while playbacking")
+        return 1
+    else:
+        rospy.loginfo("Called !!!")
+         
+        msg = record_status()
+        
+        msg.filename = "src/BaxterGBI_pbr/RecordedFile/"+req.filename
+        msg.mode = "start"
+        msg.record_rate = req.record_rate
+        pub.publish(msg)
+        return 0
 
 
 def record_stop_handler(req):
     """
     Service used to stop the recording mode on the baxter.
+    
+    @type req.filename: string
+    @param req.filename: (empty, not used).
+    @type req.mode: string
+    @param req.mode: 'start' or 'stop'.
+    @type req.record_rate: uint16
+    @param req.record_rate: rate used for recording joints' data (zero, not used).
     
     @returns: 0 on success, 1 on errors
     """
@@ -172,18 +213,22 @@ def pause_resume_handler(req):
     
     @returns: 0 on success, 1 on errors
     """
-    global pb, playbacking, starting_pause
+    global pb, playbacking, starting_pause, pause_state
     
     #Every time we change from Resume to Pause -> We start counting the the time passed, then we add it to the pb.paused_time when resuming
     if playbacking == True:
         if req.mode != pb.pause_state:
             if req.mode == 1: #Pausing
-                pb.pause_state = req.mode
+                global line_executed
+                line_executed = pb.line_executed
+                pause_state = req.mode
+                pb.pause_state = pause_state
                 rospy.loginfo("Paused!")
                 starting_pause = rospy.get_time()
                 return 0
             elif req.mode == 0: #Resuming
-                pb.pause_state = req.mode
+                pause_state = req.mode
+                pb.pause_state = pause_state
                 rospy.loginfo("Resumed!")
                 pb.paused_time += rospy.get_time() - starting_pause
                 
@@ -209,8 +254,9 @@ def pbr_server_baxter():
     left_gripper = baxter_interface.Gripper('left', CHECK_VERSION)
     right_gripper = baxter_interface.Gripper('right', CHECK_VERSION)
     
-    global pub
+    global pub, pub2
     pub = rospy.Publisher('recording_status', record_status, queue_size=2)
+    pub2 = rospy.Publisher('modify_playback_status', modify_playback, queue_size=2)
 
     rospy.loginfo("Enabling robot... ")
     rs.enable()

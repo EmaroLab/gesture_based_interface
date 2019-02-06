@@ -33,14 +33,18 @@ from baxter_interface import CHECK_VERSION
 
 
 class JointRecorder(object):
-    def __init__(self, filename):
+    def __init__(self, filename, file_mode, start_time_displacement):
         """
         Records joint data to a file.
         """
         self._filename = filename
         self._start_time = rospy.get_time()
         self._done = True
-
+        
+        #If we open in append, we have to add to the start time, the time of the last instance playbacked
+        if file_mode == "a":
+            self._start_time_displacement = start_time_displacement
+        
         self._limb_left = baxter_interface.Limb("left")
         self._limb_right = baxter_interface.Limb("right")
         self._gripper_left = baxter_interface.Gripper("left", CHECK_VERSION)
@@ -64,16 +68,18 @@ class JointRecorder(object):
             
         self._joints_left = self._limb_left.joint_names()
         self._joints_right = self._limb_right.joint_names()
-        self._f = open(self._filename, 'w')
-        self._f.write('time,')
-        self._f.write(','.join([j for j in self._joints_left]) + ',')
-        self._f.write('left_gripper,')
-        self._f.write(','.join([j for j in self._joints_right]) + ',')
-        self._f.write('right_gripper\n')
+        self._f = open(self._filename, file_mode)
+        #if we open in append, we don't write the legend again
+        if file_mode != "a":
+            self._f.write('time,')
+            self._f.write(','.join([j for j in self._joints_left]) + ',')
+            self._f.write('left_gripper,')
+            self._f.write(','.join([j for j in self._joints_right]) + ',')
+            self._f.write('right_gripper\n')
         self._done = False
 
     def _time_stamp(self):
-        return rospy.get_time() - self._start_time
+        return rospy.get_time() + self._start_time_displacement - self._start_time
 
     def stop(self):
         """

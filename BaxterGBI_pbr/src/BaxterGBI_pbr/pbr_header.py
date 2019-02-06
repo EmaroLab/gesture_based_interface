@@ -19,6 +19,8 @@ class PlaybackObj(object):
     def __init__(self):
         self.pause_state = 0
         self.paused_time = 0
+        self.line_executed = 0
+        self.stop = 0
 
     def try_float(self, x):
         try:
@@ -90,6 +92,7 @@ class PlaybackObj(object):
 
         self.pause_state = 0
         self.paused_time = 0
+        self.stop = 0
         # If specified, repeat the file playback 'loops' number of times
         while loops < 1 or l < loops:
             i = 0
@@ -101,18 +104,19 @@ class PlaybackObj(object):
             right.move_to_joint_positions(rcmd_start)
             start_time = rospy.get_time()
             
-            number_lines = 1
+            number_lines = 0
             
-            while (number_lines < len(lines)-1):
+            while ((number_lines < len(lines)-1) and self.stop == 0):
             
                 if self.pause_state == 0:
                     number_lines += 1
-                    values = lines[(1+number_lines)]
+                    
+                    values = lines[(number_lines)]
                  
                     i += 1
                     loopstr = str(loops) if loops > 0 else "forever"
                     sys.stdout.write("\r Record %d of %d, loop %d of %s" %
-                                     (i, len(lines) - 1, l, loopstr))
+                                     (i, len(lines)-1, l, loopstr))
                     sys.stdout.flush()
 
                     cmd, lcmd, rcmd, values = self.clean_line(values, keys)
@@ -134,6 +138,6 @@ class PlaybackObj(object):
                         rate.sleep()
                     rospy.loginfo("-- "+str(rospy.get_time()))
                     
-                    
+                    self.line_executed = number_lines                    
                 
         return True
