@@ -29,7 +29,7 @@ class KinectActivate{
      */
     public:
     KinectActivate(){
-        beacon_sub = nh.subscribe("/beacon/presence", 10, &KinectActivate::beaconCB, this);
+        beacon_sub = nh.subscribe("/beacons/presence", 10, &KinectActivate::beaconCB, this);
         head_sub = nh.subscribe("/odometry/baxter/kinect_head", 10, &KinectActivate::headCB, this);
         beacon_sub = nh.subscribe("/odometry/baxter/center_of_mass", 10, &KinectActivate::comCB, this);
     }

@@ -99,6 +99,7 @@ include_directories(
 add_executable(kinect_broadcaster src/kinect_broadcaster.cpp)
 add_executable(tf_tracker src/tf_tracker.cpp)
 add_executable(head_tracking src/head_tracking.cpp)
+add_executable(kinect_to_baxter_broadcaster src/kinect_to_baxter_broadcaster.cpp)
  
  ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
@@ -108,6 +109,8 @@ add_dependencies(head_tracking ${catkin_EXPORTED_TARGETS})
 target_link_libraries(kinect_broadcaster ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 target_link_libraries(tf_tracker ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 target_link_libraries(head_tracking ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+target_link_libraries(kinect_to_baxter_broadcaster ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+
 
 
 #############
