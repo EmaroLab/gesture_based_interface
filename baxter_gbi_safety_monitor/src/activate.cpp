@@ -94,17 +94,23 @@ protected:
     ros::Subscriber com_sub;  /**< Subscriber to /odometry/kinect/center_of_mass */ 
 };
 
-
+/**
+ *  Metod to reset flags
+ */
 void KinectActivate::reset(){ 
 	beacon_presence = false; 
 	attention = false; 
 	secure = true; 
 }
-
+/**
+ *  Metod to check security
+ */
 bool KinectActivate::isSecure(void){ 
 	return beacon_presence && attention;
 }
-
+/**
+ *  Metod to check attention
+ */
 bool KinectActivate::hasAttention(void){ 
 	return secure;
 }
@@ -127,8 +133,8 @@ main(int argc, char** argv)
 	
 	ros::Rate r(10);
 	
-    ros::Publisher presence_pub;  /**< Publisher of presence signal on /presence */
-    ros::Publisher security_pub;  /**< Publisher of security signal on /secure */ 
+    ros::Publisher presence_pub;  
+    ros::Publisher security_pub;   
 
     ros::NodeHandle n;
 	presence_pub = n.advertise<std_msgs::Header>("/presence", 1);

@@ -7,7 +7,9 @@
     
 /**
  * Main function: 
- * a TF broadcaster is created in order to add the world frame to the tree. The world frame is in correspondence of the control board and it has the same orientation of the Kinect.
+ * a TF broadcaster is created in order to fix the transform between the base frame considered by the baxter with respect to the one considered by the Kinect.
+ * @param[in]  fixed_frame_baxter    string that identifies the base frame considered by the baxter
+ * @param[in]  fixed_frame_kinect    string that identifies the base frame considered by the Kinect
  */
 main(int argc, char** argv)
 {
@@ -17,10 +19,13 @@ main(int argc, char** argv)
 	std::string fixed_frame_kinect;
 	std::string fixed_frame_baxter;
 	
+	
+	// xyz coordinates of the base frame considered by the baxter with respect to the one considered by the Kinect
 	double x_frame_kinect, y_frame_kinect, z_frame_kinect;
-	// position of the Kinect with respect to the control board
+	
 	n.param<std::string>("fixed_frame_baxter", fixed_frame_baxter, "world");
 	n.param<std::string>("fixed_frame_kinect", fixed_frame_kinect, "world_frame");
+	
 	n.param<double>("x_frame_kinect", x_frame_kinect, 0.0);
 	n.param<double>("y_frame_kinect", y_frame_kinect, 0.0);
 	n.param<double>("z_frame_kinect", z_frame_kinect, 0.0);

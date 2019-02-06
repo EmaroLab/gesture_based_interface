@@ -30,7 +30,9 @@ ros::ServiceClient client_filter_enable;
 
 int initial_angle = 0;
 
-//
+/** 
+ * Client, to enable the filters applied to the point cloud obtained by the background segmentation
+*/
 void set_filter_param(std::string param, float value)
 {
 	kinect_pcl_tools::SetFilterParam srv;
@@ -48,12 +50,12 @@ void set_filter(std::string param, bool enable)
 }
 
 /** Callback of the regulate_kinect_by_wrist service
- * - control the tilt angle of the Kinect according to the coordinates xyz provided by the Beacon
- * - regulate the parameters of the filters according to the coordinates xyz
+ * - control the tilt angle of the Kinect according to the coordinates xyz of the wrist
+ * - regulate the parameters of the filters according to the coordinates xyz of the wrist
  * @param[in]  req  Request Message
-	* @param[in]  req.x x-coordinate of the watch
-	* @param[in]  req.y y-coordinate of the watch
-	* @param[in]  req.z z-coordinate of the watch
+	* @param[in]  req.x x-coordinate of the wrist
+	* @param[in]  req.y y-coordinate of the wrist
+	* @param[in]  req.z z-coordinate of the wrist
  * @param[out]  res    Response of the service
 	* @param[out]  res.result If the operation is completed successfully
  */
@@ -173,6 +175,16 @@ bool resetKinect(std_srvs::Empty::Request& request, std_srvs::Empty::Response& r
 	return true;
 }
 
+/**
+ * Main: 
+ * Initialization of the parameter 
+ * @param[in]  initial_angle  initial tilt angle of the Kinect
+ * 
+ * Advertise Services:
+	* regulate_kinect_by_wrist: to regulate the current tilt angle of the Kinect according to the position of the wrist and the parameters of the filters
+	* regulate_kinect_by_head: to regulate the current tilt angle of the Kinect according to the position of the head and the parameters of the filters
+	* reset_kinect_filters: to reset kinect tilt angle to initial angle and reset the filters
+*/
 int main(int argc, char** argv)
 {
     ros::init(argc, argv, "kinect_regulation_server");
