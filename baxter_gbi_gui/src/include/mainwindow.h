@@ -12,6 +12,7 @@
 #include "menupanel.h"
 #include "rosworker.h"
 #include "BaxterDisplay.h"
+#include "KeystrokePublisher.h"
 
 namespace Ui {
 class MainWindow;
@@ -36,6 +37,7 @@ private:
 	MenuPanel menu_page;
 	QWidget *current_page;
 	BaxterDisplay display;
+  KeystrokePublisher *key;
 
 
 private slots:
@@ -50,6 +52,7 @@ private slots:
 	void __setConfigMode();
 	void __setActionMode();
 	void __setMenuMode();
+  void keyReleaseEvent(QKeyEvent *event);
 };
 
 #endif // MAINWINDOW_H
