@@ -33,6 +33,8 @@
   <build_depend>baxter_core_msgs</build_depend>
   <build_depend>baxter_interface</build_depend>
   <build_depend>std_msgs</build_depend>
+  <build_depend>nav_msgs</build_depend>
+  <build_depend>geometry_msgs</build_depend>
 
   <run_depend>rospy</run_depend>
   <run_depend>xacro</run_depend>
@@ -45,5 +47,8 @@
   <run_depend>baxter_core_msgs</run_depend>
   <run_depend>baxter_interface</run_depend>
   <run_depend>std_msgs</run_depend>
+  <run_depend>nav_msgs</run_depend>
+  <run_depend>geometry_msgs</run_depend>
+
 
 </package>

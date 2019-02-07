@@ -29,13 +29,11 @@ class PlaybackObj(object):
             return None
 
 
+    ## Cleans a single line of recorded joint positions
+    #
+    # @param line: the line described in a list to process
+    # @param names: joint name keys
     def clean_line(self, line, names):
-        """
-        Cleans a single line of recorded joint positions
-
-        @param line: the line described in a list to process
-        @param names: joint name keys
-        """
         #convert the line of strings to a float or None
         line = [self.try_float(x) for x in line.rstrip().split(',')]
         #zip the values with the joint names
@@ -51,21 +49,19 @@ class PlaybackObj(object):
         return (command, left_command, right_command, line)
 
 
-    #function copied from the examples -> take info and playback from file
+    ## Loops through csv file
+    #
+    # @param filename: the file to play
+    # @param loops: number of times to loop
+    #              values < 0 mean 'infinite'
+    # @param scale_vel: number to scale the velocity of the playback
+    #
+    # Does not loop indefinitely, but only until the file is read
+    # and processed. Reads each line, split up in columns and
+    # formats each line into a controller command in the form of
+    # name/value pairs. Names come from the column headers
+    # first column is the time stamp
     def map_file(self, filename, loops=1, scale_vel=100):
-        """
-        Loops through csv file
-
-        @param filename: the file to play
-        @param loops: number of times to loop
-                      values < 0 mean 'infinite'
-
-        Does not loop indefinitely, but only until the file is read
-        and processed. Reads each line, split up in columns and
-        formats each line into a controller command in the form of
-        name/value pairs. Names come from the column headers
-        first column is the time stamp
-        """
         left = baxter_interface.Limb('left')
         right = baxter_interface.Limb('right')
         grip_left = baxter_interface.Gripper('left', CHECK_VERSION)

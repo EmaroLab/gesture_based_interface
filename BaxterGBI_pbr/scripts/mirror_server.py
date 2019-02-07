@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
-"""
-ROS node used to allow the user to control the baxter via mirroring.
-"""
+## ROS node used to allow the user to control the baxter via mirroring.
+
 
 import argparse
 import sys
@@ -32,9 +31,6 @@ from baxter_core_msgs.srv import (
 )
 
 
-"""
-Global variables for initial posture.
-"""
 global start, init_pose_hand, init_orient_hand, calibrated, init_pose_baxter, init_orient_baxter
 start = 0
 calibrated = False
@@ -43,20 +39,16 @@ init_orient_hand = []
 init_pose_baxter = []
 init_orient_baxter = []
 
-
+## Service used to initialize the initial posture of the baxter end effector.
+#
+# @param req.limb: "left" or "right" arm.
+# @param req.position: position we want to achieve.
+# @param req.quaternion: orientation we want to achieve (Quaternion).
+#
+# @returns isError: 0 on success, 1 on error
 def calibrate(req):
-    """
-    Service used to initialize the initial posture of the baxter end effector.
     
-    
-    @type req.limb: string
-    @param req.limb: "left" or "right" arm.
-    @type data.position: float[]
-    @param data.position: position we want to achieve.
-    @type data.quaternion: float[]
-    @param data.quaternion: orientation we want to achieve (Quaternion).
-    """
-    
+
     global arm, limb, calibrated, init_pose_hand, init_orient_hand, init_pose_baxter, init_orient_baxter
         
     if req.limb == "left" or req.limb == "right":
@@ -65,13 +57,13 @@ def calibrate(req):
         
         
         #Acquire initial position/orientation of the human hand (The first value published)
-        init_pose_hand.append(req.position[0])
-        init_pose_hand.append(req.position[1])
-        init_pose_hand.append(req.position[2])
-        init_orient_hand.append(req.quaternion[0])
-        init_orient_hand.append(req.quaternion[1])
-        init_orient_hand.append(req.quaternion[2])
-        init_orient_hand.append(req.quaternion[3])
+        init_pose_hand.append(req.position.x)
+        init_pose_hand.append(req.position.y)
+        init_pose_hand.append(req.position.z)
+        init_orient_hand.append(req.quaternion.x)
+        init_orient_hand.append(req.quaternion.y)
+        init_orient_hand.append(req.quaternion.z)
+        init_orient_hand.append(req.quaternion.w)
         
         
         resp = arm.endpoint_pose()
@@ -88,18 +80,13 @@ def calibrate(req):
         return 1
         
    
+## Callback function associated with the topic 'mirror_end_effector'.
+# Whenever a data is written in the topic, this function is called and obtain from ik_tracking function the joints values to assign and
+# move the end effector to the goal.
+#
+# @param data.position: position we want to achieve.
+# @param data.quaternion: orientation we want to achieve (Quaternion).
 def mirror_callback(data):
-    """
-    Callback function associated with the topic 'mirror_end_effector'.
-    Whenever a data is written in the topic, this function is called and obtain from ik_tracking function the joints values to assign and
-    move the end effector to the goal.
-    
-    @type data.position: float[]
-    @param data.position: position we want to achieve.
-    @type data.quaternion: float[]
-    @param data.quaternion: orientation we want to achieve (Quaternion).
-    """
-    
     
     global arm, start, limb, init_pose_hand, init_orient_hand, init_pose_baxter, init_orient_baxter
     
@@ -107,9 +94,9 @@ def mirror_callback(data):
     if start == 1:            
         #Evaluate the relative movement of the hand
         pos = []
-        pos.append(init_pose_baxter[0] + (data.position[0] - init_pose_hand[0]))
-        pos.append(init_pose_baxter[1] + (data.position[1] - init_pose_hand[1]))
-        pos.append(init_pose_baxter[2] + (data.position[2] - init_pose_hand[2]))
+        pos.append(init_pose_baxter[0] + (data.position.x - init_pose_hand[0]))
+        pos.append(init_pose_baxter[1] + (data.position.y - init_pose_hand[1]))
+        pos.append(init_pose_baxter[2] + (data.position.z - init_pose_hand[2]))
         
         
         orient = []
@@ -121,10 +108,10 @@ def mirror_callback(data):
         #orient.append(quaternion[2])
         #orient.append(quaternion[3])
         
-        orient.append(init_orient_baxter[0] + (data.quaternion[0] - init_orient_hand[0]))
-        orient.append(init_orient_baxter[1] + (data.quaternion[1] - init_orient_hand[1]))
-        orient.append(init_orient_baxter[2] + (data.quaternion[2] - init_orient_hand[2]))
-        orient.append(init_orient_baxter[3] + (data.quaternion[3] - init_orient_hand[3]))
+        orient.append(init_orient_baxter[0] + (data.quaternion.x - init_orient_hand[0]))
+        orient.append(init_orient_baxter[1] + (data.quaternion.y - init_orient_hand[1]))
+        orient.append(init_orient_baxter[2] + (data.quaternion.z - init_orient_hand[2]))
+        orient.append(init_orient_baxter[3] + (data.quaternion.w - init_orient_hand[3]))
         
         rospy.loginfo("Start q: "+str(arm.joint_angles()))
         
@@ -139,15 +126,15 @@ def mirror_callback(data):
                 arm.move_to_joint_positions(joint_solution.limb_joints)
         except rospy.ServiceException, e:
             rospy.logerr("Error during Inverse Kinematic problem")
+    else:
+        rospy.logwarn("You need to start and calibrate first!")
        
-  
+## Service to start and stop the mirroring.
+#
+# @param req.mode: 1 to start and 0 to stop
+#
+# @returns isError: 0 on success, 1 on error.
 def enableMirroring(req):
-    """
-    Service to start and stop the mirroring.
-    
-    @type req.mode: uint8
-    @param req.mode: 1 to start and 0 to stop.
-    """
     
     global start, calibrated
     if req.mode == 1: #Start Mirroring
@@ -174,11 +161,9 @@ def enableMirroring(req):
     else:
         rospy.logerr("Invalid mode!")
         return 1
-
+        
+## Main of the node. Takes the information from the topic and move the baxter end effector based on those values.
 def mirror_server():
-    """
-    Main of the node. Takes the information from the topic and move the baxter end effector based on those values.
-    """
     
     rospy.loginfo("Initializing node... ")
     rospy.init_node('mirror_server')

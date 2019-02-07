@@ -11,15 +11,14 @@ from baxter_interface import CHECK_VERSION
 from BaxterGBI_pbr.msg import record_status, mirror_end_effector
 from BaxterGBI_pbr.srv import CalibrateMirror, EnableMirroring
 
+from geometry_msgs.msg import Point, Quaternion
 
 import tf
 
 from math import sin
 
-"""
-Fake Client -> Placeholder for the real user. Just to test.
+## Fake Client -> Placeholder for the real user. Just to test.
 
-"""
 
 
 #Mirror client -> publish data on a topic
@@ -80,21 +79,21 @@ def main():
 
     
     while not rospy.is_shutdown():
-        pos = []
-        pos.append(init_pos[0]+sin(i))
-        pos.append(init_pos[1])
-        pos.append(init_pos[2]+sin(i))
+        pos = Point()
+        pos.x = init_pos[0]+sin(i)
+        pos.y = init_pos[1]
+        pos.z = init_pos[2]+sin(i)
 
 
-        orient = []
+        orient = Quaternion()
 
         i += 0.2
         quaternion = tf.transformations.quaternion_from_euler(3.129668, -0.000121, -2.002885)
         #type(pose) = geometry_msgs.msg.Pose
-        orient.append(quaternion[0])
-        orient.append(quaternion[1])
-        orient.append(quaternion[2])
-        orient.append(quaternion[3])
+        orient.x = quaternion[0]
+        orient.y = quaternion[1]
+        orient.z = quaternion[2]
+        orient.w = quaternion[3]
         
         #print(str(orient))
         data = mirror_end_effector()

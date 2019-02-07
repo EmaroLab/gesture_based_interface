@@ -12,26 +12,23 @@ from baxter_interface import CHECK_VERSION
 from BaxterGBI_pbr.msg import record_status, modify_playback
 
 import os
-"""
-joint_recorder_node
 
-ROS node used to allow the user to record the baxter movements.
-"""
 
-#Handle stop -> stop 
+## joint_recorder_node
+# ROS node used to allow the user to record the baxter movements.
+
+
+
+
+## Callback function called when a data is written on the topic, it enables/disables the recording mode.
+#
+# @param data.filename: name of the file where we want to record.
+# @param req.mode: modality: start/stop.
+# @param req.record_rate: rate used for recording joints' data.
+#
+# @returns isError: 0 on success, 1 on errors
 def callback_recording(data):
-    """
-    Callback function called when a data is written on the topic, it enables/disables the recording mode.
     
-    @type data.filename: string
-    @param data.filename: name of the file where we want to record.
-    @type req.mode: string
-    @param req.mode: modality: start/stop.
-    @type req.record_rate: uint16
-    @param req.record_rate: rate used for recording joints' data.
-    
-    @returns: 0 on success, 1 on errors
-    """
     rospy.loginfo("Called!!")
     rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.mode)
     global recorder, state, rate
@@ -54,36 +51,27 @@ def callback_recording(data):
     rospy.logwarn("Invalid mode!")
     return 1
            
-           
+   
+   
+## Callback function called when the playback is in pause.
+# Here you can use the first part of the playbacked file and change (overwrite) the final part.
+#    
+# @param data.old_filename: name of the file you want to modify.
+# @param data.new_filename: name of the updated file.
+# @param data.mode: 'start' or 'stop' the recording mode.
+# @param data.line_number: the last line you want to keep.
+# @param data.record_rate: rate used for recording  joint's data.
+#
+# @returns isError: 0 on success, 1 on errors        
 def callback_modify_playback(data):
-    """
-    Callback function called when the playback is in pause.
-    Here you can use the first part of the playbacked file and change (overwrite) the final part.
-    
-    
-    @type data.old_filename: string
-    @param data.old_filename: name of the file you want to modify.
-    @type data.new_filename: string
-    @param data.new_filename: name of the updated file.
-    @type data.mode: string
-    @param data.mode: 'start' or 'stop' the recording mode.
-    @type data.line_number: uint64
-    @param data.line_number: the last line you want to keep.
-    @type data.record_rate: uint16
-    @param data.record_rate: rate used for recording  joint's data.
-    
-    
-    @returns: 0 on success, 1 on errors
-    """
-    
     
     rospy.logwarn(os.getcwd())
-    
     
     rospy.loginfo("Called modify_playback!!")
     rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.mode)
     
     global recorder, state, rate
+    #TODO -> Remove "stop" part, the stop arrives on the other topic
     if data.mode == "stop":
         if state == 1:
            #Stop the recording
@@ -132,10 +120,10 @@ def callback_modify_playback(data):
             recorder = JointRecorder(f2,"a", float(last_time_value))
             state = 1
 
+
+## Node used for the recording mode.
 def main():
-    """
-    Node used for the recording mode.
-    """
+    
     rospy.loginfo("Initializing node... ")
     rospy.init_node('joint_recorder_node', anonymous=True)
     rospy.Subscriber("recording_status", record_status, callback_recording)

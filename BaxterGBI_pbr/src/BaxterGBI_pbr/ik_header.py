@@ -26,29 +26,25 @@ from baxter_core_msgs.srv import (
 )
 
 
+
+
+## Class used to collapse in a single structure the joints value and a boolean for the error.
 class ReturnValue(object):
-    """
-    Class used to collapse in a single structure the joints value and a boolean for the error.
-    """
     def __init__(self, limb_joints, isError):
         self.limb_joints = limb_joints
         self.isError = isError
 
 
-#limb -> left or right
+
+## Method used to solve the Inverse Kinematic Problem and provide a solution, which is returned as output.
+#
+# @param limb: specify left or right limb.
+# @param pos: position we want to achieve.
+# @param orient: orientation we want to achieve (Quaternion).
+#
+# @returns ReturnValue object: limb joints position and 0 is ok, None and 1 if there is an error.
 def ik_tracking(limb, pos, orient):
-    """
-    Method used to solve the Inverse Kinematic Problem and provide a solution, which is returned as output.
-    
-    @type limb: string
-    @param limb: specify left or right limb.
-    @type pos: float[]
-    @param pos: position we want to achieve.
-    @type orient: float[]
-    @param orient: orientation we want to achieve (Quaternion).
-    
-    @returns: ReturnValue object: limb joints position and 0 is ok, None and 1 if there is an error.
-    """
+
     ns = "ExternalTools/" + limb + "/PositionKinematicsNode/IKService"
     iksvc = rospy.ServiceProxy(ns, SolvePositionIK)
     ikreq = SolvePositionIKRequest()

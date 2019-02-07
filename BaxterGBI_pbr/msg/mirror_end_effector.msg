@@ -1,2 +1,2 @@
-float64[] position
-float64[] quaternion
+geometry_msgs/Point position
+geometry_msgs/Quaternion quaternion

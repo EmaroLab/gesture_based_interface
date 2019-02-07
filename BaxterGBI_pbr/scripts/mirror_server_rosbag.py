@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-"""
-ROS node used to allow the user to control the baxter via mirroring using the data provided by the kinect (Rosbag for testing).
-"""
+
+## ROS node used to allow the user to control the baxter via mirroring using the data provided by the kinect (Rosbag for testing).
+
 
 import argparse
 import sys
@@ -16,6 +16,7 @@ from baxter_interface import CHECK_VERSION, Limb
 from BaxterGBI_pbr.srv import *
 from BaxterGBI_pbr import ik_tracking, ReturnValue
 
+from nav_msgs.msg import Odometry
 import tf
 
 from geometry_msgs.msg import (
@@ -43,19 +44,14 @@ init_orient_baxter = []
 global steps, file_output
 steps = -1 
 
+
+## Callback function associated with the topic 'mirror_end_effector'.
+# Whenever a data is written in the topic, this function is called and obtain from ik_tracking function the joints values to assign and
+# move the end effector to the goal.
+#
+# @param data.pose.pose.position: position we want to achieve.
+# @param data.pose.pose.orientation: orientation we want to achieve (Quaternion).
 def mirror_callback(data):
-    """
-    Callback function associated with the topic 'mirror_end_effector'.
-    Whenever a data is written in the topic, this function is called and obtain from ik_tracking function the joints values to assign and
-    move the end effector to the goal.
-    
-    @type data.pose.pose.position: float[]
-    @param data.pose.pose.position: position we want to achieve.
-    @type data.pose.pose.orientation: float[]
-    @param data.pose.pose.orientation: orientation we want to achieve (Quaternion).
-    """
-    
-    
     
     global arm, limb, init_pose_hand, init_orient_hand, init_pose_baxter, init_orient_baxter, first_data
     global steps
@@ -124,10 +120,8 @@ def mirror_callback(data):
             rospy.logerr("Error during Inverse Kinematic problem")
        
   
+##Main of the node. Takes the information from the topic and move the baxter end effector based on those values.
 def mirror_server():
-    """
-    Main of the node. Takes the information from the topic and move the baxter end effector based on those values.
-    """
     
     rospy.loginfo("Initializing node... ")
     rospy.init_node('mirror_server')
@@ -150,7 +144,7 @@ def mirror_server():
         print("Insert as 1st param left or right")
         return
         
-    rospy.Subscriber("odometry/baxter/kinect_right_hand", mirror_bag, mirror_callback)
+    rospy.Subscriber("odometry/baxter/kinect_right_hand", Odometry, mirror_callback)
     
     def clean_shutdown():
         rospy.loginfo("\nExiting example...")

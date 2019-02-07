@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-"""
-ROS node used to provide file management services.
-Services provided: list of records, rename, delete.
-"""
+
+## ROS node used to provide file management services.
+# Services provided: list of records, rename, delete.
+
 
 import argparse
 import sys
@@ -20,14 +20,13 @@ from baxter_interface import CHECK_VERSION
 from BaxterGBI_pbr.srv import *
 from BaxterGBI_pbr import pbr_header
 
-
+## Service used to provide the entire list of the recorded files.
+#   
+# @returns n_files: number of records.
+# @returns list_files: array of file name.
+# @returns isError: 0 on success, 1 on error.
 def list_files_handler(req):
-    """Service used to provide the entire list of the recorded files.
     
-    @returns: n_files -> number of records.
-    @returns: list_files -> array of file name.
-    @returns: isError -> 0 on success, 1 on error.
-    """
     rospy.loginfo("Called!!")
 
     resp = ListFilesResponse()
@@ -50,15 +49,12 @@ def list_files_handler(req):
     resp.isError = 0
     return resp
 
+
+## Service used to delete a baxter file.
+#
+# @param req.filename: name of the file you want to delete.
+# @returns isError: 0 on success, 1 on error.
 def delete_file_handler(req):
-    """
-    Service used to delete a baxter file.
-    
-    @type req.filename: string
-    @param req.filename: name of the file you want to delete.
-    
-    @returns: isError -> 0 on success, 1 on error.
-    """
     
     file_path_string = "src/BaxterGBI_pbr/RecordedFile/"+req.filename
         
@@ -68,19 +64,17 @@ def delete_file_handler(req):
     else:
         rospy.logwarn("No file with such name.")
         return 1
-    
+        
+        
+## Service used to rename a baxter file.
+#  
+# @type req.old_filename: string
+# @param req.old_filename: name of the file you want to rename.
+# @type req.new_filename: string
+# @param req.new_filename: new file name.
+#
+# @returns isError: 0 on success, 1 on error.
 def rename_file_handler(req):
-    """
-    Service used to rename a baxter file.
-    
-    @type req.old_filename: string
-    @param req.old_filename: name of the file you want to rename.
-    @type req.new_filename: string
-    @param req.new_filename: new file name.
-    
-    @returns: isError -> 0 on success, 1 on error.
-    """
-    
     path = "src/BaxterGBI_pbr/RecordedFile/"
     
     if os.path.isfile(path+req.old_filename) :
@@ -89,11 +83,11 @@ def rename_file_handler(req):
         rospy.logwarn("There is no file with this name!")
         return 1
     return 0
-
-#pbr_node initialization
+    
+    
+## Main of the node. It makes available the services related to the file management.
 def pbr_server_filesys():
-    """Main of the node. It makes available the services related to the file management.
-    """
+
     rospy.loginfo("Initializing node... ")
     rospy.init_node('pbr_server_filesys')
 

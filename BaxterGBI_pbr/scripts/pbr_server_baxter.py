@@ -21,9 +21,8 @@ from BaxterGBI_pbr.srv import *
 from BaxterGBI_pbr import *
 
 
-"""
-Global Variables used to manage all the services.
-"""
+## Global Variables used to manage all the services.
+
 
 global pb, playbacking, starting_pause, pause_state
 global file_playback, line_executed #Information for recording after playback
@@ -34,19 +33,15 @@ starting_pause = 0
 playbacking = False
 pb = PlaybackObj()
 
+## Service used to activate the playback mode on the baxter.
+#
+# @param req.msg.filename: name of the file you want to play.
+# @param req.msg.loops: number of times you want to play it.
+# @param req.msg.scale_vel: number to scale velocity of movement.  
+# @returns isError: 0 on success, 1 on errors
 def playback_handler(req):
-    """
-    Service used to activate the playback mode on the baxter.
-    
-    @type req.msg.filename: string
-    @param req.msg.filename: name of the file you want to play.
-    @type req.msg.loops: uint8
-    @param req.msg.loops: number of times you want to play it.
-    @type req.msg.scale_vel: float32
-    @param req.msg.scale_vel: number to scale velocity of movement.
-    
-    @returns: 0 on success, 1 on errors
-    """
+
+
     rospy.loginfo("Called!!!")
 
     
@@ -65,19 +60,15 @@ def playback_handler(req):
         return 1
 
 
+## Service used to start the recording mode on the baxter.
+#
+# @param req.filename: name of the recorderd file.
+# @param req.mode: 'start' or 'stop'.
+# @param req.record_rate: rate used for recording joints' data.
+#
+# @returns isError: 0 on success, 1 on errors
 def record_start_handler(req):
-    """
-    Service used to start the recording mode on the baxter.
     
-    @type req.filename: string
-    @param req.filename: name of the recorderd file.
-    @type req.mode: string
-    @param req.mode: 'start' or 'stop'.
-    @type req.record_rate: uint16
-    @param req.record_rate: rate used for recording joints' data.
-    
-    @returns: 0 on success, 1 on errors
-    """
     global pb, playbacking, pause_state, file_playback, line_executed
     
     if playbacking == True and pause_state == 1:
@@ -113,19 +104,14 @@ def record_start_handler(req):
         return 0
 
 
+## Service used to stop the recording mode on the baxter.
+#
+# @param req.filename: (empty, not used).
+# @param req.mode: 'start' or 'stop'.
+# @param req.record_rate: rate used for recording joints' data (zero, not used).
+#
+# @returns isError: 0 on success, 1 on errors
 def record_stop_handler(req):
-    """
-    Service used to stop the recording mode on the baxter.
-    
-    @type req.filename: string
-    @param req.filename: (empty, not used).
-    @type req.mode: string
-    @param req.mode: 'start' or 'stop'.
-    @type req.record_rate: uint16
-    @param req.record_rate: rate used for recording joints' data (zero, not used).
-    
-    @returns: 0 on success, 1 on errors
-    """
     
     rospy.loginfo("Called !!!")
     msg = record_status()
@@ -137,18 +123,14 @@ def record_stop_handler(req):
     return 0
 
 
+## Service used to open or close the gripper.
+#
+# @param req.limb: "left" or "right" arm.
+# @param req.open: value from 0 (close) to 100 (open).
+#
+# @returns isError: 0 on success, 1 on errors
 def gripper_handler(req):
-    """
-    Service used to open or close the gripper.
     
-    @type req.limb: string
-    @param req.limb: "left" or "right" arm.
-    @type req.open: uint8
-    @param req.open: value from 0 (close) to 100 (open).
-    
-    @returns: 0 on success, 1 on errors
-    """
-
     global left_gripper, right_gripper
     
     if req.limb == "left":
@@ -163,19 +145,14 @@ def gripper_handler(req):
     return 0
 
 
+## Service used to reach a specified goal.
+#
+# @param req.limb: "left" or "right" arm.
+# @param req.position: position of the goal (x, y, z).
+# @param req.quaternion: orientation of the goal (x, y, z, w).
+#
+# @returns isError: 0 on success, 1 on errors
 def reach_goal_handler(req):
-    """
-    Service used to reach a specified goal.
-    
-    @type req.limb: string
-    @param req.limb: "left" or "right" arm.
-    @type req.position: float64[]
-    @param req.position: position of the goal (x, y, z).
-    @type req.quaternion: float64[]
-    @param req.quaternion: orientation of the goal (x, y, z, w).
-    
-    @returns: 0 on success, 1 on errors
-    """
     
     if req.limb == "left" or req.limb == "right":
         arm = Limb(req.limb)
@@ -204,15 +181,14 @@ def reach_goal_handler(req):
         except rospy.ServiceException, e:
             rospy.logerr("Error in Inverse Kinematic problem")
 
+
+## Service used to pause and resume a playback.
+#
+# @param req.mode: 0 to pause, 1 to resume.
+#
+# @returns isError: 0 on success, 1 on errors
 def pause_resume_handler(req):
-    """
-    Service used to pause and resume a playback.
     
-    @type req.mode: uint8
-    @param req.mode: 0 to pause, 1 to resume.
-    
-    @returns: 0 on success, 1 on errors
-    """
     global pb, playbacking, starting_pause, pause_state
     
     #Every time we change from Resume to Pause -> We start counting the the time passed, then we add it to the pb.paused_time when resuming
@@ -239,10 +215,9 @@ def pause_resume_handler(req):
         rospy.logwarn("Playback is stop running!")
         return 1
 
-#pbr_node initialization
+## Main of the node. It makes available the services and wait for requests.
 def pbr_server_baxter():
-    """Main of the node. It makes available the services and wait for requests.
-    """
+    
     rospy.loginfo("Initializing node... ")
     rospy.init_node('pbr_server_baxter')
     rospy.loginfo("Getting robot state... ")

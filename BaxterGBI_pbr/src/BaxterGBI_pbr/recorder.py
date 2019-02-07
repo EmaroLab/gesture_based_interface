@@ -34,9 +34,6 @@ from baxter_interface import CHECK_VERSION
 
 class JointRecorder(object):
     def __init__(self, filename, file_mode, start_time_displacement):
-        """
-        Records joint data to a file.
-        """
         self._filename = filename
         self._start_time = rospy.get_time()
         self._done = True
@@ -78,34 +75,28 @@ class JointRecorder(object):
             self._f.write('right_gripper\n')
         self._done = False
 
+    ## Return the time stamp.
     def _time_stamp(self):
         return rospy.get_time() + self._start_time_displacement - self._start_time
 
+    ## Stop recording.
     def stop(self):
-        """
-        Stop recording.
-        """
         self._done = True
         self._f.close()
 
+    ## Return whether or not recording is done.
     def done(self):
-        """
-        Return whether or not recording is done.
-        """
         if rospy.is_shutdown():
             self.stop()
         return self._done
 
+    ## Records the current joint positions to a csv file if outputFilename was
+    # provided at construction this function will record the latest set of
+    # joint angles in a csv format.
+    #
+    # This function does not test to see if a file exists and will overwrite
+    # existing files.   
     def record_instance(self):
-        """
-        Records the current joint positions to a csv file if outputFilename was
-        provided at construction this function will record the latest set of
-        joint angles in a csv format.
-
-        This function does not test to see if a file exists and will overwrite
-        existing files.
-        """
-
         if self._filename:
             if not self.done():
                 # Look for gripper button presses

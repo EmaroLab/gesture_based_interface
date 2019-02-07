@@ -9,10 +9,12 @@ find_package(catkin
   actionlib
   sensor_msgs
   control_msgs
+  geometry_msgs
   trajectory_msgs
   cv_bridge
   dynamic_reconfigure
   baxter_core_msgs
+  nav_msgs
   baxter_interface
 )
 
@@ -23,7 +25,6 @@ add_message_files(
    playback_msg.msg
    record_status.msg
    mirror_end_effector.msg
-   mirror_bag.msg
    modify_playback.msg
 )
 
@@ -46,6 +47,7 @@ generate_messages(
    DEPENDENCIES
    std_msgs
    geometry_msgs
+   nav_msgs
  )
 
 catkin_package(
@@ -59,6 +61,8 @@ catkin_package(
   cv_bridge
   dynamic_reconfigure
   baxter_core_msgs
+  nav_msgs
+  geometry_msgs
   baxter_interface
 )
 

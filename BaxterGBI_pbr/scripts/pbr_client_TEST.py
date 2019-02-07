@@ -9,13 +9,13 @@ from BaxterGBI_pbr.msg import *
 import os
 
 
-"""
-Node used to test the pbr_server.
-Based on the input it will ask for record or playback service from the pbr_server.
-"""
+## Node used to test the pbr_server.
+# Based on the input it will ask for record or playback service from the pbr_server.
 
+
+## Call the playback function provided by pbr_server.
 def call_playback(filename, loops, scale_vel):
-    """Call the playback function provided by pbr_server."""
+    
     rospy.wait_for_service('playback')
     try:
         playback = rospy.ServiceProxy('playback', Playback)
@@ -27,8 +27,8 @@ def call_playback(filename, loops, scale_vel):
     except rospy.ServiceException, e:
         print("Service call failed: %s"%e)
 
+## Call the record function provided by pbr_server.
 def call_record(filename, record_rate, mode):
-    """Call the record function provided by pbr_server."""
     if mode == 1:
         rospy.wait_for_service('record_start')
         try:
@@ -45,6 +45,7 @@ def call_record(filename, record_rate, mode):
             print( "Service call failed: %s"%e)
         
 
+## Return the list of the recorded files.
 def call_list_files():
 
     rospy.wait_for_service('files')
@@ -56,6 +57,7 @@ def call_list_files():
         print("Service call failed: %s"%e)
 
 
+## Delete a recorded file.
 def call_delete_file(filename):
 
     rospy.wait_for_service('delete_file')
@@ -71,6 +73,7 @@ def call_delete_file(filename):
         print("Service call failed: %s"%e)
         
 
+## Rename a recorded file.
 def call_rename_file(old,new):
 
     rospy.wait_for_service('rename_file')
@@ -85,7 +88,7 @@ def call_rename_file(old,new):
     except rospy.ServiceException, e:
         print("Service call failed: %s"%e)
 
-
+## Open/Close gripper.
 def call_gripper(limb, mode):
     rospy.wait_for_service('gripper')
     try:
@@ -100,6 +103,7 @@ def call_gripper(limb, mode):
         print("Service call failed: %s"%e)
 
 
+## Reach a specify position/orientation.
 def call_reach_goal(limb, pos_x, pos_y, pos_z, orient_x, orient_y, orient_z, orient_w):
     rospy.wait_for_service('reach_goal')
     try:
@@ -120,6 +124,7 @@ def call_reach_goal(limb, pos_x, pos_y, pos_z, orient_x, orient_y, orient_z, ori
         print("Service call failed: %s"%e)
 
 
+## Pause/Resume the playback.
 def call_pause(mode):
     rospy.wait_for_service('pause_resume')
     try:
