@@ -14,7 +14,8 @@ find_package(catkin REQUIRED COMPONENTS
   laser_geometry
   roslaunch
   pcl_ros
-  kinect_setup
+  kinect_tracking_srvs
+  kinect_filter_srvs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -32,13 +33,6 @@ link_directories(
 )
 
 roslaunch_add_file_check(launch)
-
-## Generate services in the 'srv' folder
- add_service_files(
-   FILES
-   SetFilter.srv
-   SetFilterParam.srv
- )
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -67,7 +61,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES retrorov_model_bathymetric
- CATKIN_DEPENDS pcl_ros roscpp rospy sensor_msgs std_msgs message_runtime geometry_msgs kinect_setup
+ CATKIN_DEPENDS pcl_ros roscpp rospy sensor_msgs std_msgs message_runtime geometry_msgs kinect_tracking_srvs kinect_filter_srvs
 #  DEPENDS system_lib
 )
 
@@ -96,7 +90,7 @@ add_executable(pcl_filter src/pcl_filter.cpp)
  
  ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-add_dependencies(pcl_filter kinect_pcl_tools_generate_messages_cpp)	
+add_dependencies(pcl_filter ${catkin_EXPORTED_TARGETS})	
 add_dependencies(pcl_record ${catkin_EXPORTED_TARGETS})	
 add_dependencies(pcl_filter ${catkin_EXPORTED_TARGETS})			
 

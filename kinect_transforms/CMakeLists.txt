@@ -14,7 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   laser_geometry
   roslaunch
   pcl_ros
-  kinect_setup
+  kinect_tracking_srvs
   tf
 )
 
@@ -75,7 +75,7 @@ link_directories(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES retrorov_model_bathymetric
- CATKIN_DEPENDS pcl_ros roscpp rospy sensor_msgs std_msgs message_runtime geometry_msgs kinect_setup tf
+ CATKIN_DEPENDS pcl_ros roscpp rospy sensor_msgs std_msgs message_runtime geometry_msgs kinect_tracking_srvs tf
 #  DEPENDS system_lib
 )
 
