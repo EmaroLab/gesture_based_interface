@@ -79,6 +79,7 @@ bool set_filter(kinect_filter_srvs::SetFilter::Request  &req,
 bool set_filter_param(kinect_filter_srvs::SetFilterParam::Request  &req,
          kinect_filter_srvs::SetFilterParam::Response &res)
 {
+	ROS_INFO("QUIII");
 	std::string str_leaf = "leaf_size";
 	std::string str_min_z = "min_z";
 	std::string str_max_z = "max_z";
@@ -189,6 +190,12 @@ public:
 	 */
     void filterCB(const boost::shared_ptr<const sensor_msgs::PointCloud2>& input)
     {
+		ROS_INFO("min_x : %lf", min_x);
+		ROS_INFO("max_x : %lf", max_x);
+		ROS_INFO("min_y : %lf", min_y);
+		ROS_INFO("max_y : %lf", max_y);
+		ROS_INFO("min_z : %lf", min_z);
+		ROS_INFO("max_z : %lf", max_z);
 		pcl::PCLPointCloud2::Ptr input_pcl (new pcl::PCLPointCloud2 ());
 		pcl_conversions::toPCL(*input, *input_pcl);
 		

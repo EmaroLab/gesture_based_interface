@@ -10,7 +10,7 @@
 	<node name="kinect_move_server" pkg="kinect_setup" type="kinect_move_server" output="screen"/>
 
 	<node name="pcl_record" pkg ="kinect_pcl_tools" type="pcl_record" output="screen" required="true" >
-		<param name="granularity" value="5"/>
+		<param name="granularity" value="1"/>
 	</node>
 
 </launch>

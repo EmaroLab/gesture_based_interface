@@ -9,7 +9,6 @@ Panels:
         - /PointCloud21
         - /Axes1
         - /TF1
-        - /TF1/Frames1
         - /Marker1
         - /Marker1/Namespaces1
         - /Marker2
@@ -33,7 +32,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: PointCloud2
 Preferences:
   PromptSaveOnExit: true
 Visualization Manager:
@@ -99,23 +98,250 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: false
-        beacon/blue:
-          Value: true
-        beacon/pink:
-          Value: true
-        world_frame:
+        base:
           Value: false
+        camera_depth_frame:
+          Value: false
+        camera_depth_optical_frame:
+          Value: true
+        camera_link:
+          Value: false
+        camera_rgb_frame:
+          Value: false
+        camera_rgb_optical_frame:
+          Value: false
+        collision_head_link_1:
+          Value: false
+        collision_head_link_2:
+          Value: false
+        display:
+          Value: false
+        dummyhead1:
+          Value: false
+        head:
+          Value: false
+        head_camera:
+          Value: false
+        kinect_head:
+          Value: true
+        kinect_left_hand:
+          Value: true
+        kinect_right_hand:
+          Value: true
+        l_gripper_l_finger:
+          Value: false
+        l_gripper_l_finger_tip:
+          Value: false
+        l_gripper_r_finger:
+          Value: false
+        l_gripper_r_finger_tip:
+          Value: false
+        left_arm_itb:
+          Value: false
+        left_arm_mount:
+          Value: false
+        left_gripper:
+          Value: false
+        left_gripper_base:
+          Value: false
+        left_hand:
+          Value: false
+        left_hand_accelerometer:
+          Value: false
+        left_hand_camera:
+          Value: false
+        left_hand_camera_axis:
+          Value: false
+        left_hand_range:
+          Value: false
+        left_lower_elbow:
+          Value: false
+        left_lower_forearm:
+          Value: false
+        left_lower_shoulder:
+          Value: false
+        left_torso_itb:
+          Value: false
+        left_upper_elbow:
+          Value: false
+        left_upper_elbow_visual:
+          Value: false
+        left_upper_forearm:
+          Value: false
+        left_upper_forearm_visual:
+          Value: false
+        left_upper_shoulder:
+          Value: false
+        left_wrist:
+          Value: false
+        pedestal:
+          Value: false
+        position_com_frame:
+          Value: true
+        r_gripper_l_finger:
+          Value: false
+        r_gripper_l_finger_tip:
+          Value: false
+        r_gripper_r_finger:
+          Value: false
+        r_gripper_r_finger_tip:
+          Value: false
+        right_arm_itb:
+          Value: false
+        right_arm_mount:
+          Value: false
+        right_gripper:
+          Value: false
+        right_gripper_base:
+          Value: false
+        right_hand:
+          Value: false
+        right_hand_accelerometer:
+          Value: false
+        right_hand_camera:
+          Value: false
+        right_hand_camera_axis:
+          Value: false
+        right_hand_range:
+          Value: false
+        right_lower_elbow:
+          Value: false
+        right_lower_forearm:
+          Value: false
+        right_lower_shoulder:
+          Value: false
+        right_torso_itb:
+          Value: false
+        right_upper_elbow:
+          Value: false
+        right_upper_elbow_visual:
+          Value: false
+        right_upper_forearm:
+          Value: false
+        right_upper_forearm_visual:
+          Value: false
+        right_upper_shoulder:
+          Value: false
+        right_wrist:
+          Value: false
+        screen:
+          Value: false
+        sonar_ring:
+          Value: false
+        torso:
+          Value: false
+        world:
+          Value: false
+        world_frame:
+          Value: true
       Marker Scale: 1
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: true
       Tree:
-        world_frame:
-          beacon/blue:
-            {}
-          beacon/pink:
-            {}
+        world:
+          base:
+            collision_head_link_1:
+              {}
+            collision_head_link_2:
+              {}
+            torso:
+              head:
+                dummyhead1:
+                  {}
+                head_camera:
+                  {}
+                screen:
+                  display:
+                    {}
+              left_arm_mount:
+                left_upper_shoulder:
+                  left_lower_shoulder:
+                    left_upper_elbow:
+                      left_lower_elbow:
+                        left_upper_forearm:
+                          left_arm_itb:
+                            {}
+                          left_lower_forearm:
+                            left_wrist:
+                              left_hand:
+                                left_gripper_base:
+                                  l_gripper_l_finger:
+                                    l_gripper_l_finger_tip:
+                                      {}
+                                  l_gripper_r_finger:
+                                    l_gripper_r_finger_tip:
+                                      {}
+                                  left_gripper:
+                                    {}
+                                left_hand_accelerometer:
+                                  {}
+                                left_hand_camera:
+                                  {}
+                                left_hand_camera_axis:
+                                  {}
+                                left_hand_range:
+                                  {}
+                        left_upper_forearm_visual:
+                          {}
+                    left_upper_elbow_visual:
+                      {}
+              left_torso_itb:
+                {}
+              pedestal:
+                {}
+              right_arm_mount:
+                right_upper_shoulder:
+                  right_lower_shoulder:
+                    right_upper_elbow:
+                      right_lower_elbow:
+                        right_upper_forearm:
+                          right_arm_itb:
+                            {}
+                          right_lower_forearm:
+                            right_wrist:
+                              right_hand:
+                                right_gripper_base:
+                                  r_gripper_l_finger:
+                                    r_gripper_l_finger_tip:
+                                      {}
+                                  r_gripper_r_finger:
+                                    r_gripper_r_finger_tip:
+                                      {}
+                                  right_gripper:
+                                    {}
+                                right_hand_accelerometer:
+                                  {}
+                                right_hand_camera:
+                                  {}
+                                right_hand_camera_axis:
+                                  {}
+                                right_hand_range:
+                                  {}
+                        right_upper_forearm_visual:
+                          {}
+                    right_upper_elbow_visual:
+                      {}
+              right_torso_itb:
+                {}
+              sonar_ring:
+                {}
+          world_frame:
+            camera_link:
+              camera_depth_frame:
+                camera_depth_optical_frame:
+                  position_com_frame:
+                    {}
+              camera_rgb_frame:
+                camera_rgb_optical_frame:
+                  {}
+              kinect_head:
+                {}
+              kinect_left_hand:
+                {}
+              kinect_right_hand:
+                {}
       Update Interval: 0
       Value: true
     - Class: rviz/Marker
@@ -123,7 +349,7 @@ Visualization Manager:
       Marker Topic: /beacon_blue/beacon_radius_rviz
       Name: Marker
       Namespaces:
-        beacons: true
+        {}
       Queue Size: 1
       Value: true
     - Class: rviz/Marker
@@ -131,7 +357,7 @@ Visualization Manager:
       Marker Topic: /beacon_pink/beacon_radius_rviz
       Name: Marker
       Namespaces:
-        beacons: true
+        {}
       Queue Size: 100
       Value: true
   Enabled: true
@@ -159,7 +385,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 13.890804290771484
+      Distance: 6.43349552154541
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -174,10 +400,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.1947971135377884
+      Pitch: 0.15479707717895508
       Target Frame: camera_depth_optical_frame
       Value: Orbit (rviz)
-      Yaw: 2.574955463409424
+      Yaw: 2.964959144592285
     Saved: ~
 Window Geometry:
   Displays:

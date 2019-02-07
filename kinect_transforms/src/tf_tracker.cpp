@@ -41,10 +41,10 @@ main(int argc, char** argv)
 	
 	ros::NodeHandle nh;  
 	// Initilize Publishers for the odometry wrt Kinect
-	kinect_pub = nh.advertise<nav_msgs::Odometry>(kinect_path.str(), 10);
+	kinect_pub = nh.advertise<nav_msgs::Odometry>(kinect_path.str(), 5);
 	
 	// Initilize Publishers for the odometry wrt Baxter
-	baxter_pub = nh.advertise<nav_msgs::Odometry>(baxter_path.str(), 10);
+	baxter_pub = nh.advertise<nav_msgs::Odometry>(baxter_path.str(), 5);
 	
     // Initialize Client to reset kinect
     client_reset = nh.serviceClient<std_srvs::Empty>("reset_kinect_filters");  
@@ -102,7 +102,7 @@ main(int argc, char** argv)
 			}
 		}
 		catch (tf::TransformException ex){
-			ROS_WARN("Transform unavailable %s", ex.what());
+			//ROS_WARN("Transform unavailable %s", ex.what());
 			
 			if(tracking){
 				std_srvs::Empty srv;

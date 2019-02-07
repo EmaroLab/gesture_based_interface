@@ -22,7 +22,7 @@ public:
      */
     HeadTracking()
     {
-   	client_move = nh.serviceClient<kinect_tracking_srvs::RegulateKinectByHead>("regulate_kinect_by_head"); 
+		client_move = nh.serviceClient<kinect_tracking_srvs::RegulateKinectByHead>("regulate_kinect_by_head"); 
         head_sub = nh.subscribe("/odometry/kinect/kinect_head", 10, &HeadTracking::trackCB, this);
     }
     /** 
