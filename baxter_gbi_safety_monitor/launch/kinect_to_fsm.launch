@@ -1,0 +1,78 @@
+<launch>
+	<node name="kinect_broadcaster" pkg="kinect_transforms" type="kinect_broadcaster" output="screen">
+		<param name="x_kinect" value="0.3"/>
+		<param name="y_kinect" value="0.3"/>
+		<param name="z_kinect" value="0.3"/>
+	</node>
+
+	<node name="kinect_to_baxter_broadcaster" pkg="kinect_transforms" type="kinect_to_baxter_broadcaster" output="screen">
+		<param name="fixed_frame_baxter" value="world"/>
+		<param name="fixed_frame_kinect" value="world_frame"/>
+		<param name="x_frame_kinect" value="0.0"/>
+		<param name="y_frame_kinect" value="0.0"/>
+		<param name="z_frame_kinect" value="0.0"/>
+	</node>
+
+	<node name="kinect_aux_node" pkg ="kinect_aux" type="kinect_aux_node" output="screen" />
+	<node name="kinect_move_server" pkg="kinect_setup" type="kinect_move_server" output="screen"/>
+
+	<node name="kinect_regulation_server" pkg="kinect_setup" type="kinect_regulation_server" output="screen">
+		<param name="initial_angle" value="20"/>
+	</node>
+
+	<node name="pcl_background_segmentation" pkg ="kinect_pcl_tools" type="pcl_background_segmentation" output="screen">
+		<param name="granularity" value="5"/>
+		<param name="delta" value="0.12"/>
+	</node>
+	
+	<node name="pcl_filter" pkg ="kinect_pcl_tools" type="pcl_filter" output="screen">
+		<param name="use_downsampling" value="true"/>
+		<param name="downsampling_leaf_size" value="0.05"/>
+
+		<param name="use_filter_z" value="true"/>
+		<param name="min_z" value="0.1"/>
+		<param name="max_z" value="3"/>
+		<param name="revert_filter_z" value="false"/>
+
+		<param name="use_filter_y" value="true"/>
+		<param name="min_y" value="-0.5"/>
+		<param name="max_y" value="0.5"/>
+		<param name="revert_filter_y" value="false"/>
+
+		<param name="use_filter_x" value="true"/>
+		<param name="min_x" value="-0.5"/>
+		<param name="max_x" value="0.5"/>
+		<param name="revert_filter_x" value="false"/>
+
+		<param name="use_filter_sor" value="true"/>
+		<param name="sor_k" value="40"/>
+		<param name="sor_stddev" value="1.0"/>
+	</node>
+
+	<node name="position_estimation" pkg="pose_estimation" type="position_estimation" output="screen"/>
+
+	<node name="openni_tracker" pkg="openni_tracker" type="openni_tracker" output="screen">
+		<param name="camera_frame_id" value="camera_link"/>
+	</node>
+
+	<node name="tf_tracker_head" pkg="kinect_transforms" type="tf_tracker" output="screen">
+		<param name="frame" value="kinect_head"/>
+	</node>
+	<node name="tf_tracker_left_hand" pkg="kinect_transforms" type="tf_tracker" output="screen">
+		<param name="frame" value="kinect_left_hand"/>
+	</node>
+	<node name="tf_tracker_right_hand" pkg="kinect_transforms" type="tf_tracker" output="screen">
+		<param name="frame" value="kinect_right_hand"/>
+	</node>
+
+	<node name="head_tracking" pkg="kinect_transforms" type="head_tracking" output="screen"/>
+
+	<node name="activate" pkg="baxter_gbi_safety_monitor" type="activate" output="screen">
+		<param name="security_distance" value="1.0"/>
+		<param name="threshold" value="0.7"/>
+	</node>
+
+
+	<node name="rviz" pkg="rviz" type="rviz" args=" -d $(find baxter_gbi_safety_monitor)/rviz_resources/rviz_conf.rviz"/>
+
+</launch>
