@@ -8,8 +8,8 @@ import sys
 from BaxterGBI_pbr import JointRecorder
 
 from baxter_interface import CHECK_VERSION
-from BaxterGBI_pbr.msg import record_status, mirror_end_effector
-from BaxterGBI_pbr.srv import CalibrateMirror, EnableMirroring
+from BaxterGBI_pbr_msg.msg import record_status, mirror_end_effector
+from BaxterGBI_pbr_srv.srv import CalibrateMirror, EnableMirroring
 
 from geometry_msgs.msg import Point, Quaternion
 

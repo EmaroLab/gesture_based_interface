@@ -11,9 +11,9 @@ import struct
 import rospy
 
 import baxter_interface
-from BaxterGBI_pbr.msg import *
+from BaxterGBI_pbr_msg.msg import *
 from baxter_interface import CHECK_VERSION, Limb
-from BaxterGBI_pbr.srv import *
+from BaxterGBI_pbr_srv.srv import *
 from BaxterGBI_pbr import ik_tracking, ReturnValue
 
 from nav_msgs.msg import Odometry

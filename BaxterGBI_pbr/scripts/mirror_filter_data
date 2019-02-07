@@ -9,7 +9,7 @@ import sys
 import struct
 import rospy
 
-from BaxterGBI_pbr.msg import *
+from BaxterGBI_pbr_msg.msg import *
 
 import tf
 

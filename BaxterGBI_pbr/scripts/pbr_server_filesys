@@ -15,9 +15,9 @@ import baxter_interface
 import os.path
 
 from os import listdir
-from BaxterGBI_pbr.msg import *
+from BaxterGBI_pbr_msg.msg import *
 from baxter_interface import CHECK_VERSION
-from BaxterGBI_pbr.srv import *
+from BaxterGBI_pbr_srv.srv import *
 from BaxterGBI_pbr import pbr_header
 
 ## Service used to provide the entire list of the recorded files.

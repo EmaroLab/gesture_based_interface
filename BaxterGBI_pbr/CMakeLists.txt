@@ -16,39 +16,18 @@ find_package(catkin
   baxter_core_msgs
   nav_msgs
   baxter_interface
+  BaxterGBI_pbr_srv
+  BaxterGBI_pbr_msg
 )
 
 catkin_python_setup()
  
-add_message_files(
-   FILES
-   playback_msg.msg
-   record_status.msg
-   mirror_end_effector.msg
-   modify_playback.msg
-)
-
-add_service_files(
-  FILES
-  Playback.srv
-  RecordStart.srv
-  RecordStop.srv
-  ListFiles.srv
-  DeleteFile.srv
-  RenameFile.srv
-  Gripper.srv
-  ReachGoal.srv
-  CalibrateMirror.srv
-  EnableMirroring.srv
-  PauseResume.srv
-)
-
 generate_messages(
    DEPENDENCIES
    std_msgs
    geometry_msgs
    nav_msgs
- )
+)
 
 catkin_package(
   CATKIN_DEPENDS
@@ -64,6 +43,8 @@ catkin_package(
   nav_msgs
   geometry_msgs
   baxter_interface
+  BaxterGBI_pbr_srv
+  BaxterGBI_pbr_msg
 )
 
 install(

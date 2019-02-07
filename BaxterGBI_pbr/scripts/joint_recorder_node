@@ -9,7 +9,7 @@ import baxter_interface
 from BaxterGBI_pbr import JointRecorder
 
 from baxter_interface import CHECK_VERSION
-from BaxterGBI_pbr.msg import record_status, modify_playback
+from BaxterGBI_pbr_msg.msg import record_status, modify_playback
 
 import os
 
