@@ -24,7 +24,7 @@ ros::ServiceClient client_reset;  /**< Client to reset filters */
  * Main function: 
  * 
  */
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     ros::init(argc, argv, "tf_tracker", ros::init_options::AnonymousName);
 	ros::NodeHandle n("~");    

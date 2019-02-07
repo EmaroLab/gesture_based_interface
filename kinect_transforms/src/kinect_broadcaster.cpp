@@ -54,7 +54,7 @@ float TF_Broadcaster::degrees(void){
  * Main function: 
  * a TF broadcaster is created in order to add the world frame to the tree. The world frame is in correspondence of the control board and it has the same orientation of the Kinect.
  */
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     ros::init(argc, argv, "kinect_broadcaster");
 	ros::NodeHandle n("~");

@@ -43,7 +43,7 @@ bool move(kinect_tracking_srvs::MoveKinect::Request  &req,
  * Main:
  * Initialization of the service kinect_move_server and the publisher
  */
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     ros::init(argc, argv, "kinect_move_server");
 	ros::NodeHandle n;

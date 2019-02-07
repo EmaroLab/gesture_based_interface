@@ -48,7 +48,7 @@ public:
  * Main:
  * Initialization of the handler
  */
-main(int argc, char **argv)
+int main(int argc, char **argv)
 {
     ros::init(argc, argv, "head_tracking");
 
