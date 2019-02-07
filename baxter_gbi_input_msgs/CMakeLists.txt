@@ -5,10 +5,10 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation std_msgs
 )
 
- add_message_files(
+add_message_files(
    FILES
    signal.msg
- )
+)
 
 generate_messages(
    DEPENDENCIES

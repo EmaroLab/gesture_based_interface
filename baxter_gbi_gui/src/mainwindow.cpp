@@ -104,7 +104,6 @@ void MainWindow::__setMenuMode(){
 }
 
 void MainWindow::keyReleaseEvent(QKeyEvent *event){
-
 		auto key = map.value(event->key(), nullptr);
 		if(key) (*key)();
 }
