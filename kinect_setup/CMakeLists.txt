@@ -65,3 +65,6 @@ add_dependencies(kinect_regulation_server ${catkin_EXPORTED_TARGETS})
 target_link_libraries(kinect_regulation_server ${catkin_LIBRARIES})
 target_link_libraries(kinect_move_server ${catkin_LIBRARIES})
 
+
+target_compile_options(kinect_move_server PRIVATE -Wall -Wextra -pedantic)  
+target_compile_options(kinect_regulation_server PRIVATE -Wall -Wextra -pedantic)

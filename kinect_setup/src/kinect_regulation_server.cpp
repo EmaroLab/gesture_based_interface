@@ -4,12 +4,12 @@
 #include "kinect_tracking_srvs/RegulateKinectByWrist.h"
 #include "kinect_filter_srvs/SetFilterParam.h"
 #include "kinect_filter_srvs/SetFilter.h"
-#include <math.h>
+#include <cmath>
 #include <std_srvs/Empty.h>
 #include <iostream>
 #include <unistd.h>
 #include <sys/types.h>
-#include <string> 
+#include <string>
 
 /** 
  * Publisher, to control the tilt angle of the Kinect
@@ -139,6 +139,8 @@ bool regulateHead(kinect_tracking_srvs::RegulateKinectByHead::Request  &req,
  */
 bool resetKinect(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response)
 {
+	(void) request;
+	(void) response;
 	float min_z = 0.01;
 	float max_z = 4;
 	float min_y = -1;

@@ -5,7 +5,7 @@
 #include <pcl_conversions/pcl_conversions.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <iostream>
-#include <math.h>
+#include <cmath>
 #include <Eigen/Geometry> 
 #include <unistd.h>
 #include <pwd.h>

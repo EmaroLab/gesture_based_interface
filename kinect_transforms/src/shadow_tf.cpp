@@ -1,7 +1,7 @@
 #include <ros/ros.h>
 #include "std_msgs/Float64.h"
 #include <tf/transform_broadcaster.h>
-#include <math.h>
+#include <cmath>
 #include <nav_msgs/Odometry.h>
 #include <tf/transform_listener.h>
 #include <geometry_msgs/Vector3.h>
@@ -9,7 +9,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <sys/types.h>
-#include <string> 
+#include <string>
 /**
  * @file
  */

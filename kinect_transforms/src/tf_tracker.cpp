@@ -1,7 +1,7 @@
 #include <ros/ros.h>
 #include "std_msgs/Float64.h"
 #include <tf/transform_broadcaster.h>
-#include <math.h>
+#include <cmath>
 #include <nav_msgs/Odometry.h>
 #include <tf/transform_listener.h>
 #include <geometry_msgs/Vector3.h>
@@ -97,11 +97,11 @@ int main(int argc, char** argv)
 				// Publish message
 				baxter_pub.publish(odom_msg);
 			}
-			catch (tf::TransformException ex){
+			catch (tf::TransformException &ex){
 				ROS_WARN("Transform unavailable %s", ex.what());
 			}
 		}
-		catch (tf::TransformException ex){
+		catch (tf::TransformException &ex){
 			//ROS_WARN("Transform unavailable %s", ex.what());
 			
 			if(tracking){

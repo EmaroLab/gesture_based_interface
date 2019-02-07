@@ -51,3 +51,4 @@ add_executable(activate src/activate.cpp)
 ## Specify libraries to link a library or executable target against
 target_link_libraries(activate ${catkin_LIBRARIES})
 
+target_compile_options(activate PRIVATE -Wall -Wextra -pedantic)  

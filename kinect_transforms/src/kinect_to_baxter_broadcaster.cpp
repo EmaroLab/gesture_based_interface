@@ -1,6 +1,6 @@
 #include <ros/ros.h>
 #include <tf/transform_broadcaster.h>
-#include <string.h>
+#include <cstring>
 /**
  * @file
  */

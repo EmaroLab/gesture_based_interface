@@ -3,7 +3,7 @@
 #include "std_msgs/Float64.h"
 #include <nav_msgs/Odometry.h>
 #include <tf/transform_datatypes.h>
-#include <math.h>
+#include <cmath>
 /**
  * @file
  */
@@ -115,7 +115,7 @@ bool KinectActivate::hasAttention(void){
  * - publish activate signal on /presence
  * - publish security signal on /secure
  */
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     ros::init(argc, argv, "kinect_activate");
 	ros::NodeHandle nh("~");
