@@ -12,7 +12,7 @@ ConfigPanel::ConfigPanel(QWidget *parent)
 , ui(new Ui::ConfigPanel)
 , model(new QStandardItemModel)
 , isFilled(6, false)
-, scanner("BaxterGBI_input_msgs/signal")
+, scanner("baxter_gbi_input_msgs/signal")
 , fsmInputConfigurator("key_", "_topics")
 {
 	ui->setupUi(this);
