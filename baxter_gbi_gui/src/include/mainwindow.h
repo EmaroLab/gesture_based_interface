@@ -40,7 +40,7 @@ private:
 	MenuPanel menu_page;
 	QWidget *current_page;
 	BaxterDisplay display;
-  QMap<int, KeystrokePublisher*> map;
+  QMap<int, QSharedPointer<KeystrokePublisher>> map;
 
 
 private slots:

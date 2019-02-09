@@ -8,20 +8,23 @@
 #include <QImage>
 #include <QKeyEvent>
 
+#define SHARED_KEY_PUB(x) QSharedPointer<KeystrokePublisher>(new KeystrokePublisher("/keyboard/keystroke_" #x))
+#define SHARED_KEY_PUB_MAPPING(x) {Qt::Key_##x, SHARED_KEY_PUB(x)}
+
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MainWindow),
 	rosThread(new QThread),
 	worker(new Worker),
 	current_page(nullptr),
-	map{
-		 {Qt::Key_1, new KeystrokePublisher("/keyboard/keystroke_1")},
-		 {Qt::Key_2, new KeystrokePublisher("/keyboard/keystroke_2")},
-		 {Qt::Key_3, new KeystrokePublisher("/keyboard/keystroke_3")},
-		 {Qt::Key_4, new KeystrokePublisher("/keyboard/keystroke_4")},
-		 {Qt::Key_5, new KeystrokePublisher("/keyboard/keystroke_5")},
-		 {Qt::Key_6, new KeystrokePublisher("/keyboard/keystroke_6")},
-	},
+    map{
+        SHARED_KEY_PUB_MAPPING(1),
+        SHARED_KEY_PUB_MAPPING(2),
+        SHARED_KEY_PUB_MAPPING(3),
+        SHARED_KEY_PUB_MAPPING(4),
+        SHARED_KEY_PUB_MAPPING(5),
+        SHARED_KEY_PUB_MAPPING(6)
+    },
 	display(QString("/robot/xdisplay"))
 {
 	ui->setupUi(this);
