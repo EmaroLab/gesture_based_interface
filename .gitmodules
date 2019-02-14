@@ -3,7 +3,7 @@
 	url = https://github.com/RethinkRobotics/baxter.git
 [submodule "baxter_simulator"]
 	path = baxter_simulator
-	url = https://github.com/RethinkRobotics/baxter_simulator.git
+	url = https://github.com/EmaroLab/baxter_simulator.git
 [submodule "baxter_interface"]
 	path = baxter_interface
 	url = https://github.com/RethinkRobotics/baxter_interface.git
