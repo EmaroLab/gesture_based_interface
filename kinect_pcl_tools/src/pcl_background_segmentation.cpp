@@ -3,8 +3,8 @@
 #include <pcl/filters/extract_indices.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include <sensor_msgs/PointCloud2.h>
-#include <math.h>
-#include <string.h>
+#include <cmath>
+#include <cstring>
 #include "std_msgs/Float64.h"
 #include <Eigen/Geometry>
 #include <ros/package.h>
@@ -82,13 +82,12 @@ protected:
 };
 
 /**
-/**
  * Main function:
  * - initialize of the parameter delta and the handler
  * - acquire and save all backgrounds, associated to different angles of the Kinect
  * @param[in]  delta	sensitivity of the segmentation
  */
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     ros::init(argc, argv, "pcl_background_segmentation");
     ros::NodeHandle n("~");

@@ -1,6 +1,6 @@
 #include <ros/ros.h>
 #include "std_msgs/Float64.h"
-#include "kinect_setup/MoveKinect.h"
+#include "kinect_tracking_srvs/MoveKinect.h"
 
 /** 
  * Publisher, to regulate the tilt angle of the Kinect
@@ -18,8 +18,8 @@ std_msgs::Float64 msg;
  * @param[out]  res    Response of the service
 	* @param[out]  res.result check if the operation is completed successfully
  */
-bool move(kinect_setup::MoveKinect::Request  &req,
-         kinect_setup::MoveKinect::Response &res)
+bool move(kinect_tracking_srvs::MoveKinect::Request  &req,
+         kinect_tracking_srvs::MoveKinect::Response &res)
 {
 	// Saturate angle if it exceeds boudaries
 	if(req.angle > 30)
@@ -43,7 +43,7 @@ bool move(kinect_setup::MoveKinect::Request  &req,
  * Main:
  * Initialization of the service kinect_move_server and the publisher
  */
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     ros::init(argc, argv, "kinect_move_server");
 	ros::NodeHandle n;

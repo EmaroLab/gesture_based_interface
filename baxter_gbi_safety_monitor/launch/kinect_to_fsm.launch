@@ -74,5 +74,5 @@
 
 
 	<node name="rviz" pkg="rviz" type="rviz" args=" -d $(find kinect_transforms)/rviz_resources/rviz_conf.rviz"/>
-
+	<node name="rviz" pkg="rviz" type="rviz" args=" -d $(find baxter_gbi_safety_monitor)/rviz_resources/rviz_conf.rviz"/>
 </launch>

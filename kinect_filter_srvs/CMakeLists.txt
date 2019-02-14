@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(baxter_gbi_safety_monitor)
+project(kinect_filter_srvs)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -7,16 +7,22 @@ project(baxter_gbi_safety_monitor)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
-  sensor_msgs
   std_msgs
-  geometry_msgs
-  nav_msgs
-  laser_geometry
-  roslaunch
-
+  message_generation
 )
 
-roslaunch_add_file_check(launch)
+## Generate services in the 'srv' folder
+ add_service_files(
+   FILES
+   SetFilter.srv
+   SetFilterParam.srv
+ )
+
+## Generate added messages and services with any dependencies listed here
+generate_messages(
+  DEPENDENCIES
+   std_msgs	
+ )
 
 ###################################
 ## catkin specific configuration ##
@@ -30,7 +36,7 @@ roslaunch_add_file_check(launch)
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES retrorov_model_bathymetric
- CATKIN_DEPENDS roscpp rospy sensor_msgs std_msgs message_runtime geometry_msgs
+ CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
 #  DEPENDS system_lib
 )
 
@@ -45,11 +51,3 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-## Declare a cpp executable
-
-add_executable(activate src/activate.cpp)
-
-## Specify libraries to link a library or executable target against
-target_link_libraries(activate ${catkin_LIBRARIES})
-
-target_compile_options(activate PRIVATE -Wall -Wextra -pedantic)  

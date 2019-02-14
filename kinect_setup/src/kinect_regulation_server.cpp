@@ -1,15 +1,15 @@
 #include <ros/ros.h>
-#include "kinect_setup/MoveKinect.h"
-#include "kinect_setup/RegulateKinectByHead.h"
-#include "kinect_setup/RegulateKinectByWrist.h"
-#include "kinect_pcl_tools/SetFilterParam.h"
-#include "kinect_pcl_tools/SetFilter.h"
-#include <math.h>
+#include "kinect_tracking_srvs/MoveKinect.h"
+#include "kinect_tracking_srvs/RegulateKinectByHead.h"
+#include "kinect_tracking_srvs/RegulateKinectByWrist.h"
+#include "kinect_filter_srvs/SetFilterParam.h"
+#include "kinect_filter_srvs/SetFilter.h"
+#include <cmath>
 #include <std_srvs/Empty.h>
 #include <iostream>
 #include <unistd.h>
 #include <sys/types.h>
-#include <string> 
+#include <string>
 
 /** 
  * Publisher, to control the tilt angle of the Kinect
@@ -35,7 +35,7 @@ int initial_angle = 0;
 */
 void set_filter_param(std::string param, float value)
 {
-	kinect_pcl_tools::SetFilterParam srv;
+	kinect_filter_srvs::SetFilterParam srv;
     srv.request.param_name = param;
     srv.request.value = value;
     client_filter.call(srv); 
@@ -43,7 +43,7 @@ void set_filter_param(std::string param, float value)
 
 void set_filter(std::string param, bool enable)
 {
-	kinect_pcl_tools::SetFilter srv;
+	kinect_filter_srvs::SetFilter srv;
     srv.request.filter_name = param;
     srv.request.enable = enable;
     client_filter_enable.call(srv); 
@@ -59,8 +59,8 @@ void set_filter(std::string param, bool enable)
  * @param[out]  res    Response of the service
 	* @param[out]  res.result If the operation is completed successfully
  */
-bool regulateWrist(kinect_setup::RegulateKinectByWrist::Request  &req,
-         kinect_setup::RegulateKinectByWrist::Response &res)
+bool regulateWrist(kinect_tracking_srvs::RegulateKinectByWrist::Request  &req,
+         kinect_tracking_srvs::RegulateKinectByWrist::Response &res)
 {
 	float x = req.x;
 	float y = req.y;
@@ -74,7 +74,7 @@ bool regulateWrist(kinect_setup::RegulateKinectByWrist::Request  &req,
 	float min_x = x - 0.50;
 	float max_x = x + 0.50;
 	
-	kinect_setup::MoveKinect srv_angle;
+	kinect_tracking_srvs::MoveKinect srv_angle;
 	srv_angle.request.angle = angle;
 	
 	client_move.call(srv_angle);
@@ -100,8 +100,8 @@ bool regulateWrist(kinect_setup::RegulateKinectByWrist::Request  &req,
  * @param[out]  res    Response of the service
 	* @param[out]  res.result If the operation is completed successfully
  */
-bool regulateHead(kinect_setup::RegulateKinectByHead::Request  &req,
-         kinect_setup::RegulateKinectByHead::Response &res)
+bool regulateHead(kinect_tracking_srvs::RegulateKinectByHead::Request  &req,
+         kinect_tracking_srvs::RegulateKinectByHead::Response &res)
 {
 	float x = req.x;
 	float y = req.y;
@@ -110,13 +110,13 @@ bool regulateHead(kinect_setup::RegulateKinectByHead::Request  &req,
 	float angle = -1 * atan(y/z) * 180 / M_PI;
 	
 	float min_z = z - 0.50;
-	float max_z = z + 0.50;
+	float max_z = z + 0.15;
 	float min_y = y - 0.40;
-	float max_y = y + 2.00;
+	float max_y = y + 1.50;
 	float min_x = x - 0.50;
 	float max_x = x + 0.50;
 	
-	kinect_setup::MoveKinect srv_angle;
+	kinect_tracking_srvs::MoveKinect srv_angle;
 	srv_angle.request.angle = angle;
 	
 	client_move.call(srv_angle);
@@ -141,6 +141,8 @@ bool regulateHead(kinect_setup::RegulateKinectByHead::Request  &req,
  */
 bool resetKinect(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response)
 {
+	(void) request;
+	(void) response;
 	float min_z = 0.01;
 	float max_z = 4;
 	float min_y = -1;
@@ -149,7 +151,7 @@ bool resetKinect(std_srvs::Empty::Request& request, std_srvs::Empty::Response& r
 	float max_x = 1;
 	
 	// Reset angle of the kinect
-	kinect_setup::MoveKinect srv_angle;
+	kinect_tracking_srvs::MoveKinect srv_angle;
 	srv_angle.request.angle = initial_angle;
 	client_move.call(srv_angle);
 	
@@ -196,9 +198,9 @@ int main(int argc, char** argv)
 	ros::ServiceServer service3 = n.advertiseService("reset_kinect_filters", resetKinect);
 	
 	// Initialize clients
-	client_move = n.serviceClient<kinect_setup::MoveKinect>("move_kinect");
-	client_filter = n.serviceClient<kinect_pcl_tools::SetFilterParam>("pcl_filter/set_filter_param");
-	client_filter_enable = n.serviceClient<kinect_pcl_tools::SetFilter>("pcl_filter/set_filter");
+	client_move = n.serviceClient<kinect_tracking_srvs::MoveKinect>("move_kinect");
+	client_filter = n.serviceClient<kinect_filter_srvs::SetFilterParam>("pcl_filter/set_filter_param");
+	client_filter_enable = n.serviceClient<kinect_filter_srvs::SetFilter>("pcl_filter/set_filter");
 	
 	// Acquire param
 	ros::NodeHandle nh("~");

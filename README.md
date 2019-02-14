@@ -53,7 +53,7 @@ roscore
 ```
 Launch nodes for the Kinect
 ```
-roslaunch openni_launch openni.launch device_id:= A00362A07684107A
+roslaunch openni_launch openni.launch device_id:=A00362A07684107A
 ```
 Configuration: generation of environments according to the orientation angle of the Kinect
 ```
