@@ -1,24 +1,21 @@
 ## @package SequenceMenuState
-## This package describes the structure
-#  of the sequence menu state 
+## This package describes the structure of the sequence menu state 
 
 from MenuState import MenuState
 
 ##  SequenceMenuState
 #   inerithed form MenuState
 class SequenceMenuState(MenuState):
-    ## the constructor
-    #  @param trigger_event istance of the class FsmEvent
+    ## constructor
+    #  @param trigger_event istance of FsmEvent class
     def __init__(self, trigger_event):
         outcomes=['play',
                   'back']
-
         MenuState.__init__(self,
                            outcomes,
                            trigger_event,
                            'Sequence menu',
                            input_keys=['sequence_idx', 'sequence_filename'])
-
         self.sequence = [None]
 
     ## method update_variable_options
@@ -48,4 +45,4 @@ class SequenceMenuState(MenuState):
         userdata.selection = index
         return 'selection'
 
-    # FIXME: 'play' outcome does not outputs sequence configuration
+    # FIXME: 'play' outcome does not output sequence configuration

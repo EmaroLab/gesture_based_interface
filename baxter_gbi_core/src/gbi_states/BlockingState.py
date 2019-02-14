@@ -1,6 +1,5 @@
 ## @package BlockingState
-## This package describes the general blocking 
-#  state 
+## This package describes the general blocking state 
 
 import rospy
 import smach
@@ -9,7 +8,7 @@ import BaxterGBI_core_msgs.msg as pub_status
 ##  BlockingState
 #   inerithed form smach.State
 class BlockingState(smach.State):
-    ## the constructor
+    ## constructor
     def __init__(self, outcomes, trigger_event, output_keys=[], input_keys=[]):
         outcomes = outcomes + ['preempted']
         smach.State.__init__(self,
@@ -26,8 +25,8 @@ class BlockingState(smach.State):
         self.msg = pub_status.status()
 
     ## method action_1
-    #  @param userdata 
-    #  
+    #  @param userdata
+    # 
     #  call back of the trigger "action_1"
     def action_1(self, userdata):
         ## to override
@@ -144,7 +143,7 @@ class BlockingState(smach.State):
                 return ret
 
     ## method request_preempt 
-    #  method called when the state is preempted 
+    #  called when the state is preempted 
     def request_preempt(self):
         smach.State.request_preempt(self)
         self._trigger_event.signal('preempt')

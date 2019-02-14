@@ -4,12 +4,12 @@ from threading import Timer
 from BlockingState import BlockingState
 
 class ExpiringState(BlockingState):
-    ## the constructor
+    ## constructor
     # @param outcomes possible outcomes of the state
-    # @param trigger_event object of the class FsmEvent
+    # @param trigger_event object belonging to FsmEvent class
     # @param action executable action
-    # @param output_keys set of the data in output
-    # @param input_keys set of the data in input
+    # @param output_keys set of output data
+    # @param input_keys set of input data
     def __init__(self, outcomes, trigger_event, output_keys=[], input_keys=[]):
         BlockingState.__init__(self,
                                outcomes = ['user_missed'] + outcomes,
@@ -24,7 +24,7 @@ class ExpiringState(BlockingState):
         return 'user_missed'
 
     ## method user_dected
-    #  overide of BlockingState.user_detected
+    #  override of BlockingState.user_detected
     #  @param userdata data in input to the state
     def user_detected(self, userdata):
         self.t.cancel()

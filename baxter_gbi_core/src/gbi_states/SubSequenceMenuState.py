@@ -1,16 +1,14 @@
 ## @package SubSequenceMenuState
-## This package describes the structure
-#  of the sequence menu state 
+## This package describes the structure of the sequence menu state 
 from MenuState import MenuState
 
 ##  SubSequenceMenuState
 #   inerithed form MenuState
 class SubSequenceMenuState(MenuState):
-    ## the constructor
-    #  @param trigger_event istance of the class FsmEvent
+    ## constructor
+    #  @param trigger_event istance of FsmEvent class
     def __init__(self, trigger_event):
         outcomes = ['back']
-
         MenuState.__init__(self,
                            outcomes,
                            trigger_event,

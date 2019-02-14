@@ -1,15 +1,14 @@
 ## @package ActionState
-#  This package define the essential structure
-#  for all the action states
+#  This package defines the essential structure for all the action states
 
 import rospy
 from ExpiringState import ExpiringState
 import time
 
 ##  ActionState
-#   inerithed form BlockingState 
+#   Inerithed form BlockingState 
 class ActionState(ExpiringState):
-    ## the constructor
+    ## constructor
     # @param outcomes possible outcomes of the state
     # @param trigger_event object of the class FsmEvent
     # @param action executable action
@@ -21,11 +20,11 @@ class ActionState(ExpiringState):
                                trigger_event = trigger_event,
                                output_keys= output_keys,
                                input_keys=input_keys)
-        ## attribute of type
+        ## attribute of type action
         self.type = 'action'
-        ## attribute of type of action
-        self.action = action
         ## attribute for the timeout
+        self.action = action
+       
 
     ## method publish_state
     #  overide of BlockingState.publish_state
