@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MenuPanel</class>
+ <widget class="QWidget" name="MenuPanel">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1024</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1024</width>
+    <height>600</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1024</width>
+    <height>600</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget#MenuPanel{
+	background-color:#FFE3E2;
+}
+
+QPushButton{
+		font: 17pt Comic Sans MS;
+		background-color:#FFFEFE;
+		height: 50px;
+		border-radius:10px;
+		border: 2px solid #FF483E;
+		padding: 6px;
+		margin:2px;
+}
+
+QPushButton:hover{
+	background-color: #FFC9C3;
+}
+
+QPushButton#selection{
+		font: 17pt Comic Sans MS;
+		background-color:#FF483E;
+		border: 2px solid #FF483E;
+		border-radius: 10px;
+		height: 50px;
+		padding: 6px;
+}</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_3">
+   <item>
+    <layout class="QHBoxLayout" name="topContainer">
+     <item>
+      <spacer name="leftSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="menuTitle">
+       <property name="styleSheet">
+        <string notr="true">font: 22pt &quot;ComicSansMS&quot;;
+font-style:bold;
+</string>
+       </property>
+       <property name="text">
+        <string>Menu Title</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="rightSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="styleSheet">
+      <string notr="true">#scrollArea{
+	border:none
+}
+</string>
+     </property>
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>1006</width>
+        <height>514</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">#scrollAreaWidgetContents{
+	background-color:#FFE3E2;
+}</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <layout class="QVBoxLayout" name="optionsContainer"/>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="widget" native="true">
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QHBoxLayout" name="fixedOptionsContainer"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>

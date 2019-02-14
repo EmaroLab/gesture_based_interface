@@ -1,0 +1,55 @@
+#!/usr/bin/env python
+import rospy 
+import baxter_gbi_input_msgs.msg as input_msg
+from std_msgs.msg import String
+  
+class _GetchUnix:
+    def __init__(self):
+        import tty, sys
+
+    def __call__(self):
+        import sys, tty, termios
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        try:
+            tty.setraw(sys.stdin.fileno())
+            ch = sys.stdin.read(1)
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        return ch
+
+getch = _GetchUnix()
+
+def keystroke():
+    rospy.init_node('keyboard', anonymous = True)  
+    rate = rospy.Rate(10) # 10hz
+    
+    inputs = rospy.get_param('fsm_required_inputs', '6') 
+    n = int(inputs)
+    s = "/keyboard/keystroke_"
+    
+    pubs = [rospy.Publisher("{}{}".format(s, i), input_msg.signal, queue_size = 10) for i in range(1, n+1)]
+
+    while not rospy.is_shutdown():
+        c = getch()
+        if c.isdigit() and int(c) in range(1, n+2):
+            digit = int(c)            
+            print (digit)
+            if(digit == n+1): 
+                exit()
+            else:
+                msg = input_msg.signal()
+                msg.device_id = "123"
+                msg.device_type = "Keyboard"
+                msg.device_model = "PC"
+                msg.action_descr = "Key pressed"
+                msg.confidence = 1
+          
+                pubs[digit-1].publish(msg)
+        rate.sleep()
+           
+if __name__ == '__main__':
+    try:
+        keystroke()
+    except rospy.ROSInterruptException:
+        pass

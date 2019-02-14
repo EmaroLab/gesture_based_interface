@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ConfigPanel</class>
+ <widget class="QWidget" name="ConfigPanel">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>547</width>
+    <height>345</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+QPushButton{
+		font: 17pt Comic Sans MS;
+		background-color:#FFFEFE;
+		height: 50px;
+		border-radius:10px;
+		border: 2px solid #FF483E;
+		padding: 6px;
+		margin:2px;
+}
+
+QPushButton:hover{
+	background-color: #FFC9C3;
+}</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_3">
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <layout class="QHBoxLayout" name="scanContainer">
+       <item>
+        <widget class="QPushButton" name="scanButton">
+         <property name="styleSheet">
+          <string notr="true">#scanButton{
+background-color:#FFBF7A;
+	border:2px solid #FF9B2F;
+}
+
+#scanButton:hover{
+	background-color:#FF9B2F;
+}</string>
+         </property>
+         <property name="text">
+          <string>Scan</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="tabsContainer">
+       <item>
+        <widget class="QTabWidget" name="tabWidget">
+         <property name="styleSheet">
+          <string notr="true">QTabWidget::pane {
+    border: 2px solid #FF483E;
+    background: #FFB8B4;
+}
+
+QTabBar::tab {
+    border: 2px solid #FF483E;
+	border-top-left-radius:10px;
+	border-top-right-radius:10px;
+	border-bottom:none;
+}
+
+QTabBar::tab:selected {
+    background:#FF483E;
+}
+
+QTabBar::tab:!selected {
+    background: #FFDDDA;
+}
+
+QTabBar::tab:!selected:hover {
+    background: #FFB8B4;
+}
+
+QTabBar::tab:top:!selected {
+    margin-top: 3px;
+}
+
+QTabBar::tab:bottom:!selected {
+    margin-bottom: 3px;
+}
+
+QTabBar::tab:top, QTabBar::tab:bottom {
+    min-width: 8ex;
+    margin-right: -1px;
+    padding: 5px 10px 5px 10px;
+}
+
+QTabBar::tab:top:selected {
+    border-bottom-color: none;
+}
+
+QTabBar::tab:bottom:selected {
+    border-top-color: none;
+}
+
+QTabBar::tab:top:last, QTabBar::tab:bottom:last,
+QTabBar::tab:top:only-one, QTabBar::tab:bottom:only-one {
+    margin-right: 0;
+}
+
+QTabBar::tab:left:!selected {
+    margin-right: 3px;
+}
+
+QTabBar::tab:right:!selected {
+    margin-left: 3px;
+}
+
+QTabBar::tab:left, QTabBar::tab:right {
+    min-height: 8ex;
+    margin-bottom: -1px;
+    padding: 10px 5px 10px 5px;
+}
+
+QTabBar::tab:left:selected {
+    border-left-color: none;
+}
+
+QTabBar::tab:right:selected {
+    border-right-color: none;
+}
+
+QTabBar::tab:left:last, QTabBar::tab:right:last,
+QTabBar::tab:left:only-one, QTabBar::tab:right:only-one {
+    margin-bottom: 0;
+}</string>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <widget class="QWidget" name="tab1">
+          <attribute name="title">
+           <string>Tab 1</string>
+          </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout_2"/>
+         </widget>
+         <widget class="QWidget" name="tab2">
+          <attribute name="title">
+           <string>Tab 2</string>
+          </attribute>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QPushButton" name="addMappingButton">
+         <property name="styleSheet">
+          <string notr="true">#addMappingButton{
+background-color:#A4ED8D;
+	border:2px solid #6FD64E;
+}
+
+#addMappingButton:hover{
+	background-color:#6FD64E;
+}
+
+#addMappingButton:disabled{
+	background-color:#FFFEFE;
+}</string>
+         </property>
+         <property name="text">
+          <string>Add Mapping</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="loadConfigButton">
+         <property name="styleSheet">
+          <string notr="true">#loadConfigButton{
+background-color:#A4ED8D;
+	border:2px solid #6FD64E;
+}
+
+#LoadConfigButton:hover{
+	background-color:#6FD64E;
+}
+
+#loadConfigButton:disabled{
+	background-color:#FFFEFE;
+}
+
+#loadConfigButton:hover{
+	background-color:#6FD64E;
+}</string>
+         </property>
+         <property name="text">
+          <string>Load Configuration</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>

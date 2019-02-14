@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>baxter_gbi_gui</name>
+  <version>0.0.0</version>
+  <description>The BaxterGBI_gui package</description>
+
+  <maintainer email="roncapat@gmail.com">Patrick Roncagliolo</maintainer>
+  <maintainer email="lucre.grassi@gmail.com">Lucrezia Grassi</maintainer>
+
+  <license>GPLv3</license>
+
+  <author email="roncapat@gmail.com">Patrick Roncagliolo</author>
+  <author email="lucre.grassi@gmail.com">Lucrezia Grassi</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>rosmaster</build_depend>
+  <build_depend>std_srvs</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>baxter_gbi_input_msgs</build_depend>
+  <build_export_depend>roscpp</build_export_depend>
+  <build_export_depend>std_srvs</build_export_depend>
+  <build_export_depend>sensor_msgs</build_export_depend>
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>rosmaster</exec_depend>
+  <exec_depend>std_srvs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+
+  <export>
+  </export>
+</package>

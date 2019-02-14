@@ -16,3 +16,12 @@
 [submodule "baxter_examples"]
 	path = baxter_examples
 	url = https://github.com/RethinkRobotics/baxter_examples.git
+[submodule "openni_camera"]
+	path = openni_camera
+	url = https://github.com/ros-drivers/openni_camera.git
+[submodule "kinect_aux"]
+	path = kinect_aux
+	url = https://github.com/muhrix/kinect_aux.git
+[submodule "openni_tracker"]
+	path = openni_tracker
+	url = https://github.com/EmaroLab/openni_tracker.git

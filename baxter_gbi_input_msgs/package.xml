@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>baxter_gbi_input_msgs</name>
+  <version>0.0.0</version>
+  <description>The BaxterGBI_input_srvs package</description>
+
+  <maintainer email="roncapat@gmail.com">Patrick Roncagliolo</maintainer>
+
+  <license>GPLv3</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>message_generation</build_depend>
+  <exec_depend>message_runtime</exec_depend>
+
+  <export>
+  </export>
+</package>
