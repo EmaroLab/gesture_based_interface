@@ -1,8 +1,7 @@
 #include "BaxterDisplay.h"
 
 BaxterDisplay::BaxterDisplay(std::string topic)
-: topic(topic)
-{
+: topic(topic){
     publisher = n.advertise<sensor_msgs::Image>(topic, 1);
 }
 
@@ -16,8 +15,8 @@ void BaxterDisplay::operator()(QPixmap &pixmap){
 	//img_rgb.save("/home/lucrezia/file_rgb.png", "PNG", 100);
 	//img_bgr.save("/home/lucrezia/file_bgr.png", "PNG", 100);
 	
-	message.height = 600;
 	message.width = 1024;
+	message.height = 600;
 	message.encoding = "bgr8";
 	message.is_bigendian = 0;
 	message.step = img_bgr.bytesPerLine();

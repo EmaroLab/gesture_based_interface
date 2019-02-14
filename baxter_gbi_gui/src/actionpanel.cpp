@@ -23,8 +23,10 @@ ActionPanel::~ActionPanel(){
 void ActionPanel::update(QString action, QString msg){
   QPixmap logo;
   static QList<QString> actions{"play", "pause", "stop", "rec", "wait","config"};
+  // the images are in the images folder and they are named as the action.
   if(actions.contains(action))
     logo.load(QString(":/images/%1.png").arg(action));
+  //set image and message in the GUI
 	ui->label->setPixmap(logo);
 	ui->message->setText(msg);
 }

@@ -4,30 +4,27 @@
 
 /** 
  * Publisher, to regulate the tilt angle of the Kinect
-*/
+ */
 ros::Publisher rec_pub;
 
 /** 
  * Message to publish
-*/
+ */
 std_msgs::Float64 msg;
 
 /** Callback of the move_kinect service
- * @param[in]  req  Request Message
-	* @param[in]  req.angle Desired orientation angle of the Kinect
- * @param[out]  res    Response of the service
-	* @param[out]  res.result check if the operation is completed successfully
- */
+  * @param[in] req request message
+	* @param[in] req.angle desired orientation angle of the Kinect
+  * @param[out] res response of the service
+	* @param[out] res.result check if the operation is completed successfully
+  */
 bool move(kinect_setup::MoveKinect::Request  &req,
-         kinect_setup::MoveKinect::Response &res)
-{
+         kinect_setup::MoveKinect::Response &res){
 	// Saturate angle if it exceeds boudaries
-	if(req.angle > 30)
-	{
+	if(req.angle > 30){
 		req.angle = 30;
 	}
-	if(req.angle < -30)
-	{
+	if(req.angle < -30){
 		req.angle = -30;
 	}
 	
@@ -43,9 +40,8 @@ bool move(kinect_setup::MoveKinect::Request  &req,
  * Main:
  * Initialization of the service kinect_move_server and the publisher
  */
-main(int argc, char** argv)
-{
-    ros::init(argc, argv, "kinect_move_server");
+int main(int argc, char** argv) {
+  ros::init(argc, argv, "kinect_move_server");
 	ros::NodeHandle n;
 	
 	// Initialize Publisher
@@ -53,8 +49,6 @@ main(int argc, char** argv)
 	
 	// Advertise Service
 	ros::ServiceServer service = n.advertiseService("move_kinect", move);
-
-    ros::spin();
-
-    return 0;
+  ros::spin();
+  return 0;
 }

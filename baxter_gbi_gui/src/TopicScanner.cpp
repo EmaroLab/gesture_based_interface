@@ -17,12 +17,12 @@ void TopicScanner::operator()(){
     if (QString::fromStdString(ti.datatype) == datatype){
       QString name = QString::fromStdString(ti.name);
       auto match = regex.match(name);
-      if (match.hasMatch()){
+      if(match.hasMatch()){
         ++n_topics;
         auto topic = match.captured(1);
         auto subtopic = match.captured(2);
         auto iterator = topics.find(topic);
-        if (iterator != topics.end()){
+        if(iterator != topics.end()){
             iterator.value().insert(std::upper_bound(iterator.value().begin(),
                                                      iterator.value().end(),
                                                      subtopic),

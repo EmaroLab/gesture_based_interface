@@ -141,7 +141,7 @@ bool set_filter_param(kinect_pcl_tools::SetFilterParam::Request  &req,
 	res.result = true;
 	return true;
 }
-/**@brief Class to filter the Point Cloud
+/** @brief Class to filter the Point Cloud
  * 
  * The class has the aim of filtering the Point Cloud obtained by the background segmentation and published on /camera/pcl_background_segmentation.
  * It uses different filters:
