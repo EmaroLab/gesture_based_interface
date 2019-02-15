@@ -1,6 +1,6 @@
 [submodule "baxter"]
 	path = baxter
-	url = https://github.com/RethinkRobotics/baxter.git
+	url = https://github.com/EmaroLab/baxter.git
 [submodule "baxter_simulator"]
 	path = baxter_simulator
 	url = https://github.com/EmaroLab/baxter_simulator.git
