@@ -8,7 +8,8 @@ git clone https://github.com/EmaroLab/gesture_based_interface.git src
 catkin_make
 . devel/setup.bash
 cd src
-git status
+ln -s baxter/baxter.sh ../baxter.sh
+. prerequisites.sh
 ```
 
 ## How to run the simulator
