@@ -1,4 +1,0 @@
-string filename
-uint16 record_rate
----
-uint8 isError

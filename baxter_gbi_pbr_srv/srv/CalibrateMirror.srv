@@ -1,5 +1,0 @@
-string limb
-geometry_msgs/Point position
-geometry_msgs/Quaternion quaternion
----
-uint8 isError

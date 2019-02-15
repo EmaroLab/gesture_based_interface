@@ -1,4 +1,0 @@
-string old_filename
-string new_filename
----
-uint8 isError
