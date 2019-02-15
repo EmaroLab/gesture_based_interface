@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Mapping</class>
+ <widget class="QWidget" name="Mapping">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1024</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>16777215</width>
+    <height>16777215</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QComboBox {
+    border: 2px solid #FF756E;
+    border-radius: 10px;
+	font: 17pt Comic Sans MS;
+	height:58px;
+    selection-background-color: #FF756E;
+    padding-top: 2px;    
+    padding-bottom: 2px; 
+    padding-left: 4px;
+    padding-right: 4px;
+	margin:0;
+}
+
+QComboBox:disabled {
+    background-color: #FFFEFE;
+    color: #787878;
+}
+
+QComboBox:hover{
+    background-color:#FF756E;
+}
+
+QComboBox:on {
+    selection-background-color: #FF756E;
+}
+
+QComboBox QAbstractItemView {
+    background-color: #FFFEFE;
+    border-radius: 3px;
+    border: 2px solid #FF483E;
+    selection-color: black;
+    selection-background-color: #FF756E;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 20px;
+    border-left-width: 0px;
+    border-left-color: #FF756E;
+    border-left-style: solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+QComboBox::down-arrow {
+    image: url(:/images/arrow.png);
+}
+</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <widget class="QComboBox" name="topic"/>
+   </item>
+   <item>
+    <widget class="QComboBox" name="subtopic"/>
+   </item>
+   <item>
+    <widget class="QPushButton" name="deleteMapping">
+     <property name="styleSheet">
+      <string notr="true">#deleteMapping{
+	background-color:#FF756E;
+}
+
+#deleteMapping:hover{
+	background-color:#FF483E;
+}</string>
+     </property>
+     <property name="text">
+      <string>Delete</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

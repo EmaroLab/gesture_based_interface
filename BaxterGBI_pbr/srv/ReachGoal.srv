@@ -1,5 +1,0 @@
-string limb
-float64[] position
-float64[] quaternion
----
-uint8 isError

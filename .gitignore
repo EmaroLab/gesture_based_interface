@@ -1,2 +1,13 @@
 /CMakeLists.txt
 *.baxter
+*.pyc
+.idea
+*.user
+*.files
+*.includes
+*.config
+*.creator
+*.autosave
+/html
+/latex
+*.pcd
