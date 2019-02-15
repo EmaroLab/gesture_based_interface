@@ -5,6 +5,7 @@
  *  is the one containing the current state of the Baxter.
  *
  *  @author Lucrezia Grassi
+ *  @author Patrick Roncagliolo
  */
  
 #ifndef ACTIONPANEL_H
@@ -26,18 +27,20 @@ class ActionPanel : public QWidget
 
 public:
   /** @brief class constructor
-   *  @param[in] parent widget
+   *  @param parent parent widget
    */
   explicit ActionPanel(QWidget* parent = nullptr);
+  
   /** @brief function which updates the GUI session according to the parameters
-   *  received
+   *  received.
    * 
-   *  @param[in] action current state of the robot. 
+   *  @param action current state of the robot. 
    *  According to this parameter the GUI image will be updated.
-   *  @param[in] msg message associated with the current state shown 
+   *  @param msg message associated with the current state shown 
    *  the image.
    */
   void update(QString action, QString msg);
+  
   /** @brief class destructor
    */
 	~ActionPanel();

@@ -5,6 +5,7 @@
  *  is the one used to scan and manage inputs.
  *
  *  @author Lucrezia Grassi
+ *  @author Patrick Roncagliolo
  */
  
 #ifndef CONFIGPANEL_H
@@ -25,38 +26,40 @@ namespace Ui {
 class ConfigPanel;
 }
 
-/** @brief ConfigPanel class which contains the main methods and variables to
- *  control the configuration panel
+/** @brief ConfigPanel class which contains the main methods and 
+ *  variables to control the configuration panel.
  */
 class ConfigPanel : public QWidget
 {
 	Q_OBJECT
 
 public:
-/** @brief constructor
- *  @param[in] parent widget
- */
+  /** @brief constructor
+   * 
+   *  @param[in] parent parent widget
+   */
 	explicit ConfigPanel(QWidget* parent = nullptr);
-/** @brief destructor
- */
+	
+  /** @brief destructor
+   */
 	~ConfigPanel();
 
 private:
 	Ui::ConfigPanel* ui; /**< pointer to the ConfigPanel object */
 	TabContent *tabs[6]; /**< array containing the pointers to the tabs (one for each input)*/
-	QStandardItemModel* model; /**<generic model for storing custom data */
-	QVector<bool> isFilled; /**<vector used to check if there are no empty tabs */
-  int n_topics = 0; /**<number of topics inside a tab */
+	QStandardItemModel* model; /**< generic model for storing custom data */
+	QVector<bool> isFilled; /**< vector used to check if there are no empty tabs */
+  int n_topics = 0; /**< number of topics inside a tab */
   TopicScanner scanner; /**< object of type TopicScanner */
   FsmInputConfigurator fsmInputConfigurator; /**< instance of the class FsmInputConfigurator */
 
 private slots:
-	/** @brief function which performs a scan of the topics
+	/** @brief function which performs a scan of the topics.
 	 * 
-	 * This function clears the content of each tab, disables the 
-	 * Add Mapping button, clears the model and performs the scan by using 
-	 * the scanner object. Then it fills the model with the topics found
-	 * and enables the Add Mapping button if there are at least 6 inputs.
+	 *  This function clears the content of each tab, disables the 
+	 *  Add Mapping button, clears the model and performs the scan by using 
+	 *  the scanner object. Then it fills the model with the topics found
+	 *  and enables the Add Mapping button if there are at least 6 inputs.
 	 * 
 	 */
 	void scan(); 
@@ -65,6 +68,7 @@ private slots:
    * 
    * This function checks if there are no empty tabs.
    * If this requirement is satisfied, the Load Button is enabled.
+   * 
    * @param[in] tab tab on which the check is performed
    * @param[in] count number of mappings in the tab 
    * 
@@ -90,12 +94,15 @@ private slots:
 	void addMappingToActiveTab();
 
 signals:
-  /** @brief signal sent when the scan is terminated */
+  /** @brief signal sent when the scan is terminated 
+   */
 	void scan_terminated();
 	
 	/** @brief signal sent when there are topics available
+	 * 
 	 *  @param[in] available bool which indicates the presence 
-	 *  of topics available */
+	 *  of topics available 
+	 */
 	void topicsAvailable(bool available);
 };
 

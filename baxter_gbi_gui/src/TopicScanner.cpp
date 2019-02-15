@@ -26,7 +26,7 @@ void TopicScanner::operator()(){
             iterator.value().insert(std::upper_bound(iterator.value().begin(),
                                                      iterator.value().end(),
                                                      subtopic),
-                                            subtopic);
+                                    subtopic);
         } else {
             topics.insert(topic, QVector<QString>{subtopic});
         }
