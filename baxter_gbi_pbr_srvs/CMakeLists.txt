@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(BaxterGBI_pbr_srv)
+project(baxter_gbi_pbr_srvs)
 
 find_package(catkin
   REQUIRED
   COMPONENTS
   geometry_msgs
   nav_msgs
-  BaxterGBI_pbr_msg
+  baxter_gbi_pbr_msgs
 )
 
 
@@ -31,12 +31,12 @@ generate_messages(
    std_msgs
    geometry_msgs
    nav_msgs
-   BaxterGBI_pbr_msg
+   baxter_gbi_pbr_msgs
  )
 
 catkin_package(
   CATKIN_DEPENDS
   nav_msgs
   geometry_msgs
-  BaxterGBI_pbr_msg
+  baxter_gbi_pbr_msgs
 )

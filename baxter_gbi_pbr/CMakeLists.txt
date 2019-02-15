@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(BaxterGBI_pbr)
+project(baxter_gbi_pbr)
 
 find_package(catkin
   REQUIRED
@@ -16,8 +16,8 @@ find_package(catkin
   baxter_core_msgs
   nav_msgs
   baxter_interface
-  BaxterGBI_pbr_srv
-  BaxterGBI_pbr_msg
+  baxter_gbi_pbr_srvs
+  baxter_gbi_pbr_msgs
 )
 
 catkin_python_setup()
@@ -43,8 +43,8 @@ catkin_package(
   nav_msgs
   geometry_msgs
   baxter_interface
-  BaxterGBI_pbr_srv
-  BaxterGBI_pbr_msg
+  baxter_gbi_pbr_srvs
+  baxter_gbi_pbr_msgs
 )
 
 install(

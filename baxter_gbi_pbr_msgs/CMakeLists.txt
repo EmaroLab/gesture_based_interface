@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(BaxterGBI_pbr_msg)
+project(baxter_gbi_pbr_msgs)
 
 find_package(catkin
   REQUIRED

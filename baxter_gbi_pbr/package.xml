@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>BaxterGBI_pbr</name>
+  <name>baxter_gbi_pbr</name>
   <version>1.1.0</version>
   <description>
    Node for baxter pbr services
@@ -18,7 +18,9 @@
   <license>BSD</license>
   <url type="repository">https://github.com/EmaroLab/gesture_based_interface</url>
   
-  <author>Alessio De Luca, Giulia Zaino, Luna Gava</author>
+  <author>Alessio De Luca</author>
+  <author>Giulia Zaino</author>
+  <author>Luna Gava</author>
 
   <buildtool_depend>catkin</buildtool_depend>
 
@@ -35,8 +37,8 @@
   <build_depend>std_msgs</build_depend>
   <build_depend>nav_msgs</build_depend>
   <build_depend>geometry_msgs</build_depend>
-  <build_depend>BaxterGBI_pbr_srv</build_depend>
-  <build_depend>BaxterGBI_pbr_msg</build_depend>
+  <build_depend>baxter_gbi_pbr_srvs</build_depend>
+  <build_depend>baxter_gbi_pbr_msgs</build_depend>
 
   <run_depend>rospy</run_depend>
   <run_depend>xacro</run_depend>
@@ -51,7 +53,7 @@
   <run_depend>std_msgs</run_depend>
   <run_depend>nav_msgs</run_depend>
   <run_depend>geometry_msgs</run_depend>
-  <run_depend>BaxterGBI_pbr_srv</run_depend>
-  <run_depend>BaxterGBI_pbr_msg</run_depend>
+  <run_depend>baxter_gbi_pbr_srvs</run_depend>
+  <run_depend>baxter_gbi_pbr_msgs</run_depend>
 
 </package>
