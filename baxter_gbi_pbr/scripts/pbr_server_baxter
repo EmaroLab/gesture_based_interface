@@ -21,6 +21,8 @@ from baxter_interface import CHECK_VERSION
 from baxter_gbi_pbr_srv.srv import *
 from baxter_gbi_pbr import *
 
+from baxter_gbi_pbr.limb_mover import NewLimbMover
+
 ## Global Variables used to manage all the services.
 
 
@@ -156,30 +158,26 @@ def reach_goal_handler(req):
     
     if req.limb == "left" or req.limb == "right":
         arm = Limb(req.limb)
+        solver = NewLimbMover(limb)
+        
         #Define the final goal
         pos = []
         pos.append(req.position.x)
         pos.append(req.position.y)
         pos.append(req.position.z)
 
-        orient = []
+        if(req.quaternion is not None):
+            orient = []
 
-        orient.append(req.quaternion.x)
-        orient.append(req.quaternion.y)
-        orient.append(req.quaternion.z)
-        orient.append(req.quaternion.w)
-        
-        try:
-            # reformat the solution arrays into a dictionary
-            joint_solution = ik_tracking(req.limb,pos,orient)   #joint_solution is an object type ReturnValue
-            
-            if joint_solution.isError == 1:
-                rospy.logwarn("Cannot reach the goal")
-            else:
-                # set arm joint positions to solution
-                arm.move_to_joint_positions(joint_solution.limb_joints)
-        except rospy.ServiceException, e:
-            rospy.logerr("Error in Inverse Kinematic problem")
+            orient.append(req.quaternion.x)
+            orient.append(req.quaternion.y)
+            orient.append(req.quaternion.z)
+            orient.append(req.quaternion.w)
+        else:
+            if (solver.iksolve(pos) == True):
+                print("Solution is: "+str(solver.target_jts_dict))
+                arm.move_to_joint_positions(solver.target_jts_dict)
+    
 
 
 ## Service used to pause and resume a playback.

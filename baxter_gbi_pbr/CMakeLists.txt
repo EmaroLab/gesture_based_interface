@@ -18,6 +18,7 @@ find_package(catkin
   baxter_interface
   baxter_gbi_pbr_srv
   baxter_gbi_pbr_msg
+  baxter_pykdl
 )
 
 catkin_python_setup()
@@ -45,6 +46,7 @@ catkin_package(
   baxter_interface
   baxter_gbi_pbr_srv
   baxter_gbi_pbr_msg
+  baxter_pykdl
 )
 
 install(

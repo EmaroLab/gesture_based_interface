@@ -29,40 +29,50 @@ from std_msgs.msg import Header
 #
 # @param data.pose.pose.position: position of the the hand.
 # @param data.pose.pose.orientation: orientation of the the hand.
+global msg_to_skip, msgs_read
+msg_to_skip = 40
+msgs_read = 0
+
 def kinect_data_callback(data):
     
     global rate, pub
-    
-    msg = mirror_end_effector()
- 
-    pos = Point()
-    pos.x = data.pose.pose.position.x
-    pos.y = data.pose.pose.position.y
-    pos.z = data.pose.pose.position.z
-    
-    msg.position = pos
-    
-    orient = Quaternion()
-    orient.x = data.pose.pose.orientation.x
-    orient.y = data.pose.pose.orientation.y
-    orient.z = data.pose.pose.orientation.z
-    orient.w = data.pose.pose.orientation.w
-    
-    msg.quaternion = orient
-    
-    pub.publish(msg)
+    global msg_to_skip, msgs_read
+
+    if msgs_read % msg_to_skip == 0:
+        msgs_read += 1
+        msg = mirror_end_effector()
+     
+        #TODO -> Parameter to change
+        pos = Point()
+        pos.x = data.pose.pose.position.x*1.6
+        pos.y = data.pose.pose.position.y*1.3
+        pos.z = data.pose.pose.position.z*1.5
+        
+        msg.position = pos
+        
+        
+        #TODO -> Now is useless
+        orient = Quaternion()
+        orient.x = data.pose.pose.orientation.x
+        orient.y = data.pose.pose.orientation.y
+        orient.z = data.pose.pose.orientation.z
+        orient.w = data.pose.pose.orientation.w
+        
+        msg.quaternion = orient
+        
+        pub.publish(msg)
 
 
 ## Node which subscribes to the Kinect's topic (of the hand) and publish on "mirror_end_effector"
 def mirror_filter_data():
     
     rospy.loginfo("Initializing node... ")
-    rospy.init_node('mirror_filter_data')
+    rospy.init_node('mirror_filter_data_right')
     
     
     global pub
     
-    pub = rospy.Publisher('mirror_end_effector', mirror_end_effector, queue_size=4)    
+    pub = rospy.Publisher('mirror_end_effector_right', mirror_end_effector, queue_size=2)    
     rospy.Subscriber("/shadow/kinect_right_hand", Odometry, kinect_data_callback)
     
     rospy.spin()

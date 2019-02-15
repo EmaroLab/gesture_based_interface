@@ -45,10 +45,10 @@ def mirror_server():
     
     
     global file_name
-    file_name = open("rosbag_output.txt","w+")
+    file_name = open("hand_data.txt","w+")
     
         
-    rospy.Subscriber("odometry/baxter/kinect_right_hand", Odometry, mirror_callback)
+    rospy.Subscriber("shadow/kinect_right_hand", Odometry, mirror_callback)
     
     def clean_shutdown():
         rospy.loginfo("\nExiting example...")
