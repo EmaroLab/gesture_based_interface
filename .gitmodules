@@ -25,3 +25,6 @@
 [submodule "openni_tracker"]
 	path = openni_tracker
 	url = https://github.com/EmaroLab/openni_tracker.git
+[submodule "baxter_pykdl"]
+	path = baxter_pykdl
+	url = https://github.com/RethinkRobotics/baxter_pykdl.git
