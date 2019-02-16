@@ -50,9 +50,9 @@ def mirror_callback(data):
     global arm, limb
   
     pos = Point()
-    pos.x = -data.position.z
-    pos.y = data.position.x
-    pos.z = -data.position.y
+    pos.x = data.position.x
+    pos.y = data.position.y
+    pos.z = data.position.z
     
     global solver
         
