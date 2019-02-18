@@ -21,7 +21,7 @@
 	url = https://github.com/ros-drivers/openni_camera.git
 [submodule "kinect_aux"]
 	path = kinect_aux
-	url = https://github.com/muhrix/kinect_aux.git
+	url = https://github.com/EmaroLab/kinect_aux.git
 [submodule "openni_tracker"]
 	path = openni_tracker
 	url = https://github.com/EmaroLab/openni_tracker.git
