@@ -120,6 +120,9 @@ class FSMThread(threading.Thread):
                                     transitions={'user_missed':'WAIT_USER',
                                                  'done':'MAIN_MENU',
                                                 'preempted':'EXIT'})
+                                                
+            rospy.sleep(3)
+            
     def logdebug(self,msg):
         pass
    
