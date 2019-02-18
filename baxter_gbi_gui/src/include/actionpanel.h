@@ -34,9 +34,9 @@ public:
   /** @brief function which updates the GUI session according to the parameters
    *  received.
    * 
-   *  @param action current state of the robot. 
+   *  @param[in] action current state of the robot. 
    *  According to this parameter the GUI image will be updated.
-   *  @param msg message associated with the current state shown 
+   *  @param[in] msg message associated with the current state shown 
    *  the image.
    */
   void update(QString action, QString msg);

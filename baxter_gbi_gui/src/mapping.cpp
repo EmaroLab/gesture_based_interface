@@ -32,7 +32,6 @@ Mapping::Mapping(QStandardItemModel *model, QWidget *parent) :
   subtopicFilterIdx = getSelectableIdx(filter, topicFilterIdx);
   subtopic = model->itemFromIndex(filter->mapToSource(subtopicFilterIdx));
 
-
   // Mark topic/subtopic with the mapping id
   tagItem(topic, id);
   tagItem(subtopic, id);
@@ -41,7 +40,6 @@ Mapping::Mapping(QStandardItemModel *model, QWidget *parent) :
   ui->topic->setCurrentIndex(topicFilterIdx.row());
   ui->subtopic->setRootModelIndex(topicFilterIdx);
   ui->subtopic->setCurrentIndex(subtopicFilterIdx.row());
-
 
   // Mark subtopic (and topic, if no other subtopics are free) as not selectable
   markSelectable(subtopic, false);
