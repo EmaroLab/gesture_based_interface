@@ -1,13 +1,15 @@
 ## @package ConfigState
-#  The package defines the structure of the configuration state
+#  The package defines the structure of the 
+#  configuration state
 
 import rospy
 import smach
 
 ##  ConfigState
-#   outcomes: (invalid,success,'preempted')
+#   outcomes: (invalid,success,
+#  'preempted')
 class ConfigState(smach.State):
-    ## constructor
+    ## The constructor
     #  @param msg_type 
     #  @param callback
     def __init__(self, msg_type, callback):

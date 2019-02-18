@@ -1,5 +1,6 @@
 ## @package WaitUserState
-## This package describes the structure of the 'waiting for user' state
+## This package describes the structure
+#  of the state waiting for the user
 
 import rospy
 from BlockingState import BlockingState
@@ -10,7 +11,7 @@ import time
 class WaitUserState(BlockingState):
     ## the constructor
     #  @param outcomes outcomes of the state
-    #  @param trigger_event istance of FsmEvent class
+    #  @param trigger_event istance of the class FsmEvent
     def __init__(self, trigger_event):
         outcomes=['reconf_requested',
                   'user_detected']
@@ -21,14 +22,14 @@ class WaitUserState(BlockingState):
     ## method config
     #  @param userdata 
     #
-    #   callback of the trigger of a configuration event
+    #   call back of the trigger of a configuration event
     def config(self, userdata):
         return 'reconf_requested'
 
     ## method user_detected
     #  @param userdata 
     #
-    #   callback of the trigger for user presence
+    #   call back of the trigger for the presence of the user
     def user_detected(self, userdata):
         return 'user_detected'
 

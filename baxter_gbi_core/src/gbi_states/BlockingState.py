@@ -1,14 +1,17 @@
 ## @package BlockingState
-## This package describes the general blocking state 
+## This package describes the general blocking 
+#  state 
 
 import rospy
 import smach
-import BaxterGBI_core_msgs.msg as pub_status
+import baxter_gbi_core_msgs.msg as pub_status
+import time
+from threading import Timer
 
 ##  BlockingState
 #   inerithed form smach.State
 class BlockingState(smach.State):
-    ## constructor
+    ## the constructor
     def __init__(self, outcomes, trigger_event, output_keys=[], input_keys=[]):
         outcomes = outcomes + ['preempted']
         smach.State.__init__(self,
@@ -19,14 +22,17 @@ class BlockingState(smach.State):
         self._trigger_event = trigger_event
         ## type to be fill in each subclass
         self.type = None
+        ## timeout for the user presence
+        self.timeout=5
+        self.t = Timer(self.timeout, self.timeout_cb)
         ## publisher of topic fsm_status
         self.pub = rospy.Publisher('fsm_status', pub_status.status, queue_size=10)
         ## message status
         self.msg = pub_status.status()
 
     ## method action_1
-    #  @param userdata
-    # 
+    #  @param userdata 
+    #  
     #  call back of the trigger "action_1"
     def action_1(self, userdata):
         ## to override
@@ -143,7 +149,10 @@ class BlockingState(smach.State):
                 return ret
 
     ## method request_preempt 
-    #  called when the state is preempted 
+    #  method called when the state is preempted 
     def request_preempt(self):
         smach.State.request_preempt(self)
         self._trigger_event.signal('preempt')
+
+    def timeout_cb(self):
+        self._trigger_event.signal('user_left')

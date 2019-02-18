@@ -1,27 +1,29 @@
 ## @package MenuState
-## This package describes the general structure of the menu states 
+## This package describes the general structure
+#  of the menu states 
 
 import rospy
-from ExpiringState import ExpiringState
+from BlockingState import BlockingState
+import time
 
 ##  MenuState
-#   inherithed form BlockingState
-class MenuState(ExpiringState):
-    ## constructor
+#   inerithed form BlockingState
+class MenuState(BlockingState):
+    ## the constructor
     #  @param outcomes outcomes of the state
-    #  @param trigger_event istance of FsmEvent class
-    #  @param page_title name of the menu page of the GUI
+    #  @param trigger_event istance of the class FsmEvent
+    #  @param page_title name of the gui menu page
     #  @param output_keys set of data in the output state
     #  @param input_keys set of data in the input state
     #  @param fixed_options fixed options of the menu
     def __init__(self, outcomes, trigger_event, page_title, output_keys=[], input_keys=[], fixed_options=['back', 'play']):
-        ExpiringState.__init__(self,
-                               outcomes = ['selection'] + outcomes,
+        BlockingState.__init__(self,
+                               outcomes = ['user_missed', 'selection'] + outcomes,
                                trigger_event = trigger_event,
                                output_keys=['selection'] + output_keys,
                                input_keys = input_keys)
 
-        ## type of the topic
+        ## type for the topic
         self.type = 'menu'
         self.title = page_title
         self.variable_options = []
@@ -33,7 +35,7 @@ class MenuState(ExpiringState):
     #  @param userdata 
     #  
     #  override of BlockingState.action_1
-    #  action_1 assumed to be "go up"
+    #  action_1 assuming to go up in menu
     def action_1(self, userdata):
         max_selection = len(self.variable_options) + len(self.fixed_options)
         if self.selection < max_selection:
@@ -44,7 +46,7 @@ class MenuState(ExpiringState):
     #  @param userdata 
     #  
     #  override of BlockingState.action_2
-    #  action_2 assumed to be "go down"
+    #  action_2 assuming to go down in menu
     def action_2(self, userdata):
         if self.selection > 0:
             self.selection -= 1
@@ -54,7 +56,7 @@ class MenuState(ExpiringState):
     #  @param userdata 
     #  
     #  override of BlockingState.action_3
-    #  action_3 assumed to be "selection"
+    #  assuming that the action_3 is the selection
     def action_3(self, userdata):
         if self.selection < len(self.variable_options):
             item = self.variable_options[self.selection]
@@ -63,7 +65,23 @@ class MenuState(ExpiringState):
             item = self.fixed_options[self.selection - len(self.variable_options)]
             return self.on_fixed_selection(self.selection - len(self.variable_options), item, userdata)
 
+    ## method user_left
+    #  @param userdata 
+    #  
+    #  override of BlockingState.user_left
+    #  return in putcome user_missed
+    def user_left(self, userdata):
+        return 'user_missed'
 
+    ## method user_detected
+    #  @param userdata 
+    #  
+    #  override of BlockingState.action_1
+    #  reset the timeout_t
+    def user_detected(self, userdata):
+        self.t.cancel()
+        self.t.start()
+        return None
 
     ## method execute
     #  @param userdata 
@@ -71,12 +89,12 @@ class MenuState(ExpiringState):
     #  override of BlockingState.execute
     def execute(self, userdata):
         self.variable_options = self.update_variable_options(userdata)
-        return ExpiringState.execute(self, userdata)
+        return BlockingState.execute(self, userdata)
 
     ## method publish_state
     #  
     #  override of BlockingState.publish_state
-    #  publish message on the topic
+    #  publish the message on the topic
     def publish_state(self):
         self.msg.context_type = self.type
         self.msg.m_title = self.title
@@ -108,6 +126,6 @@ class MenuState(ExpiringState):
     #  @param index
     #  @param item
     #  
-    #  return the item
+    #  return item
     def on_fixed_selection(self, index, item, userdata):
         return item

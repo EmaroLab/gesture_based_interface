@@ -1,13 +1,14 @@
 ## @package RemoveMenuState
-## This package describes the structure of the play menu state 
+## This package describes the structure
+#  of the play menu state 
 
 from MenuState import MenuState
 
 ##  RemoveMenuState
-#   inherited form MenuState
+#   inerithed form MenuState
 class RemoveMenuState(MenuState):
-    ## constructor
-    #  @param trigger_event istance of FsmEvent class
+    ## the constructor
+    #  @param trigger_event istance of the class FsmEvent
     def __init__(self, trigger_event):
         outcomes = ['back']
 
@@ -27,9 +28,9 @@ class RemoveMenuState(MenuState):
         return ['demo record']  # TODO: ask PBR the list of files
 
     ## method update_variable_options
+    #  @param userdata 
     #  @param index
     #  @param item
-    #  @param userdata 
     #  
     #  override of MenuState.on_variable_selection
     def on_variable_selection(self, index, item, userdata):
