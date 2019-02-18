@@ -5,8 +5,6 @@ from FsmEvent import *
 
 from BlockingState import *
 
-from ExpiringState import *
-
 from MenuState import *
 from ActionState import *
 
@@ -26,3 +24,7 @@ from PlayState import *
 from RecordState import *
 from MacroState import *
 from SequenceState import *
+from PlayPause import *
+from RecordPause import *
+from SequencePause import *
+from MacroPause import *

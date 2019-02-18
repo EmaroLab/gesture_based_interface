@@ -13,5 +13,6 @@
   <exec_depend>message_runtime</exec_depend>
 
   <export>
+    <!-- Other tools can request additional information be placed here -->
   </export>
 </package>

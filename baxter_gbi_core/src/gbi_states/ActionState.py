@@ -3,12 +3,12 @@
 #  for all the action states
 
 import rospy
-from ExpiringState import ExpiringState
+from BlockingState import BlockingState
 import time
 
 ##  ActionState
-#   inerithed form BlockingState 
-class ActionState(ExpiringState):
+#   
+class ActionState(BlockingState):
     ## the constructor
     # @param outcomes possible outcomes of the state
     # @param trigger_event object of the class FsmEvent
@@ -16,8 +16,8 @@ class ActionState(ExpiringState):
     # @param output_keys set of the data in output
     # @param input_keys set of the data in input
     def __init__(self, outcomes, trigger_event, action, output_keys=[], input_keys=[]):
-        ExpiringState.__init__(self,
-                               outcomes = ['done'] + outcomes,
+        BlockingState.__init__(self,
+                               outcomes = ['done', 'user_missed', 'preempted'] + outcomes,
                                trigger_event = trigger_event,
                                output_keys= output_keys,
                                input_keys=input_keys)
@@ -26,6 +26,20 @@ class ActionState(ExpiringState):
         ## attribute of type of action
         self.action = action
         ## attribute for the timeout
+
+    ## method user_left
+    #  overide of BlockingState.user_left
+    #  @param userdata data in input to the state
+    def user_left(self, userdata):
+        return 'user_missed'
+
+    ## method user_dected
+    #  overide of BlockingState.user_detected
+    #  @param userdata data in input to the state
+    def user_detected(self, userdata):
+        self.t.cancel()
+        self.t.start()
+        return None
 
     ## method publish_state
     #  overide of BlockingState.publish_state

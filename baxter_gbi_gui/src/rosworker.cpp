@@ -9,6 +9,7 @@
 
 Worker::Worker(QWidget* parent){
     qRegisterMetaType<QVector<QString>>();
+    (void) parent;
 }
 
 Worker::~Worker(){

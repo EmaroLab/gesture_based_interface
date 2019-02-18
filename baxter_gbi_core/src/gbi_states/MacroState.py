@@ -9,8 +9,11 @@ class MacroState(ActionState):
         input_keys = ['filename']
 
         ActionState.__init__(self,
-                             outcomes=[],
+                             outcomes=['pause'],
                              trigger_event=trigger_event,
                              action='Record mode',
                              output_keys=[],
                              input_keys=input_keys)
+
+    def action_6(self,userdata):
+        return 'pause'

@@ -4,13 +4,13 @@
   <version>0.0.0</version>
   <description>The BaxterGBI_gui package</description>
 
-  <maintainer email="roncapat@gmail.com">Patrick Roncagliolo</maintainer>
   <maintainer email="lucre.grassi@gmail.com">Lucrezia Grassi</maintainer>
+  <maintainer email="roncapat@gmail.com">Patrick Roncagliolo</maintainer>
 
   <license>GPLv3</license>
 
-  <author email="roncapat@gmail.com">Patrick Roncagliolo</author>
   <author email="lucre.grassi@gmail.com">Lucrezia Grassi</author>
+  <author email="roncapat@gmail.com">Patrick Roncagliolo</author>
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>roscpp</build_depend>
@@ -27,5 +27,6 @@
   <exec_depend>sensor_msgs</exec_depend>
 
   <export>
+     <!-- Other tools can request additional information be placed here -->
   </export>
 </package>

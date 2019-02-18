@@ -1,11 +1,11 @@
 <!DOCTYPE RCC><RCC version="1.0">
-    <qresource>
-        <file>images/play.png</file>
-        <file>images/pause.png</file>
-        <file>images/stop.png</file>
-        <file>images/rec.png</file>
-        <file>images/wait.png</file>
-        <file>images/config.png</file>
- 	<file>images/arrow.png</file>
-    </qresource>
+  <qresource>
+    <file>images/play.png</file>
+    <file>images/pause.png</file>
+    <file>images/stop.png</file>
+    <file>images/rec.png</file>
+    <file>images/wait.png</file>
+    <file>images/config.png</file>
+    <file>images/arrow.png</file>
+  </qresource>
 </RCC>

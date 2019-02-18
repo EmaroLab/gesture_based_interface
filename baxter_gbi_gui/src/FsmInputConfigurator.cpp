@@ -7,8 +7,8 @@ FsmInputConfigurator::FsmInputConfigurator(QString prefix, QString suffix)
 : FsmInputConfigurator(prefix+"%1"+suffix){}
 
 FsmInputConfigurator::FsmInputConfigurator(QString mask)
-: mask(mask)
-, fsmReconfigure("/fsm_config"){}
+: mask(mask),
+ fsmReconfigure("/fsm_config"){}
 
 void FsmInputConfigurator::operator()(int key, QVector<QPair<QString, QString>> topics) const {
     QVector<QString> serializedTopics;

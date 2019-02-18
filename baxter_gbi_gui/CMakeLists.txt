@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.1)
 project(baxter_gbi_gui)
 
 set (CMAKE_CXX_STANDARD 17)
-
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
