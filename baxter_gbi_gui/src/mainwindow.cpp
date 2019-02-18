@@ -56,21 +56,21 @@ void MainWindow::showConfig(){
   display(pixmap);
 }
 
-void MainWindow::showMenu(QString &title,
-                          QVector<QString> &options,
-                          QVector<QString> &fixed_options,
-                          int8_t selection){
+void MainWindow::showMenu(QString title,
+                          QVector<QString> options,
+                          QVector<QString> fixed_options,
+                          char selection){
 	menu_page.update(title, options, fixed_options, selection);
 	switchPage(&menu_page);
 	auto pixmap = menu_page.grab();
-  display(pixmap);
+    display(pixmap);
 }
 
 void MainWindow::showAction(QString action, QString msg){
 	action_page.update(action, msg);
 	switchPage(&action_page);
 	auto pixmap = action_page.grab();
-  display(pixmap);
+    display(pixmap);
 }
 
 void MainWindow::switchPage(QWidget *target_page){
@@ -93,17 +93,19 @@ void MainWindow::closeEvent(QCloseEvent *event){
 }
 
 void MainWindow::__setConfigMode(){
-	showConfig();
+    showConfig();
 }
 
 void MainWindow::__setActionMode(){
-	QVector<QString> a{"Test 1", "Test 2"};
-	QString t("title");
-	showMenu(t, a, a, 0);
+    switchPage(&action_page);
+    auto pixmap = action_page.grab();
+    display(pixmap);
 }
 
 void MainWindow::__setMenuMode(){
-	showAction("play", "Example text");
+    switchPage(&menu_page);
+    auto pixmap = menu_page.grab();
+    display(pixmap);
 }
 
 void MainWindow::keyReleaseEvent(QKeyEvent *event){

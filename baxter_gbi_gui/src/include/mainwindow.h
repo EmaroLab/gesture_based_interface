@@ -45,10 +45,10 @@ private:
 
 private slots:
 	void showConfig();
-  void showMenu(QString &title,
-                  QVector<QString> &options,
-                  QVector<QString> &fixed_options,
-                  int8_t selection);
+  void showMenu(QString title,
+                  QVector<QString> options,
+                  QVector<QString> fixed_options,
+                  char selection);
   void showAction(QString action, 
                     QString msg);
   void switchPage(QWidget *target_page);

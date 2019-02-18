@@ -28,6 +28,7 @@ class ExpiringState(BlockingState):
     #  @param userdata data in input to the state
     def user_detected(self, userdata):
         self.t.cancel()
+        self.t = Timer(self.timeout, self.timeout_cb)
         self.t.start()
         return None
 
