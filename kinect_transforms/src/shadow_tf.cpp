@@ -17,6 +17,9 @@
 ros::Publisher pub;  /**< Publisher to /odometry/shadow/<passed frame> */
 /**
  * Main function: 
+ * - create a TF broadcaster in order to fix the transformation from the frame attached in correspondence of the computed center of mass and the joint frame, passed as parameter (right hand frame, useful for the shadow motion of the Baxter). 
+ * - publish odometry of the joint frame, passed as parameter, with respect to the center of mass.
+ * @param[in]  frame    string that identifies the joint frame
  * 
  */
 int main(int argc, char** argv)
@@ -34,7 +37,7 @@ int main(int argc, char** argv)
 	pub_path << "/shadow/" << frame;
 	
 	ros::NodeHandle nh;  
-	// Initilize Publishers for the odometry wrt Kinect
+	// Initilize Publishers for the odometry wrt center of mass
 	pub = nh.advertise<nav_msgs::Odometry>(pub_path.str(), 5);
     
 	tf::StampedTransform t_com_to_frame;
@@ -48,10 +51,10 @@ int main(int argc, char** argv)
 			listener.waitForTransform("position_com_frame", frame, ros::Time::now(), ros::Duration(10.0) );
 			listener.lookupTransform("position_com_frame", frame, ros::Time(0), t_com_to_frame);
 			
-			// Update tranformation from camera_link frame (kinect) to frame
+			// Update tranformation from position_com_frame (center of mass) to joint frame
 			transform = t_com_to_frame;
 			
-			// Inizialize odometry message (wrt Kinect)
+			// Inizialize odometry message (wrt position of the center of mass)
 			nav_msgs::Odometry odom_msg;
 			odom_msg.header.stamp = ros::Time::now();
 			odom_msg.header.frame_id = "position_com_frame";
