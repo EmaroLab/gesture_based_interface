@@ -1,0 +1,29 @@
+<launch>
+
+  <!-- Start the Baxter Server -->
+  <node name="pbr_server_baxter" pkg="baxter_gbi_pbr"
+  type="pbr_server_baxter.py" required="true" output="screen" cwd="node"/>
+
+  <!-- Start the Filesys Server -->
+  <node name="pbr_server_filesys" pkg="baxter_gbi_pbr"
+  type="pbr_server_filesys.py" required="true" output="screen" cwd="node"/>
+
+  <!-- Start the Joint Recorder Node -->
+  <node name="joint_recorder_node" pkg="baxter_gbi_pbr"
+  type="joint_recorder_node.py" required="true" output="screen"/>
+
+  <!-- Start the Mirror Server For Both Arms-->
+  <node name="mirror_server_left" pkg="baxter_gbi_pbr"
+  type="mirror_server_left.py" required="true" output="screen"/>
+
+  <node name="mirror_server_right" pkg="baxter_gbi_pbr"
+  type="mirror_server_right.py" required="true" output="screen"/>
+
+  <!-- Start the Mirror Filters -->
+  <node name="mirror_filter_data_left" pkg="baxter_gbi_pbr"
+  type="mirror_filter_data_left.py" required="true" output="screen"/>
+  
+  <node name="mirror_filter_data_right" pkg="baxter_gbi_pbr"
+  type="mirror_filter_data_right.py" required="true" output="screen"/>
+
+</launch>

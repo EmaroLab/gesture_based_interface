@@ -166,6 +166,7 @@ def reach_goal_handler(req):
         pos.append(req.position.y)
         pos.append(req.position.z)
 
+        #TODO -> add something to evaluate also the orientation ?? Or delete this part
         if(req.quaternion is not None):
             orient = []
 
