@@ -1,10 +1,15 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "ros/ros.h"
 
 #include <stdexcept>
 #include <QCloseEvent>
 #include <QPushButton>
 #include <QImage>
+#include <QKeyEvent>
+
+#define SHARED_KEY_PUB(x) QSharedPointer<KeystrokePublisher>(new KeystrokePublisher("/keyboard/keystroke_" #x))
+#define SHARED_KEY_PUB_MAPPING(x) {Qt::Key_##x, SHARED_KEY_PUB(x)}
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -12,6 +17,14 @@ MainWindow::MainWindow(QWidget *parent) :
 	rosThread(new QThread),
 	worker(new Worker),
 	current_page(nullptr),
+    map{
+        SHARED_KEY_PUB_MAPPING(1),
+        SHARED_KEY_PUB_MAPPING(2),
+        SHARED_KEY_PUB_MAPPING(3),
+        SHARED_KEY_PUB_MAPPING(4),
+        SHARED_KEY_PUB_MAPPING(5),
+        SHARED_KEY_PUB_MAPPING(6)
+    },
 	display(QString("/robot/xdisplay"))
 {
 	ui->setupUi(this);
@@ -26,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(worker, &Worker::actionFrame, this, &MainWindow::showAction);
 
 	rosThread->start();
-
+	
 	connect(ui->configModeButton, &QPushButton::clicked, this, &MainWindow::__setConfigMode);
 	connect(ui->actionModeButton, &QPushButton::clicked, this, &MainWindow::__setActionMode);
 	connect(ui->menuModeButton, &QPushButton::clicked, this, &MainWindow::__setMenuMode);
@@ -40,21 +53,20 @@ void MainWindow::showConfig(){
 	action_page.update("config", "Waiting for configuration");
 	switchPage(&conf_page);
 	auto pixmap = action_page.grab();
-    display(pixmap);
+  display(pixmap);
 }
 
-void MainWindow::showMenu(QString &title,
-                          QVector<QString> &options,
-                          QVector<QString> &fixed_options,
-                          int8_t selection){
+void MainWindow::showMenu(QString title,
+                          QVector<QString> options,
+                          QVector<QString> fixed_options,
+                          char selection){
 	menu_page.update(title, options, fixed_options, selection);
 	switchPage(&menu_page);
 	auto pixmap = menu_page.grab();
     display(pixmap);
 }
 
-void MainWindow::showAction(QString action, 
-                 QString msg){
+void MainWindow::showAction(QString action, QString msg){
 	action_page.update(action, msg);
 	switchPage(&action_page);
 	auto pixmap = action_page.grab();
@@ -62,7 +74,7 @@ void MainWindow::showAction(QString action,
 }
 
 void MainWindow::switchPage(QWidget *target_page){
-    if (current_page != target_page){
+	if (current_page != target_page){
 		if (current_page) {
 			ui->innerLayout->removeWidget(current_page);
 			current_page->setParent(nullptr);
@@ -81,15 +93,22 @@ void MainWindow::closeEvent(QCloseEvent *event){
 }
 
 void MainWindow::__setConfigMode(){
-	showConfig();
+    showConfig();
 }
 
 void MainWindow::__setActionMode(){
-    QVector<QString> a{"Test 1", "Test 2"};
-    QString t("title");
-    showMenu(t, a, a, 0);
+    switchPage(&action_page);
+    auto pixmap = action_page.grab();
+    display(pixmap);
 }
 
 void MainWindow::__setMenuMode(){
-    showAction("play", "Example text");
+    switchPage(&menu_page);
+    auto pixmap = menu_page.grab();
+    display(pixmap);
+}
+
+void MainWindow::keyReleaseEvent(QKeyEvent *event){
+		auto key = map.value(event->key(), nullptr);
+		if(key) (*key)();
 }

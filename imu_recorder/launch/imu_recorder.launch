@@ -1,0 +1,8 @@
+<launch>
+  <!--<arg name="recording_path"  default=""/>-->
+  <node pkg="imu_recorder" type="imu_recorder.py" name="imu_recorder_receiver" output="screen">
+    <!--<remap from="/imu_data" to="/imu_data_package"/>-->
+    <param name="file_name" type="string" value="Receiver" />
+    <param name="file_path" type="string" value="/home/patrick/records" />
+  </node>
+</launch>

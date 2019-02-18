@@ -25,10 +25,10 @@ public slots:
     
 signals:
     void configFrame();
-    void menuFrame(QString &title,
-                   QVector<QString> &options,
-                   QVector<QString> &fixed_options,
-                   int8_t selection);
+    void menuFrame(QString title,
+                   QVector<QString> options,
+                   QVector<QString> fixed_options,
+                   char selection);
     void actionFrame(QString action, 
                      QString msg);
 	void finished();

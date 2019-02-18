@@ -14,7 +14,6 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_python_setup()
 
 catkin_package(
-
   CATKIN_DEPENDS rospy smach std_msgs std_srvs baxter_gbi_input_msgs
 )
 

@@ -5,7 +5,6 @@ SelectionFilterModel::SelectionFilterModel(unsigned int id, QObject *parent)
   , id(id)
 {}
 
-
 bool SelectionFilterModel::filterAcceptsRow(int sourceRow,
                                             const QModelIndex &sourceParent) const
 {

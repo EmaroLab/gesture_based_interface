@@ -37,7 +37,7 @@ class MenuState(ExpiringState):
     #  action_1 assuming to go up in menu
     def action_1(self, userdata):
         max_selection = len(self.variable_options) + len(self.fixed_options)
-        if self.selection < max_selection:
+        if self.selection < max_selection - 1:
             self.selection += 1
         return None
 

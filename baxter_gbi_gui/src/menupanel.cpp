@@ -1,6 +1,6 @@
 #include "menupanel.h"
 #include "ui_menupanel.h"
-
+#include <QApplication>
 #include <QDebug>
 #include <QLabel>
 #include <QVector>
@@ -51,4 +51,6 @@ void MenuPanel::update(QString &title,
 	//manage selection
   optionsButtons.at(selection % optionsButtons.size())
                 ->setObjectName("selection");
+
+  qApp->processEvents();
 }

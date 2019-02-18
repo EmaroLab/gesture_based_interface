@@ -43,6 +43,7 @@ add_executable(gui
   src/BaxterDisplay.cpp
   src/TopicScanner.cpp
   src/FsmInputConfigurator.cpp
+  src/KeystrokePublisher.cpp
 
   src/include/general_utilities.h
   src/include/actionpanel.h
@@ -57,6 +58,7 @@ add_executable(gui
   src/include/BaxterDisplay.h
   src/include/TopicScanner.h
   src/include/FsmInputConfigurator.h
+  src/include/KeystrokePublisher.h
   
   src/ui/actionpanel.ui
   src/ui/configpanel.ui
