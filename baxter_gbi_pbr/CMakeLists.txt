@@ -25,13 +25,6 @@ find_package(catkin
 roslaunch_add_file_check(launch)
 catkin_python_setup()
  
-generate_messages(
-   DEPENDENCIES
-   std_msgs
-   geometry_msgs
-   nav_msgs
-)
-
 catkin_package(
   CATKIN_DEPENDS
   rospy

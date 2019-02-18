@@ -6,6 +6,7 @@ find_package(catkin
   COMPONENTS
   geometry_msgs
   nav_msgs
+  message_generation
 )
 
 add_message_files(
@@ -28,5 +29,6 @@ catkin_package(
   CATKIN_DEPENDS
   nav_msgs
   geometry_msgs
+  message_runtime
 )
 

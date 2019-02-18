@@ -7,6 +7,7 @@ find_package(catkin
   geometry_msgs
   nav_msgs
   baxter_gbi_pbr_msgs
+  message_generation
 )
 
 
@@ -39,4 +40,5 @@ catkin_package(
   nav_msgs
   geometry_msgs
   baxter_gbi_pbr_msgs
+  message_runtime
 )
