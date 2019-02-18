@@ -1,0 +1,9 @@
+<launch>
+    <node name="beacons_scanner" pkg="beacons_presence_scanner" type="beacons_scanner" output="screen">
+        <param name="beacons_number" value="3"/>
+        <param name="min_beacons" value="2"/>
+        <param name="beacon_color_1" value="pink"/>
+        <param name="beacon_color_2" value="yellow"/>
+        <param name="beacon_color_3" value="violet"/>
+    </node>
+</launch>	

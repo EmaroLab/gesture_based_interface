@@ -1,0 +1,19 @@
+<launch>
+	<node name="beacon_pink" pkg="beacons_transforms" type="beacon_broadcaster" output="screen">
+		<param name="x_beacon" value="1.1"/>
+		<param name="y_beacon" value="1.8"/>
+		<param name="z_beacon" value="1.2"/>
+		<param name="radius_presence" value="2.0"/>
+		<param name="beacon_color" value="pink"/>
+		<param name="beacon_hash" value="FF00FF"/>
+	</node>
+
+	<node name="beacon_blue" pkg="beacons_transforms" type="beacon_broadcaster" output="screen">
+		<param name="x_beacon" value="5.7"/>
+		<param name="y_beacon" value="5.4"/>
+		<param name="z_beacon" value="5.1"/>
+		<param name="radius_presence" value="4.0"/>
+		<param name="beacon_color" value="blue"/>
+		<param name="beacon_hash" value="0066FF"/>
+	</node>
+</launch>
