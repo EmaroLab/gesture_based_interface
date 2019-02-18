@@ -55,3 +55,6 @@
 [submodule "rosjava"]
 	path = rosjava
 	url = https://github.com/rosjava/rosjava
+[submodule "baxter_pykdl"]
+	path = baxter_pykdl
+	url = https://github.com/RethinkRobotics/baxter_pykdl.git
