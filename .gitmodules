@@ -25,3 +25,33 @@
 [submodule "openni_tracker"]
 	path = openni_tracker
 	url = https://github.com/EmaroLab/openni_tracker.git
+[submodule "android_core"]
+	path = android_core
+	url = https://github.com/roncapat/android_core
+[submodule "genjava"]
+	path = genjava
+	url = https://github.com/rosjava/genjava
+[submodule "rosjava_core"]
+	path = rosjava_core
+	url = https://github.com/rosjava/rosjava_core
+[submodule "rosjava_extras"]
+	path = rosjava_extras
+	url = https://github.com/rosjava/rosjava_extras
+[submodule "rosjava_bootstrap"]
+	path = rosjava_bootstrap
+	url = https://github.com/rosjava/rosjava_bootstrap
+[submodule "rosjava_build_tools"]
+	path = rosjava_build_tools
+	url = https://github.com/rosjava/rosjava_build_tools
+[submodule "rosjava_messages"]
+	path = rosjava_messages
+	url = https://github.com/rosjava/rosjava_messages
+[submodule "rosjava_test_msgs"]
+	path = rosjava_test_msgs
+	url = https://github.com/rosjava/rosjava_test_msgs
+[submodule "zeroconf_jmdns_suite"]
+	path = zeroconf_jmdns_suite
+	url = https://github.com/rosjava/zeroconf_jmdns_suite
+[submodule "rosjava"]
+	path = rosjava
+	url = https://github.com/rosjava/rosjava
