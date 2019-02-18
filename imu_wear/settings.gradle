@@ -19,5 +19,5 @@ include "android_core_components"
 include "android_acm_serial"
 include "android_wear_pub"
 
-project(':android_core_components').projectDir = new File("/home/patrick/wear_ws/src/android_core/android_core_components")
-project(':android_acm_serial').projectDir = new File("/home/patrick/wear_ws/src/android_core/android_acm_serial")
+project(':android_core_components').projectDir = new File("../android_core/android_core_components")
+project(':android_acm_serial').projectDir = new File("../android_core/android_acm_serial")
