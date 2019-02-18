@@ -18,11 +18,14 @@
 mkdir ~/sofar_ws
 cd ~/sofar_ws
 git clone https://github.com/EmaroLab/gesture_based_interface.git src
-catkin_make
-. devel/setup.bash
-cd src
-ln -s baxter/baxter.sh ../baxter.sh
+git submodule init
+git submodule update
 . prerequisites.sh
+cd ~/sofar_ws
+catkin_make -DCATKIN_WHITELIST_PACKAGES="rosjava_messages;genjava;rosjava_build_tools"
+catkin_make -DCATKIN_WHITELIST_PACKAGES=""
+. devel/setup.bash
+ln -s src/baxter/baxter.sh ./baxter.sh
 ```
 
 ## How to run the simulator
