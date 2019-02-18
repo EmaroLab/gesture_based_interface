@@ -2,8 +2,8 @@
 
 import sys
 import rospy
-from BaxterGBI_pbr_srv.srv import *
-from BaxterGBI_pbr_msg.msg import *
+from baxter_gbi_pbr_srvs.srv import *
+from baxter_gbi_pbr_msgs.msg import *
 
 
 import os

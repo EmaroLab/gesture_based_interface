@@ -9,7 +9,7 @@ import rospy
 import baxter_interface
 
 from baxter_interface import CHECK_VERSION
-from BaxterGBI_pbr.srv import *
+from baxter_gbi_pbr_srvs.srv import *
 from pbr_header import *
 
 

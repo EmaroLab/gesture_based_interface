@@ -15,10 +15,10 @@ import baxter_interface
 import os.path
 
 from os import listdir
-from BaxterGBI_pbr_msg.msg import *
+from baxter_gbi_pbr_msgs.msg import *
 from baxter_interface import CHECK_VERSION
-from BaxterGBI_pbr_srv.srv import *
-from BaxterGBI_pbr import pbr_header
+from baxter_gbi_pbr_srvs.srv import *
+from baxter_gbi_pbr import pbr_header
 
 ## Service used to provide the entire list of the recorded files.
 #   
@@ -31,9 +31,9 @@ def list_files_handler(req):
 
     resp = ListFilesResponse()
     
-    #rospy.loginfo(os.getcwd())
+    rospy.loginfo(os.getcwd())
     #TODO -> With roslaunch the current directory changes !!!
-    path = "src/BaxterGBI_pbr/RecordedFile"
+    path = "src/baxter_gbi_pbr/RecordedFile"
     files = os.listdir(path)
     
     
@@ -56,7 +56,7 @@ def list_files_handler(req):
 # @returns isError: 0 on success, 1 on error.
 def delete_file_handler(req):
     
-    file_path_string = "src/BaxterGBI_pbr/RecordedFile/"+req.filename
+    file_path_string = "src/baxter_gbi_pbr/RecordedFile/"+req.filename
         
     if os.path.isfile(file_path_string) :
         os.remove(file_path_string)
@@ -75,7 +75,7 @@ def delete_file_handler(req):
 #
 # @returns isError: 0 on success, 1 on error.
 def rename_file_handler(req):
-    path = "src/BaxterGBI_pbr/RecordedFile/"
+    path = "src/baxter_gbi_pbr/RecordedFile/"
     
     if os.path.isfile(path+req.old_filename) :
         os.rename(path+req.old_filename,path+req.new_filename)

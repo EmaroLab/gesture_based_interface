@@ -15,11 +15,14 @@ find_package(catkin
   dynamic_reconfigure
   baxter_core_msgs
   nav_msgs
+  roslaunch
   baxter_interface
   baxter_gbi_pbr_srvs
   baxter_gbi_pbr_msgs
+  baxter_pykdl
 )
 
+roslaunch_add_file_check(launch)
 catkin_python_setup()
  
 generate_messages(
@@ -45,6 +48,7 @@ catkin_package(
   baxter_interface
   baxter_gbi_pbr_srvs
   baxter_gbi_pbr_msgs
+  baxter_pykdl
 )
 
 install(
@@ -52,4 +56,5 @@ install(
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
   USE_SOURCE_PERMISSIONS
 )
+
 

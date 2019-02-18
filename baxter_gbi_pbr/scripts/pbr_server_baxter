@@ -15,11 +15,13 @@ from baxter_interface import Gripper
 import os.path
 
 from os import listdir
-from BaxterGBI_pbr_msg.msg import *
+from geometry_msgs.msg import Point, Quaternion
+from baxter_gbi_pbr_msgs.msg import *
 from baxter_interface import CHECK_VERSION
-from BaxterGBI_pbr_srv.srv import *
-from BaxterGBI_pbr import *
+from baxter_gbi_pbr_srvs.srv import *
+from baxter_gbi_pbr import *
 
+from baxter_gbi_pbr.limb_mover import NewLimbMover
 
 ## Global Variables used to manage all the services.
 
@@ -46,7 +48,7 @@ def playback_handler(req):
 
     
     #Check if the file exists
-    file_path_string = "src/BaxterGBI_pbr/RecordedFile/"+req.msg.filename
+    file_path_string = "src/baxter_gbi_pbr/RecordedFile/"+req.msg.filename
     rospy.loginfo(file_path_string)
     if os.path.isfile(file_path_string) :
         global pb, playbacking, file_playback
@@ -77,7 +79,7 @@ def record_start_handler(req):
         
         msg = modify_playback()
         msg.old_filename = file_playback
-        msg.new_filename = "src/BaxterGBI_pbr/RecordedFile/"+req.filename
+        msg.new_filename = "src/baxter_gbi_pbr/RecordedFile/"+req.filename
         msg.mode = "start"
         msg.line_number = line_executed
         msg.record_rate = req.record_rate
@@ -97,7 +99,7 @@ def record_start_handler(req):
          
         msg = record_status()
         
-        msg.filename = "src/BaxterGBI_pbr/RecordedFile/"+req.filename
+        msg.filename = "src/baxter_gbi_pbr/RecordedFile/"+req.filename
         msg.mode = "start"
         msg.record_rate = req.record_rate
         pub.publish(msg)
@@ -156,30 +158,27 @@ def reach_goal_handler(req):
     
     if req.limb == "left" or req.limb == "right":
         arm = Limb(req.limb)
+        solver = NewLimbMover(limb)
+        
         #Define the final goal
         pos = []
-        pos.append(req.position[0])
-        pos.append(req.position[1])
-        pos.append(req.position[2])
+        pos.append(req.position.x)
+        pos.append(req.position.y)
+        pos.append(req.position.z)
 
-        orient = []
+        #TODO -> add something to evaluate also the orientation ?? Or delete this part
+        if(req.quaternion is not None):
+            orient = []
 
-        orient.append(req.quaternion[0])
-        orient.append(req.quaternion[1])
-        orient.append(req.quaternion[2])
-        orient.append(req.quaternion[3])
-        
-        try:
-            # reformat the solution arrays into a dictionary
-            joint_solution = ik_tracking(req.limb,pos,orient)   #joint_solution is an object type ReturnValue
-            
-            if joint_solution.isError == 1:
-                rospy.logwarn("Cannot reach the goal")
-            else:
-                # set arm joint positions to solution
-                arm.move_to_joint_positions(joint_solution.limb_joints)
-        except rospy.ServiceException, e:
-            rospy.logerr("Error in Inverse Kinematic problem")
+            orient.append(req.quaternion.x)
+            orient.append(req.quaternion.y)
+            orient.append(req.quaternion.z)
+            orient.append(req.quaternion.w)
+        else:
+            if (solver.iksolve(pos) == True):
+                print("Solution is: "+str(solver.target_jts_dict))
+                arm.move_to_joint_positions(solver.target_jts_dict)
+    
 
 
 ## Service used to pause and resume a playback.
