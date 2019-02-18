@@ -6,11 +6,19 @@
 		<param name="z_kinect" value="0.3"/>
 	</node>
 
+	<node name="kinect_to_baxter_broadcaster" pkg="kinect_transforms" type="kinect_to_baxter_broadcaster" output="screen">
+		<param name="fixed_frame_baxter" value="world"/>
+		<param name="fixed_frame_kinect" value="world_frame"/>
+		<param name="x_frame_kinect" value="0.0"/>
+		<param name="y_frame_kinect" value="0.0"/>
+		<param name="z_frame_kinect" value="0.0"/>
+	</node>
+
 	<node name="kinect_aux_node" pkg ="kinect_aux" type="kinect_aux_node" output="screen" />
 	<node name="kinect_move_server" pkg="kinect_setup" type="kinect_move_server" output="screen"/>
 
 	<node name="pcl_record" pkg ="kinect_pcl_tools" type="pcl_record" output="screen" required="true" >
-		<param name="granularity" value="5"/>
+		<param name="granularity" value="1"/>
 	</node>
 
 </launch>

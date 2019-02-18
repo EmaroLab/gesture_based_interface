@@ -1,0 +1,4 @@
+---
+uint8 n_files
+string[] list_files
+uint8 isError

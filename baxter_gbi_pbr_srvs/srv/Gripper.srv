@@ -1,0 +1,4 @@
+string limb
+uint8 open
+---
+uint8 isError

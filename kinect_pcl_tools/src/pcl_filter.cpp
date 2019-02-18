@@ -7,8 +7,8 @@
 #include <pcl/filters/statistical_outlier_removal.h>
 #include <pcl/filters/passthrough.h>
 #include <pcl/filters/voxel_grid.h>
-#include "kinect_pcl_tools/SetFilter.h"
-#include "kinect_pcl_tools/SetFilterParam.h"
+#include "kinect_filter_srvs/SetFilter.h"
+#include "kinect_filter_srvs/SetFilterParam.h"
 /**
  * @file
  */
@@ -41,8 +41,8 @@ double sor_stddev = 1.0;
 /** Callback function of enable_service
  * for enabling filters.
  */
-bool set_filter(kinect_pcl_tools::SetFilter::Request  &req,
-         kinect_pcl_tools::SetFilter::Response &res)
+bool set_filter(kinect_filter_srvs::SetFilter::Request  &req,
+         kinect_filter_srvs::SetFilter::Response &res)
 {
 	std::string str_z = "z_filter";
 	std::string str_y = "y_filter";
@@ -76,9 +76,10 @@ bool set_filter(kinect_pcl_tools::SetFilter::Request  &req,
 /** Callback function of a service
  * to set filters parameters (leaf_size, range of XYZ filter, SOR filter parameters).
  */
-bool set_filter_param(kinect_pcl_tools::SetFilterParam::Request  &req,
-         kinect_pcl_tools::SetFilterParam::Response &res)
+bool set_filter_param(kinect_filter_srvs::SetFilterParam::Request  &req,
+         kinect_filter_srvs::SetFilterParam::Response &res)
 {
+	ROS_INFO("QUIII");
 	std::string str_leaf = "leaf_size";
 	std::string str_min_z = "min_z";
 	std::string str_max_z = "max_z";
@@ -189,6 +190,12 @@ public:
 	 */
     void filterCB(const boost::shared_ptr<const sensor_msgs::PointCloud2>& input)
     {
+		ROS_INFO("min_x : %lf", min_x);
+		ROS_INFO("max_x : %lf", max_x);
+		ROS_INFO("min_y : %lf", min_y);
+		ROS_INFO("max_y : %lf", max_y);
+		ROS_INFO("min_z : %lf", min_z);
+		ROS_INFO("max_z : %lf", max_z);
 		pcl::PCLPointCloud2::Ptr input_pcl (new pcl::PCLPointCloud2 ());
 		pcl_conversions::toPCL(*input, *input_pcl);
 		
@@ -314,7 +321,7 @@ protected:
 	* set_filter: to enable/disable filters
 	* set_filter_param: to set a parameter of one filter
  */
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     ros::init(argc, argv, "pcl_filter");
 	ros::NodeHandle n("~");

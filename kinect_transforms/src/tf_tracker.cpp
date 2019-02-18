@@ -1,7 +1,7 @@
 #include <ros/ros.h>
 #include "std_msgs/Float64.h"
 #include <tf/transform_broadcaster.h>
-#include <math.h>
+#include <cmath>
 #include <nav_msgs/Odometry.h>
 #include <tf/transform_listener.h>
 #include <geometry_msgs/Vector3.h>
@@ -24,7 +24,7 @@ ros::ServiceClient client_reset;  /**< Client to reset filters */
  * Main function: 
  * 
  */
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     ros::init(argc, argv, "tf_tracker", ros::init_options::AnonymousName);
 	ros::NodeHandle n("~");    
@@ -41,10 +41,10 @@ main(int argc, char** argv)
 	
 	ros::NodeHandle nh;  
 	// Initilize Publishers for the odometry wrt Kinect
-	kinect_pub = nh.advertise<nav_msgs::Odometry>(kinect_path.str(), 10);
+	kinect_pub = nh.advertise<nav_msgs::Odometry>(kinect_path.str(), 5);
 	
 	// Initilize Publishers for the odometry wrt Baxter
-	baxter_pub = nh.advertise<nav_msgs::Odometry>(baxter_path.str(), 10);
+	baxter_pub = nh.advertise<nav_msgs::Odometry>(baxter_path.str(), 5);
 	
     // Initialize Client to reset kinect
     client_reset = nh.serviceClient<std_srvs::Empty>("reset_kinect_filters");  
@@ -97,12 +97,12 @@ main(int argc, char** argv)
 				// Publish message
 				baxter_pub.publish(odom_msg);
 			}
-			catch (tf::TransformException ex){
+			catch (tf::TransformException &ex){
 				ROS_WARN("Transform unavailable %s", ex.what());
 			}
 		}
-		catch (tf::TransformException ex){
-			ROS_WARN("Transform unavailable %s", ex.what());
+		catch (tf::TransformException &ex){
+			//ROS_WARN("Transform unavailable %s", ex.what());
 			
 			if(tracking){
 				std_srvs::Empty srv;
