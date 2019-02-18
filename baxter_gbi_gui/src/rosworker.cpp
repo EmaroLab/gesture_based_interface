@@ -8,6 +8,7 @@
 #include "general_utilities.h"
 
 Worker::Worker(QWidget* parent){
+	(void) parent;
 }
 
 Worker::~Worker(){

@@ -2,27 +2,30 @@
  *  @brief Function prototypes and variables for the TriggerService
  * 
  *  @author Lucrezia Grassi
+ *  @author Patrick Roncagliolo
  */
 #include <string>
 #include "ros/ros.h"
 #include "std_srvs/Trigger.h"
 
 /** @brief TriggerService class 
- * This class contains the prototypes for the trigger service which 
- *  is used to call the service passed as parameter
+ *  
+ *  Contains the prototypes for the trigger service which is 
+ *  used to call the service passed as parameter.
  */
 class TriggerService {
 public:
-    /** @brief constructor
-     *  @param[in] srv_name name of the service
-     */
-    explicit TriggerService(std::string srv_name);
-    
-    /** @brief overloading of () operator
-     * 
-     *  Calls the service
-     */
-    void operator()();
+	/** @brief constructor
+	 *  @param[in] srv_name name of the service
+	 */
+	explicit TriggerService(std::string srv_name);
+
+	/** @brief overloading of () operator
+	 * 
+	 *  Calls the service
+	 */
+	void operator()();
+	
 private:
     ros::NodeHandle n; /**< ros node handle */
     ros::ServiceClient client; /**< client requesting the service */
