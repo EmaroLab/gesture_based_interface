@@ -1,9 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(baxter_gbi_pbr)
 
-find_package(catkin
-  REQUIRED
-  COMPONENTS
+find_package(catkin REQUIRED COMPONENTS
   rospy
   xacro
   actionlib
@@ -49,5 +47,3 @@ install(
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
   USE_SOURCE_PERMISSIONS
 )
-
-
