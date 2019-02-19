@@ -12,6 +12,7 @@ sudo pip install graphviz
 
 cd
 wget https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
+rm -rf android-sdk
 mkdir android-sdk
 unzip sdk-tools-linux-4333796.zip -d android-sdk
 rm sdk-tools-linux-4333796.zip
