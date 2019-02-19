@@ -22,9 +22,9 @@ rosdep update
 
 echo "
 source /opt/ros/melodic/setup.bash
-export ANDROID_HOME=$HOME/android-sdk
-export PATH=$PATH:$ANDROID_HOME/tools/bin
-export PATH=$PATH:$ANDROID_HOME/platform-tools
+export ANDROID_HOME=\$HOME/android-sdk
+export PATH=\$PATH:\$ANDROID_HOME/tools/bin
+export PATH=\$PATH:\$ANDROID_HOME/platform-tools
 export JAVA_OPTS='-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee'
 " >> ~/.bashrc
 source ~/.bashrc
