@@ -22,8 +22,7 @@ class BlockingState(smach.State):
         ## type to be fill in each subclass
         self.type = None
         ## publisher of topic fsm_status
-        self.pub = rospy.Publisher('fsm_status', pub_status.status, queue_size=1)
-        time.sleep(0.2)
+        self.pub = rospy.Publisher('fsm_status', pub_status.status, queue_size=1, latch=True)
         ## message status
         self.msg = pub_status.status()
 
@@ -107,9 +106,6 @@ class BlockingState(smach.State):
         # to override
         raise NotImplemented
 
-    def done_cb(self,userdata):
-        pass
-    
     ## method execute
     #  @param userdata 
     #  
@@ -144,8 +140,6 @@ class BlockingState(smach.State):
                 ret = self.user_left(userdata)
             elif event_id == 'config':
                 ret = self.config(userdata)
-            elif event_id == 'finished':
-                ret = self.done_cb(userdata)
 
             if ret:
                 return ret

@@ -19,7 +19,7 @@ class MacroMenuState(MenuState):
                            'Macro menu',
                            input_keys=['macro_idx', 'macro_filename'])
 
-        self.macro_slots = [None, None, None, None, None]
+        self.macro_slots = ["Empty", "Empty", "Empty", "Empty", "Empty"]
 
     ## method update_variable_options
     #  @param userdata 
@@ -27,9 +27,10 @@ class MacroMenuState(MenuState):
     #  override of MenuState.update_variable_options
     #  update the variable options of the menu
     def update_variable_options(self, userdata):
-        if userdata.macro_idx:  # TODO: check if it works
-            if userdata.macro_filename:
-                self.macro_slots[userdata.macro_idx] = userdata.macro_filename
+        try:
+            self.macro_slots[userdata.macro_idx] = userdata.macro_filename
+        except KeyError:
+            pass
         return self.macro_slots
 
 
