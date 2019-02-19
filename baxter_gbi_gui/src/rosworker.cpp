@@ -8,7 +8,8 @@
 #include "general_utilities.h"
 
 Worker::Worker(QWidget* parent){
-	(void) parent;
+    qRegisterMetaType<QVector<QString>>();
+    (void) parent;
 }
 
 Worker::~Worker(){
@@ -32,7 +33,7 @@ void Worker::statusCb(const boost::shared_ptr<baxter_gbi_core_msgs::status> msg)
 }
 
 void Worker::start(){
-	sub = n.subscribe("/fsm_status", 10, &Worker::statusCb, this);
+    sub = n.subscribe("/fsm_status", 1, &Worker::statusCb, this);
 	ros::spin();
 	emit finished();
 }

@@ -100,12 +100,12 @@ public:
 				// Publish the frame
 				br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), msg.header.frame_id , msg.child_frame_id));
 			}
-			catch (tf::TransformException ex){
+			catch (tf::TransformException &ex){
 				ROS_WARN("Base to camera transform unavailable %s", ex.what());
 			}
 		}
 
-		catch (tf::TransformException ex){
+		catch (tf::TransformException &ex){
 
 			ROS_WARN("Base to camera transform unavailable %s", ex.what());
 		}		
@@ -129,7 +129,7 @@ protected:
  * Main:
  * Initialization of the handler
  */
-main(int argc, char **argv)
+int main(int argc, char **argv)
 {
     ros::init(argc, argv, "position_estimation");
 

@@ -6,7 +6,6 @@ import rospy
 import smach
 import baxter_gbi_core_msgs.msg as pub_status
 import time
-from threading import Timer
 
 ##  BlockingState
 #   inerithed form smach.State
@@ -22,11 +21,9 @@ class BlockingState(smach.State):
         self._trigger_event = trigger_event
         ## type to be fill in each subclass
         self.type = None
-        ## timeout for the user presence
-        self.timeout=5
-        self.t = Timer(self.timeout, self.timeout_cb)
         ## publisher of topic fsm_status
-        self.pub = rospy.Publisher('fsm_status', pub_status.status, queue_size=10)
+        self.pub = rospy.Publisher('fsm_status', pub_status.status, queue_size=1)
+        time.sleep(0.2)
         ## message status
         self.msg = pub_status.status()
 
@@ -158,6 +155,3 @@ class BlockingState(smach.State):
     def request_preempt(self):
         smach.State.request_preempt(self)
         self._trigger_event.signal('preempt')
-
-    def timeout_cb(self):
-        self._trigger_event.signal('user_left')

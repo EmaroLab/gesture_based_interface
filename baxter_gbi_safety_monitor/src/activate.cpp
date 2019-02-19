@@ -3,7 +3,7 @@
 #include "std_msgs/Float64.h"
 #include <nav_msgs/Odometry.h>
 #include <tf/transform_datatypes.h>
-#include <math.h>
+#include <cmath>
 /**
  * @file
  */
@@ -29,7 +29,7 @@ class KinectActivate{
      */
     public:
     KinectActivate(){
-        beacon_sub = nh.subscribe("/beacon/presence", 10, &KinectActivate::beaconCB, this);
+        beacon_sub = nh.subscribe("/beacons/presence", 10, &KinectActivate::beaconCB, this);
         head_sub = nh.subscribe("/odometry/baxter/kinect_head", 10, &KinectActivate::headCB, this);
         beacon_sub = nh.subscribe("/odometry/baxter/center_of_mass", 10, &KinectActivate::comCB, this);
     }
@@ -94,17 +94,23 @@ protected:
     ros::Subscriber com_sub;  /**< Subscriber to /odometry/kinect/center_of_mass */ 
 };
 
-
+/**
+ *  Metod to reset flags
+ */
 void KinectActivate::reset(){ 
 	beacon_presence = false; 
 	attention = false; 
 	secure = true; 
 }
-
+/**
+ *  Metod to check security
+ */
 bool KinectActivate::isSecure(void){ 
 	return beacon_presence && attention;
 }
-
+/**
+ *  Metod to check attention
+ */
 bool KinectActivate::hasAttention(void){ 
 	return secure;
 }
@@ -115,7 +121,7 @@ bool KinectActivate::hasAttention(void){
  * - publish activate signal on /presence
  * - publish security signal on /secure
  */
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     ros::init(argc, argv, "kinect_activate");
 	ros::NodeHandle nh("~");
@@ -127,8 +133,8 @@ main(int argc, char** argv)
 	
 	ros::Rate r(10);
 	
-    ros::Publisher presence_pub;  /**< Publisher of presence signal on /presence */
-    ros::Publisher security_pub;  /**< Publisher of security signal on /secure */ 
+    ros::Publisher presence_pub;  
+    ros::Publisher security_pub;   
 
     ros::NodeHandle n;
 	presence_pub = n.advertise<std_msgs::Header>("/presence", 1);

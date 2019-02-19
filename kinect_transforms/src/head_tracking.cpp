@@ -1,6 +1,6 @@
 #include <ros/ros.h>
 #include <nav_msgs/Odometry.h>
-#include "kinect_setup/RegulateKinectByHead.h"
+#include "kinect_tracking_srvs/RegulateKinectByHead.h"
 /**
  * @file
  */
@@ -22,7 +22,7 @@ public:
      */
     HeadTracking()
     {
-   	client_move = nh.serviceClient<kinect_setup::RegulateKinectByHead>("regulate_kinect_by_head"); 
+		client_move = nh.serviceClient<kinect_tracking_srvs::RegulateKinectByHead>("regulate_kinect_by_head"); 
         head_sub = nh.subscribe("/odometry/kinect/kinect_head", 10, &HeadTracking::trackCB, this);
     }
     /** 
@@ -31,7 +31,7 @@ public:
      */
     void trackCB(const nav_msgs::Odometry &head_pos)
     {
-		kinect_setup::RegulateKinectByHead srv;
+		kinect_tracking_srvs::RegulateKinectByHead srv;
 		// Rotation Matrix from camera_link to camera_depth_optical_frame 
 		srv.request.x = -1 * head_pos.pose.pose.position.y;
 		srv.request.y = -1 * head_pos.pose.pose.position.z;
@@ -48,7 +48,7 @@ public:
  * Main:
  * Initialization of the handler
  */
-main(int argc, char **argv)
+int main(int argc, char **argv)
 {
     ros::init(argc, argv, "head_tracking");
 

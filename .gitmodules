@@ -1,9 +1,60 @@
+[submodule "baxter"]
+	path = _dependencies/baxter/baxter
+	url = https://github.com/EmaroLab/baxter.git
+[submodule "baxter_simulator"]
+	path = _dependencies/baxter/baxter_simulator
+	url = https://github.com/EmaroLab/baxter_simulator.git
+[submodule "baxter_interface"]
+	path = _dependencies/baxter/baxter_interface
+	url = https://github.com/RethinkRobotics/baxter_interface.git
+[submodule "baxter_tools"]
+	path = _dependencies/baxter/baxter_tools
+	url = https://github.com/RethinkRobotics/baxter_tools.git
+[submodule "baxter_common"]
+	path = _dependencies/baxter/baxter_common
+	url = https://github.com/RethinkRobotics/baxter_common.git
+[submodule "baxter_examples"]
+	path = _dependencies/baxter/baxter_examples
+	url = https://github.com/RethinkRobotics/baxter_examples.git
 [submodule "openni_camera"]
-	path = openni_camera
+	path = _dependencies/kinect/openni_camera
 	url = https://github.com/ros-drivers/openni_camera.git
 [submodule "kinect_aux"]
-	path = kinect_aux
-	url = https://github.com/muhrix/kinect_aux.git
+	path = _dependencies/kinect/kinect_aux
+	url = https://github.com/EmaroLab/kinect_aux.git
 [submodule "openni_tracker"]
-	path = openni_tracker
+	path = _dependencies/kinect/openni_tracker
 	url = https://github.com/EmaroLab/openni_tracker.git
+[submodule "android_core"]
+	path = _dependencies/android/android_core
+	url = https://github.com/roncapat/android_core
+[submodule "genjava"]
+	path = _dependencies/android/genjava
+	url = https://github.com/rosjava/genjava
+[submodule "rosjava_core"]
+	path = _dependencies/android/rosjava_core
+	url = https://github.com/rosjava/rosjava_core
+[submodule "rosjava_extras"]
+	path = _dependencies/android/rosjava_extras
+	url = https://github.com/rosjava/rosjava_extras
+[submodule "rosjava_bootstrap"]
+	path = _dependencies/android/rosjava_bootstrap
+	url = https://github.com/rosjava/rosjava_bootstrap
+[submodule "rosjava_build_tools"]
+	path = _dependencies/android/rosjava_build_tools
+	url = https://github.com/rosjava/rosjava_build_tools
+[submodule "rosjava_messages"]
+	path = _dependencies/android/rosjava_messages
+	url = https://github.com/rosjava/rosjava_messages
+[submodule "rosjava_test_msgs"]
+	path = _dependencies/android/rosjava_test_msgs
+	url = https://github.com/rosjava/rosjava_test_msgs
+[submodule "zeroconf_jmdns_suite"]
+	path = _dependencies/android/zeroconf_jmdns_suite
+	url = https://github.com/rosjava/zeroconf_jmdns_suite
+[submodule "rosjava"]
+	path = _dependencies/android/rosjava
+	url = https://github.com/rosjava/rosjava
+[submodule "baxter_pykdl"]
+	path = _dependencies/baxter/baxter_pykdl
+	url = https://github.com/RethinkRobotics/baxter_pykdl.git

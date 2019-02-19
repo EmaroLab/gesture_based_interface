@@ -69,19 +69,19 @@ private slots:
   /** @brief shows configuration panel
    */
 	void showConfig();
-	
-	/** @brief shows menu panel 
-	 * 
-	 *  @param[in] title menu title
-	 *  @param[in] options menu options in the scroll area
-	 *  @param[in] fixed_options fixed options in the bottom part of the menu
-	 *  @param[in] selection selected option of the menu
-	 */
-  void showMenu(QString &title,
-                  QVector<QString> &options,
-                  QVector<QString> &fixed_options,
-                  int8_t selection);
-                  
+
+  /** @brief shows menu panel 
+   * 
+   *  @param[in] title menu title
+   *  @param[in] options menu options in the scroll area
+   *  @param[in] fixed_options fixed options in the bottom part of the menu
+   *  @param[in] selection selected option of the menu
+   */
+  void showMenu(QString title,
+                  QVector<QString> options,
+                  QVector<QString> fixed_options,
+                  char selection);
+
   /** @brief shows action panel
    * 
    *  @param[in] action name of the action
@@ -89,7 +89,7 @@ private slots:
    */
   void showAction(QString action, 
                     QString msg);
-        
+
   /** @brief switches the GUI panel 
    * 
    *  @param[in] target_page page which will be shown

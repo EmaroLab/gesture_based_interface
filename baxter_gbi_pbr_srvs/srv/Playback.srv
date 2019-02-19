@@ -1,0 +1,3 @@
+baxter_gbi_pbr_msgs/playback_msg msg
+---
+uint8 isError

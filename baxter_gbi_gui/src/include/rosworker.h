@@ -57,10 +57,10 @@ signals:
 	 *  @param[in] fixed_options menu fixed options in the bottom area
 	 *  @param[in] selection selected element of the menu
 	 */
-	void menuFrame(QString &title,
-								 QVector<QString> &options,
-								 QVector<QString> &fixed_options,
-								 int8_t selection);
+	void menuFrame(QString title,
+		       QVector<QString> options,
+		       QVector<QString> fixed_options,
+		       char selection);
 	
 	/** @brief emitted when the field context_type of the message received
 	 *  is "action".
@@ -71,8 +71,8 @@ signals:
    *  the image.
 	 */
 	void actionFrame(QString action, 
-									 QString msg);
-									 
+			 QString msg);
+
 	/** @brief emitted after the message on the topic is read
 	 */
 	void finished();

@@ -1,6 +1,5 @@
 ## @package WaitConfigState
-## This package describes the structure
-#  of the state waiting for the configuration
+## This package describes the structure of the 'wait for configuration' state
 
 import rospy
 from BlockingState import BlockingState
@@ -8,18 +7,17 @@ from BlockingState import BlockingState
 ##  WaitConfigState
 #   inerithed form BlockingState
 class WaitConfigState(BlockingState):
-    ## the constructor
-    #  @param trigger_event istance of the class FsmEvent
+    ## constructor
+    #  @param trigger_event istance of FsmEvent class
     def __init__(self, trigger_event):
         outcomes=['config_available']
-
         BlockingState.__init__(self, outcomes, trigger_event)
         self.type = 'config_wait'
 
     ## method config
     #  @param userdata 
     #
-    #   call back of the trigger of a configuration event
+    #   callback of the trigger of a configuration event
     def config(self, userdata):
         return 'config_available'
 

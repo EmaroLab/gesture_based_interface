@@ -5,11 +5,11 @@
 #include <pcl_conversions/pcl_conversions.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <iostream>
-#include <math.h>
+#include <cmath>
 #include <Eigen/Geometry> 
 #include <unistd.h>
 #include <pwd.h>
-#include "kinect_setup/MoveKinect.h"
+#include "kinect_tracking_srvs/MoveKinect.h"
 /**
  * @file
  */
@@ -93,11 +93,11 @@ int main(int argc, char **argv)
 	spinner.start();
 		
 	ros::NodeHandle n;
-	ros::ServiceClient client_move = n.serviceClient<kinect_setup::MoveKinect>("move_kinect");
+	ros::ServiceClient client_move = n.serviceClient<kinect_tracking_srvs::MoveKinect>("move_kinect");
 	
 	// Move kinect to minimum angle
 	angle = -30.0;
-	kinect_setup::MoveKinect srv;
+	kinect_tracking_srvs::MoveKinect srv;
 	srv.request.angle = angle;
 	client_move.call(srv);
 	

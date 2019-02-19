@@ -1,6 +1,6 @@
 #include "actionpanel.h"
 #include "ui_actionpanel.h"
-
+#include <QApplication>
 #include <QDebug>
 #include <QLabel>
 #include <QPixmap>
@@ -29,4 +29,6 @@ void ActionPanel::update(QString action, QString msg){
   //set image and message in the GUI
 	ui->label->setPixmap(logo);
 	ui->message->setText(msg);
+
+  qApp->processEvents();
 }
