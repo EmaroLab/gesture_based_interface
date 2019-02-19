@@ -20,18 +20,21 @@ rm sdk-tools-linux-4333796.zip
 sudo rosdep init
 rosdep update
 
+sudo update-java-alternatives --set java-11-openjdk-amd64
+
 echo "
 source /opt/ros/melodic/setup.bash
-export ANDROID_HOME=$HOME/android-sdk
-export PATH=$PATH:$ANDROID_HOME/tools/bin
-export PATH=$PATH:$ANDROID_HOME/platform-tools
+export ROS_LANG_DISABLE=genlisp:gennodejs:geneus
+export ANDROID_HOME=\$HOME/android-sdk
+export PATH=\$PATH:\$ANDROID_HOME/tools/bin
+export PATH=\$PATH:\$ANDROID_HOME/platform-tools
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 export JAVA_OPTS='-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee'
 " >> ~/.bashrc
 source ~/.bashrc
 
 yes | sdkmanager --licenses
  
-
 sudo adduser $USER plugdev
 sudo usermod -a -G video $(whoami)
 

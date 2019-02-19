@@ -15,7 +15,7 @@ cd ~/sofar_ws
 # due to not yet accepted android sdk licenses
 . src/clean_build.sh
 # Accept all sdk licenses
-yes | sdkmanager --licences
+yes | sdkmanager --licenses
 # Complete first build
 . src/build.sh
 # Link baxter environment loader
