@@ -2,20 +2,14 @@
 <package format="2">
   <name>baxter_gbi_pbr_srvs</name>
   <version>1.1.0</version>
-  <description>
-   Node for baxter pbr services
-  </description>
+  <description>Node for baxter pbr services</description>
 
-  <maintainer email="alessio.deluca.iic96d@gmail.com">
-    Alessio De Luca
-  </maintainer>
-  <maintainer email="giuliazaino46@gmail.com">
-    Giulia Zaino
-  </maintainer>
-  <maintainer email="lunagava@me.com">
-    Luna Gava
-  </maintainer>
-  <license>BSD</license>
+  <maintainer email="alessio.deluca.iic96d@gmail.com">Alessio De Luca</maintainer>
+  <maintainer email="lunagava@me.com">Luna Gava</maintainer>
+  <maintainer email="giuliazaino46@gmail.com">Giulia Zaino</maintainer>
+
+  <license>GPLv3</license>
+
   <url type="repository">https://github.com/EmaroLab/gesture_based_interface</url>
   
   <author>Alessio De Luca, Giulia Zaino, Luna Gava</author>
