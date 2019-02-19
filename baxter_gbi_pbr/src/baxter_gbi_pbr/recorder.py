@@ -39,6 +39,7 @@ class JointRecorder(object):
         self._done = True
         
         #If we open in append, we have to add to the start time, the time of the last instance playbacked
+	self._start_time_displacement = 0
         if file_mode == "a":
             self._start_time_displacement = start_time_displacement
         
