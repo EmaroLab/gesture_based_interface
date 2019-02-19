@@ -25,9 +25,10 @@ buildscript {
 apply plugin: "catkin"
 
 allprojects {
-    group "org.ros.android_core"
+    group "com.github.emaro"
     version = project.catkin.pkg.version
 }
+
 
 configure(subprojects.findAll { it.name.startsWith("android_") }) {
     /*

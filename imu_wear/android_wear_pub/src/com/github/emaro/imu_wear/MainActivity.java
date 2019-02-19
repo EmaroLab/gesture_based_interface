@@ -1,19 +1,13 @@
-package org.ros.android.android_wear_pub;
+package com.github.emaro.imu_wear;
 
 import android.os.Bundle;
 import android.widget.TextView;;
-import org.ros.android.MessageCallable;
-import org.ros.android.RosActivity;
-import org.ros.android.view.RosTextView;
-import org.ros.node.NodeConfiguration;
-import org.ros.node.NodeMainExecutor;
+import com.github.emaro.imu_wear.R;
+
 import android.support.wearable.activity.WearableActivity;
-import java.net.URI;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 
 
 public class MainActivity extends WearableActivity {
