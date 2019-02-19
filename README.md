@@ -15,9 +15,11 @@
 
 ## Download instructions
 ```
+sudo apt install git
 mkdir ~/sofar_ws
 cd ~/sofar_ws
 git clone https://github.com/EmaroLab/gesture_based_interface.git src
+cd src
 git submodule init
 git submodule update
 . prerequisites.sh

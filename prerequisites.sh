@@ -6,15 +6,29 @@ sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C
 sudo apt update
 sudo apt -y upgrade
 
-sudo apt install -y ros-melodic-desktop-full freenect freeglut3* git-core cmake pkg-config build-essential libxmu-dev libxi-dev libudev* g++ python openjdk-11-jdk graphviz doxygen ros-melodic-rgbd-launch ros-melodic-openni-* ros-melodic-pcl-* ros-melodic-perception ros-melodic-perception-pcl ros-melodic-tf ros-melodic-roslib ros-melodic-orocos-kdl python-rosinstall python-rosinstall-generator python-wstool build-essential tlp ros-melodic-effort-controllers
+sudo apt install -y ros-melodic-desktop-full freenect freeglut3* git-core cmake pkg-config build-essential libxmu-dev libxi-dev libudev* g++ python openjdk-11-jdk graphviz doxygen ros-melodic-rgbd-launch ros-melodic-openni-* ros-melodic-pcl-* ros-melodic-perception ros-melodic-perception-pcl ros-melodic-tf ros-melodic-roslib ros-melodic-orocos-kdl python-rosinstall python-rosinstall-generator python-wstool build-essential tlp ros-melodic-effort-controllers qt4-default
 
 sudo pip install graphviz
+
+cd
+wget https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
+mkdir android-sdk
+unzip sdk-tools-linux-4333796.zip -d android-sdk
+rm sdk-tools-linux-4333796.zip
 
 sudo rosdep init
 rosdep update
 
-echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
+echo "
+source /opt/ros/melodic/setup.bash
+export ANDROID_HOME=$HOME/android-sdk
+export PATH=$PATH:$ANDROID_HOME/tools/bin
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+" >> ~/.bashrc
 source ~/.bashrc
+
+yes | sdkmanager --licenses
+ 
 
 sudo adduser $USER plugdev
 sudo usermod -a -G video $(whoami)
