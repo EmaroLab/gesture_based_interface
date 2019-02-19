@@ -1,14 +1,13 @@
 ## @package PlayMenuState
-## This package describes the structure
-#  of the play menu state 
+## This package describes the structure of the play menu state 
 
 from MenuState import MenuState
 
 ##  PlayMenuState
 #   inerithed form MenuState
 class PlayMenuState(MenuState):
-    ## the constructor
-    #  @param trigger_event istance of the class FsmEvent
+    ## constructor
+    #  @param trigger_event istance of FsmEvent class
     def __init__(self, trigger_event):
         outcomes = ['back',
                     'remove']

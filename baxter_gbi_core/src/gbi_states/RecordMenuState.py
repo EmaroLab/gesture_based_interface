@@ -1,14 +1,13 @@
 ## @package RecordMenuState
-## This package describes the structure
-#  of the record menu state 
+## This package describes the structure of the record menu state 
 
 from MenuState import MenuState
 
 ##  RecordMenuState
 #   inerithed form MenuState
 class RecordMenuState(MenuState):
-    ## the constructor
-    #  @param trigger_event istance of the class FsmEvent
+    ## constructor
+    #  @param trigger_event istance of FsmEvent class
     def __init__(self, trigger_event):
         outcomes = ['back',
                     'remove']

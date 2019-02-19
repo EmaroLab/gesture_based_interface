@@ -1,36 +1,32 @@
 ## @package MacroMenuState
-## This package describes the general structure
-#  of the macro menu state
+## This package describes the general structure of the macro menu state
+
 from MenuState import MenuState
 
 ##  MacroMenuState
 #   inerithed form BlockingState
 class MacroMenuState(MenuState):
-    ## the constructor
-    #  @param trigger_event istance of the class FsmEvent
+    ## constructor
+    #  @param trigger_event istance of FsmEvent class
     def __init__(self, trigger_event):
-
         outcomes = ['play',
                     'back']
-
         MenuState.__init__(self,
                            outcomes,
                            trigger_event,
                            'Macro menu',
                            input_keys=['macro_idx', 'macro_filename'])
-
-        self.macro_slots = ["Empty", "Empty", "Empty", "Empty", "Empty"]
+        self.macro_slots = [None, None, None, None, None]
 
     ## method update_variable_options
     #  @param userdata 
     #  
     #  override of MenuState.update_variable_options
-    #  update the variable options of the menu
+    #  updates the variable options of the menu
     def update_variable_options(self, userdata):
-        try:
-            self.macro_slots[userdata.macro_idx] = userdata.macro_filename
-        except KeyError:
-            pass
+        if userdata.macro_idx:  # TODO: check if it works
+            if userdata.macro_filename:
+                self.macro_slots[userdata.macro_idx] = userdata.macro_filename
         return self.macro_slots
 
 
@@ -40,7 +36,7 @@ class MacroMenuState(MenuState):
     #  @param item 
     #
     #  override of MenuState.update_variable_options
-    #  update the variable options of the menu
+    #  updates the variable options of the menu
     def on_variable_selection(self, index, item, userdata):
         userdata.selection = index
         return 'selection'
