@@ -110,6 +110,9 @@ class BlockingState(smach.State):
         # to override
         raise NotImplemented
 
+    def done_cb(self,userdata):
+        pass
+    
     ## method execute
     #  @param userdata 
     #  
@@ -144,6 +147,8 @@ class BlockingState(smach.State):
                 ret = self.user_left(userdata)
             elif event_id == 'config':
                 ret = self.config(userdata)
+            elif event_id == 'finished':
+                ret = self.done_cb(userdata)
 
             if ret:
                 return ret

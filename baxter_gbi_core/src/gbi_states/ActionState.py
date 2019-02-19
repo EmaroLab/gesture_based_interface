@@ -3,12 +3,12 @@
 #  for all the action states
 
 import rospy
-from BlockingState import BlockingState
+from ExpiringState import ExpiringState
 import time
 
 ##  ActionState
 #   
-class ActionState(BlockingState):
+class ActionState(ExpiringState):
     ## the constructor
     # @param outcomes possible outcomes of the state
     # @param trigger_event object of the class FsmEvent
@@ -32,6 +32,9 @@ class ActionState(BlockingState):
     #  @param userdata data in input to the state
     def user_left(self, userdata):
         return 'user_missed'
+
+    def done_cb(self,userdata):
+        return 'done'
 
     ## method user_dected
     #  overide of BlockingState.user_detected
