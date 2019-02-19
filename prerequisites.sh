@@ -6,9 +6,9 @@ sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C
 sudo apt update
 sudo apt -y upgrade
 
-sudo apt install -y ros-melodic-desktop-full freenect freeglut3* git-core cmake pkg-config build-essential libxmu-dev libxi-dev libudev* g++ python openjdk-11-jdk graphviz doxygen ros-melodic-rgbd-launch ros-melodic-openni-* ros-melodic-pcl-* ros-melodic-perception ros-melodic-perception-pcl ros-melodic-tf ros-melodic-roslib ros-melodic-orocos-kdl python-rosinstall python-rosinstall-generator python-wstool build-essential tlp ros-melodic-effort-controllers qt4-default
+sudo apt install -y ros-melodic-desktop-full freenect freeglut3* git-core cmake pkg-config build-essential libxmu-dev libxi-dev libudev* g++ python openjdk-11-jdk graphviz doxygen ros-melodic-rgbd-launch ros-melodic-openni-* ros-melodic-pcl-* ros-melodic-perception ros-melodic-perception-pcl ros-melodic-tf ros-melodic-roslib ros-melodic-orocos-kdl python-rosinstall python-rosinstall-generator python-wstool build-essential tlp ros-melodic-effort-controllers qt4-default python-scipy openjdk-11-jre openjdk-11-jdk
 
-sudo pip install graphviz
+sudo pip install graphviz scipy
 
 cd
 wget https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
