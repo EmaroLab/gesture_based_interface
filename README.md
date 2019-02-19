@@ -37,6 +37,8 @@ yes | sdkmanager --licences
 . src/build.sh
 # Link baxter environment loader
 ln -s src/baxter/baxter.sh ./baxter.sh
+ln -s src/build.sh ./build.sh
+ln -s src/clean_build.sh ./clean_build.sh
 ```
 
 ## How to run the simulator
