@@ -1,4 +1,4 @@
-# kinect_pcl_tools
+# Kinect Pcl Tools
 
 ## Authors
 | Name | E-mail |
