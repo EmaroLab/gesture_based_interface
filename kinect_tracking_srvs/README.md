@@ -1,4 +1,4 @@
-# Kinect Setup
+# Kinect Tracking Services
 
 ## Authors
 | Name | E-mail |
