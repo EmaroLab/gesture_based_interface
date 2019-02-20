@@ -1,5 +1,5 @@
 # Install git
-sudo apt install git
+sudo apt install -y git
 # Create workspace and clone whole project
 mkdir ~/sofar_ws
 cd ~/sofar_ws
