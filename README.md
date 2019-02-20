@@ -1,8 +1,10 @@
 # Gesture-based interface for Baxter Robot
 
 ## Authors
-* Antonino Bongiovanni: antoniobongio@gmail.com
-* Alessio De Luca: alessio.deluca.iic96d@gmail.com
+| Name | E-mail |
+|-----------------------|------------------|
+| Antonino Bongiovanni | antoniobongio@gmail.com |
+| Alessio De Luca | alessio.deluca.iic96d@gmail.com |
 * Luna Gava: lunagava@me.com
 * Alessandro Grattarola: alessandro.grt@gmail.com
 * Lucrezia Grassi: lucre.grassi@gmail.com
