@@ -13,7 +13,8 @@ class SubSequenceMenuState(MenuState):
                            outcomes,
                            trigger_event,
                            'Sequence menu - selection',
-                           input_keys=['sequence_idx'],
+                           input_keys=['sequence_idx_in'],
+                           output_keys=['sequence_idx'],
                            fixed_options=['back', 'clean'])
 
     ## method update_variable_options
@@ -22,6 +23,7 @@ class SubSequenceMenuState(MenuState):
     #  override of MenuState.update_variable_options
     #  update the variable options of the menu
     def update_variable_options(self, userdata):
+        userdata.sequence_idx=userdata.sequence_idx_in
         return ['demo record']  # TODO: ask PBR the list of files
 
     ## method on_fixed_selection

@@ -98,6 +98,9 @@ class BlockingState(smach.State):
         # to override 
         return None
 
+    def done(self,userdata):
+        return None
+
     ## method publish_state
     #  @param userdata 
     #  
@@ -105,6 +108,8 @@ class BlockingState(smach.State):
     def publish_state(self):
         # to override
         raise NotImplemented
+    
+
 
     ## method execute
     #  @param userdata 
@@ -140,6 +145,8 @@ class BlockingState(smach.State):
                 ret = self.user_left(userdata)
             elif event_id == 'config':
                 ret = self.config(userdata)
+            elif event_id == 'finished':
+                ret = self.done(userdata)
 
             if ret:
                 return ret
@@ -149,3 +156,6 @@ class BlockingState(smach.State):
     def request_preempt(self):
         smach.State.request_preempt(self)
         self._trigger_event.signal('preempt')
+
+    def signal(self, event_id):
+        self._trigger_event.signal(event_id)

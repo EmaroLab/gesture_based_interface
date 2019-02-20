@@ -7,6 +7,8 @@ find_package(catkin
   geometry_msgs
   nav_msgs
   message_generation
+  genmsg
+  actionlib_msgs
 )
 
 add_message_files(
@@ -17,12 +19,20 @@ add_message_files(
    modify_playback.msg
 )
 
+add_action_files(
+   DIRECTORY
+   action
+   FILES
+   playback.action
+   record.action
+)
 
 generate_messages(
    DEPENDENCIES
    std_msgs
    geometry_msgs
    nav_msgs
+   actionlib_msgs
  )
 
 catkin_package(

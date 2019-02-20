@@ -15,7 +15,7 @@ class MenuState(ExpiringState):
     #  @param output_keys set of data in the output state
     #  @param input_keys set of data in the input state
     #  @param fixed_options fixed options of the menu
-    def __init__(self, outcomes, trigger_event, page_title, output_keys=[], input_keys=[], fixed_options=['back', 'play']):
+    def __init__(self, outcomes, trigger_event, page_title, output_keys=[], input_keys=[], fixed_options=[]):
         ExpiringState.__init__(self,
                                outcomes = ['selection'] + outcomes,
                                trigger_event = trigger_event,

@@ -10,8 +10,7 @@ class MacroMenuState(MenuState):
     #  @param trigger_event istance of the class FsmEvent
     def __init__(self, trigger_event):
 
-        outcomes = ['play',
-                    'back']
+        outcomes = ['play','back']
 
         MenuState.__init__(self,
                            outcomes,
@@ -19,7 +18,7 @@ class MacroMenuState(MenuState):
                            'Macro menu',
                            input_keys=['macro_idx', 'macro_filename'])
 
-        self.macro_slots = ["Empty", "Empty", "Empty", "Empty", "Empty"]
+        self.macro_slots = ["Empty", "Empty", "Empty", "Empty"]
 
     ## method update_variable_options
     #  @param userdata 

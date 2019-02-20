@@ -159,14 +159,7 @@ class FSMThread(threading.Thread):
                 smach.StateMachine.add('RECORDSTATE', RecordState(self.event),
                                     transitions={'user_missed':'user_missed',
                                                  'done':'done',
-                                                 'pause':'PAUSER',
                                                  'preempted':'preempted'})
-                smach.StateMachine.add('PAUSER', RecordPause(self.event),
-                                        transitions={'user_missed':'user_missed',
-                                                 'done':'done',
-                                                 'resume':'RECORDSTATE',
-                                                 'preempted':'preempted'},
-                                        )
 
             with self.sub_macro:
                 smach.StateMachine.add('MACROSTATE', MacroState(self.event),
@@ -231,7 +224,7 @@ class FSMThread(threading.Thread):
     def transition_cb(self,userdata,active_states,*cb_args):
         self.f.node_attr.update(color="0.000 1.000 1.000")
         self.f.node(active_states[0],color="0.201 0.753 1.000")
-        #self.f.render(filename='state_machine',directory=None,view=True,cleanup=True)
+        self.f.render(filename='state_machine',directory=None,view=True,cleanup=True)
         self.f.node(active_states[0],color="0.000 1.000 1.000")
 
     def transition_cb1(self,userdata,active_states,*cb_args):
@@ -315,8 +308,8 @@ class FSMThread(threading.Thread):
 def config_server():
     t = FSMThread()
     rospy.init_node('config_server')
-    #t.graph_gen()
-    #t.f.render(filename='state_machine',directory=None,view=True,cleanup=True)
+    t.graph_gen()
+    t.f.render(filename='state_machine',directory=None,view=True,cleanup=True)
     filename = "state_machine.gv"
     '''file = open(filename, "r")
     for line in file:

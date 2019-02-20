@@ -5,7 +5,7 @@ class MacroPause(ActionState):
         ActionState.__init__(self,
                              outcomes=['resume'],
                              trigger_event=trigger_event,
-                             action='PausePlay mode',
+                             status='PausePlay mode',
                              output_keys=[],
                              input_keys=[])
 
