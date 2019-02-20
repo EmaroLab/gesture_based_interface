@@ -13,6 +13,8 @@
 * Ros Melodic
 * Kinect 
 
+This package contains node to manage all the tf system.
+
 # Nodes:
 * head_tracking
 * kinect_broadcaster
