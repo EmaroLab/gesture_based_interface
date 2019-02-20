@@ -1,4 +1,4 @@
-# pose_estimation
+# Pose estimation
 
 ## Authors
 | Name | E-mail |
