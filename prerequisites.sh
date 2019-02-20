@@ -6,16 +6,36 @@ sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C
 sudo apt update
 sudo apt -y upgrade
 
-sudo apt install -y ros-melodic-desktop-full freenect freeglut3* git-core cmake pkg-config build-essential libxmu-dev libxi-dev libudev* g++ python openjdk-11-jdk graphviz doxygen ros-melodic-rgbd-launch ros-melodic-openni-* ros-melodic-pcl-* ros-melodic-perception ros-melodic-perception-pcl ros-melodic-tf ros-melodic-roslib ros-melodic-orocos-kdl python-rosinstall python-rosinstall-generator python-wstool build-essential tlp ros-melodic-effort-controllers
+sudo apt install -y ros-melodic-desktop-full freenect freeglut3* git-core cmake pkg-config build-essential libxmu-dev libxi-dev libudev* g++ python openjdk-11-jdk graphviz doxygen ros-melodic-rgbd-launch ros-melodic-openni-* ros-melodic-pcl-* ros-melodic-perception ros-melodic-perception-pcl ros-melodic-tf ros-melodic-roslib ros-melodic-orocos-kdl python-rosinstall python-rosinstall-generator python-wstool build-essential tlp ros-melodic-effort-controllers qt4-default python-scipy openjdk-11-jre openjdk-11-jdk gazebo9
 
-sudo pip install graphviz
+sudo pip install graphviz scipy tensorflow keras
+
+cd
+wget https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
+rm -rf android-sdk
+mkdir android-sdk
+unzip sdk-tools-linux-4333796.zip -d android-sdk
+rm sdk-tools-linux-4333796.zip
 
 sudo rosdep init
 rosdep update
 
-echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
+sudo update-java-alternatives --set java-11-openjdk-amd64
+
+echo "
+source /opt/ros/melodic/setup.bash
+export ROS_LANG_DISABLE=genlisp:gennodejs:geneus
+export ANDROID_HOME=\$HOME/android-sdk
+export LC_NUMERIC='en_US.UTF-8'
+export PATH=\$PATH:\$ANDROID_HOME/tools/bin
+export PATH=\$PATH:\$ANDROID_HOME/platform-tools
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+export JAVA_OPTS='-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee'
+" >> ~/.bashrc
 source ~/.bashrc
 
+yes | sdkmanager --licenses
+ 
 sudo adduser $USER plugdev
 sudo usermod -a -G video $(whoami)
 

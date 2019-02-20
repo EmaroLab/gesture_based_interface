@@ -46,7 +46,16 @@ roslaunch_add_file_check(launch)
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES retrorov_model_bathymetric
- CATKIN_DEPENDS pcl_ros roscpp rospy sensor_msgs std_msgs message_runtime geometry_msgs kinect_tracking_srvs kinect_filter_srvs
+  CATKIN_DEPENDS 
+  pcl_ros 
+  roscpp
+  rospy
+  sensor_msgs
+  std_msgs
+  message_runtime
+  geometry_msgs 
+  kinect_tracking_srvs 
+  kinect_filter_srvs
 #  DEPENDS system_lib
 )
 

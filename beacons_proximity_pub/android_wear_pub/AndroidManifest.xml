@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="org.ros.android.android_wear_pub">
+    package="com.github.emaro.beacons_proximity_wear">
 
     <uses-sdk tools:overrideLibrary="org.ros.android.android_core_components" />
 

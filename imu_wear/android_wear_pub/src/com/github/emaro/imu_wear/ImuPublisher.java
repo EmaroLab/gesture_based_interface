@@ -1,19 +1,11 @@
-package org.ros.android.android_wear_pub;
-
-import android.content.Context;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
+package com.github.emaro.imu_wear;
 
 import org.ros.concurrent.CancellableLoop;
-import org.ros.internal.message.RawMessage;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
 import java.util.concurrent.Semaphore;
-
-import geometry_msgs.Vector3;
-import sensor_msgs.Imu;
 
 public class ImuPublisher extends AbstractNodeMain {
     private String topic_name;

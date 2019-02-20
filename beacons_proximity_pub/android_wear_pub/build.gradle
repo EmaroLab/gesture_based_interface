@@ -7,7 +7,7 @@ android {
 
 
     defaultConfig {
-        applicationId "com.example.android_wear_pub"
+        applicationId "com.github.emaro.beacons_proximity_wear"
         minSdkVersion 23
         targetSdkVersion 28
         versionCode 1

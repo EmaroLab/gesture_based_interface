@@ -22,7 +22,8 @@ class BlockingState(smach.State):
         ## type to be fill in each subclass
         self.type = None
         ## publisher of topic fsm_status
-        self.pub = rospy.Publisher('fsm_status', pub_status.status, queue_size=1, latch=True)
+        self.pub = rospy.Publisher('fsm_status', pub_status.status, queue_size=1)
+        time.sleep(0.2)
         ## message status
         self.msg = pub_status.status()
 

@@ -1,14 +1,13 @@
 ## @package MainMenuState
-## This package describes the structure
-#  of the main menu state 
+## This package describes the structure of main menu state 
 
 from MenuState import MenuState
 
 ##  MainMenuState
 #   inerithed form MenuState
 class MainMenuState(MenuState):
-    ## the constructor
-    #  @param trigger_event istance of the class FsmEvent
+    ## constructor
+    #  @param trigger_event istance of FsmEvent class
     def __init__(self, trigger_event):
         outcomes = ['play_selected',
                     'record_selected',
@@ -25,7 +24,7 @@ class MainMenuState(MenuState):
     #  @param userdata 
     #  
     #  override of MenuState.update_variable_options
-    #  update the variable options of the menu
+    #  updates the variable options of the menu
     def update_variable_options(self, userdata):
         return ['play',
                 'record',
@@ -38,7 +37,7 @@ class MainMenuState(MenuState):
     #  @param item 
     #
     #  override of MenuState.update_variable_options
-    #  update the variable options of the menu
+    #  updates the variable options of the menu
     def on_variable_selection(self, index, item, userdata):
         return item + '_selected'
 
@@ -48,6 +47,6 @@ class MainMenuState(MenuState):
     #  @param item
     #  
     #  override of MenuState.on_fixed_selection
-    #  in this menu this method should never be colled 
+    #  in this menu this method should never be called 
     def on_fixed_selection(self, index, item, userdata):
         raise RuntimeError

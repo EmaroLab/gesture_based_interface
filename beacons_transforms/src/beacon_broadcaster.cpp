@@ -4,9 +4,9 @@
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_datatypes.h>
 #include <math.h>
-#include "beacons_transforms/MoveBeacon.h"
-#include "beacons_transforms/SetRadius.h"
-#include "beacons_transforms/BeaconRadius.h"
+#include "beacons_transforms_srvs/MoveBeacon.h"
+#include "beacons_transforms_srvs/SetRadius.h"
+#include "beacons_transforms_msgs/BeaconRadius.h"
 #include <iostream>
 #include <unistd.h>
 #include <sys/types.h>
@@ -61,8 +61,8 @@ double radius_presence = 1.0; /**<Radius of the circle into which the beacon sig
 /**
  * Service to change the position of the beacon
  */
-bool move(beacons_transforms::MoveBeacon::Request  &req,
-         beacons_transforms::MoveBeacon::Response &res)
+bool move(beacons_transforms_srvs::MoveBeacon::Request  &req,
+         beacons_transforms_srvs::MoveBeacon::Response &res)
 {
 	x_beacon = req.x;
 	y_beacon = req.y;
@@ -73,8 +73,8 @@ bool move(beacons_transforms::MoveBeacon::Request  &req,
 /**
  * Service to set the radius in which the beacon signals presence
  */
-bool set_radius(beacons_transforms::SetRadius::Request  &req,
-         beacons_transforms::SetRadius::Response &res)
+bool set_radius(beacons_transforms_srvs::SetRadius::Request  &req,
+         beacons_transforms_srvs::SetRadius::Response &res)
 {
 	radius_presence = req.radius;
 	
@@ -143,11 +143,11 @@ main(int argc, char** argv)
 	
     tf::Transform change_frame(tf::Quaternion(0, 0, 0, 1), tf::Vector3(x_beacon, y_beacon, z_beacon));
     
-	ros::Publisher beacon_pub = n.advertise<beacons_transforms::BeaconRadius>("beacon_radius", 10);
+	ros::Publisher beacon_pub = n.advertise<beacons_transforms_msgs::BeaconRadius>("beacon_radius", 10);
 	
 	ros::Publisher beacon_radius_rviz = n.advertise<visualization_msgs::Marker>("beacon_radius_rviz", 1);
 	
-	beacons_transforms::BeaconRadius msg;
+	beacons_transforms_msgs::BeaconRadius msg;
 	msg.beacon_name = beacon_full_name.str();
 	
 	// Display on rviz of circle in which the beacon signals presence

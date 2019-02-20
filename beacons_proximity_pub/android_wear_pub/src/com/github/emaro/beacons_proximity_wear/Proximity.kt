@@ -1,4 +1,4 @@
-package org.ros.android.android_wear_pub
+package com.github.emaro.beacons_proximity_wear
 
 import android.os.Bundle
 import android.util.Log

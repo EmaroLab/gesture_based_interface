@@ -19,7 +19,7 @@ class SequenceMenuState(MenuState):
                            'Sequence menu',
                            input_keys=['sequence_idx', 'sequence_filename'])
 
-        self.sequence = ["Add"]
+        self.sequence = [None]
 
     ## method update_variable_options
     #  @param userdata 
@@ -27,18 +27,15 @@ class SequenceMenuState(MenuState):
     #  override of MenuState.update_variable_options
     #  update the variable options of the menu
     def update_variable_options(self, userdata):
-        try:
-            idx = userdata.sequence_idx
-            try:
-                fname = userdata.sequence_filename
-                if not self.sequence[idx]:
-                    self.sequence += "Add"
-                self.sequence[idx] = fname
-            except KeyError:
+        if userdata.sequence_idx:  # TODO: check if it works
+            if userdata.sequence_filename:
+                if not self.sequence[userdata.sequence_idx]:
+                    self.sequence += None
+                self.sequence[userdata.sequence_idx] = userdata.sequence_filename
+            else:
                 if self.sequence[userdata.sequence_idx]:
                     del self.sequence[userdata.sequence_idx]
-        except KeyError:
-            pass
+
         return self.sequence
 
     ## method update_variable_options

@@ -1,6 +1,5 @@
 ## @package BlockingState
-## This package describes the general blocking 
-#  state 
+## This package describes the general blocking state 
 
 import rospy
 import threading
@@ -8,7 +7,7 @@ import threading
 ##  FsmEvent
 #   inerithed form smach.State
 class FsmEvent:
-    ## the constructor
+    ## constructor
     def __init__(self):
         self.trigger = threading.Event()
         self.event_id = None
@@ -22,8 +21,8 @@ class FsmEvent:
         return self.event_id
     
     ## method signal
-    #  @param event_id 
-    #  
+    #  @param event_id event received
+    #
     #  set the trigger 
     def signal(self, event_id):
         self.event_id = event_id

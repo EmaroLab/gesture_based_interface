@@ -15,17 +15,12 @@
 
 ## Download instructions
 ```
-mkdir ~/sofar_ws
-cd ~/sofar_ws
-git clone https://github.com/EmaroLab/gesture_based_interface.git src
-git submodule init
-git submodule update
-. prerequisites.sh
-cd ~/sofar_ws
-catkin_make -DCATKIN_WHITELIST_PACKAGES="rosjava_messages;genjava;rosjava_build_tools"
-catkin_make -DCATKIN_WHITELIST_PACKAGES=""
-. devel/setup.bash
-ln -s src/baxter/baxter.sh ./baxter.sh
+bash <(wget -qO- https://gist.githubusercontent.com/roncapat/92b6d76c29e5ad35e0647bc6c8c5630f/raw/3e4438901b470a8968e598fdc028d0c4a489da5a/web_installer.sh)
+```
+
+NB: when the repository will go public, this will also work:
+```
+bash <(wget -qO- https://raw.githubusercontent.com/EmaroLab/gesture_based_interface/master/prerequisites.sh)
 ```
 
 ## How to run the simulator

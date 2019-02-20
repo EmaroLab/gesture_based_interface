@@ -12,8 +12,6 @@ from baxter_interface import CHECK_VERSION
 from baxter_gbi_pbr_srvs.srv import *
 from pbr_header import *
 
-
-
 class PlaybackObj(object):
 
     def __init__(self):
