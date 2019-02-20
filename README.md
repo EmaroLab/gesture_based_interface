@@ -2,18 +2,18 @@
 
 ## Authors
 | Name | E-mail |
-|-----------------------|------------------|
+|------|--------|
 | Antonino Bongiovanni | antoniobongio@gmail.com |
 | Alessio De Luca | alessio.deluca.iic96d@gmail.com |
-* Luna Gava: lunagava@me.com
-* Alessandro Grattarola: alessandro.grt@gmail.com
-* Lucrezia Grassi: lucre.grassi@gmail.com
-* Marta Lagomarsino: marta.lago@hotmail.it
-* Marco Lapolla: marco.lapolla5@gmail.com
-* Antonio Marino: marinoantonio96@gmail.com
-* Patrick Roncagliolo: roncapat@gmail.com
-* Federico Tomat: tomatfede@gmail.com
-* Giulia Zaino: giuliazaino46@gmail.com
+| Luna Gava| lunagava@me.com |
+| Alessandro Grattarola | alessandro.grt@gmail.com |
+| Lucrezia Grassi | lucre.grassi@gmail.com |
+| Marta Lagomarsino | marta.lago@hotmail.it |
+| Marco Lapolla | marco.lapolla5@gmail.com |
+| Antonio Marino | marinoantonio96@gmail.com |
+| Patrick Roncagliolo | roncapat@gmail.com |
+| Federico Tomat | tomatfede@gmail.com |
+| Giulia Zaino | giuliazaino46@gmail.com |
 
 ## Download instructions
 ```
