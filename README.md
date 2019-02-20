@@ -15,7 +15,7 @@
 | Federico Tomat | tomatfede@gmail.com |
 | Giulia Zaino | giuliazaino46@gmail.com |
 
-### Download instructions
+## Download instructions
 Copy/paste this single line in a Ubuntu terminal. 
 
 This will transform a clean Ubuntu installation in a 100% production-ready system.
