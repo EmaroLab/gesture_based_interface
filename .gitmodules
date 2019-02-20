@@ -58,3 +58,6 @@
 [submodule "baxter_pykdl"]
 	path = _dependencies/baxter/baxter_pykdl
 	url = https://github.com/RethinkRobotics/baxter_pykdl.git
+[submodule "_dependencies/gesture/sloth_gesture_recognition"]
+	path = _dependencies/gesture/sloth_gesture_recognition
+	url = https://github.com/EmaroLab/SLOTH
