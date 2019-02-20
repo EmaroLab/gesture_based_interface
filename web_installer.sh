@@ -10,6 +10,7 @@ git submodule update
 # Install required stuff
 . prerequisites.sh
 
+. ~/.bashrc
 cd ~/sofar_ws
 # Issue first clean build - It will probably fail at some point 
 # due to not yet accepted android sdk licenses
