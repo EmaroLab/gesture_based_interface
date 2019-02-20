@@ -1,4 +1,4 @@
-# Transformation
+# Beacons Transforms
 
 # Requirements:
 * Linux Ubuntu 18.04
@@ -9,8 +9,5 @@
 
 It is requested to install [freenect].
 
-# Launching the nodes:
-You can start the all the nodes by launching:
-```
-roslaunch pose_estimation .launch
-```
+# Nodes:
+* beacon_broadcaster
