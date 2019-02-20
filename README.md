@@ -67,8 +67,9 @@ roscore
 ```
 Launch nodes for the Kinect
 ```
-roslaunch openni_launch openni.launch device_id:=&lt;device id&gt;
+roslaunch openni_launch openni.launch device_id:=<device id>
+roslaunch baxter_gbi_safety_monitor kinect_to_fsm.launch
 ```
 ```
-Rviz, if the Baxter is not shown, run export LC_NUMERIC='en_US.UTF-8' on the shell
+Rviz, if the Baxter is not shown, run "export LC_NUMERIC='en_US.UTF-8'" on the shell
 ```
