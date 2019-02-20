@@ -6,9 +6,9 @@
  * @file
  */
 
-double x_kinect = 0.0;
-double y_kinect = 0.0;
-double z_kinect = 0.0;
+/** x coordinate of the Kinect with respect to the Baxter robot */	double x_kinect = 0.0; 
+/** y coordinate of the Kinect with respect to the Baxter robot */	double y_kinect = 0.0;
+/** z coordinate of the Kinect with respect to the Baxter robot */	double z_kinect = 0.0;
 
 /** @brief Class to publish periodically the transformation between Baxter and Kinect
  */
@@ -36,16 +36,19 @@ class TF_Broadcaster{
 	float degrees(void);
 	
 protected:
-    ros::NodeHandle nh;
+    ros::NodeHandle nh; /**< Node Handle */
     ros::Subscriber angle_sub;  /**< Subscriber to /cur_tilt_angle */
     
-    double angle = 20.0;
+    double angle = 20.0; /**< Current tilt angle of the Kinect */
 };
 
+/** Metod returning the current tilt angle of the Kinect in radians
+ */
 float TF_Broadcaster::radians(void){ 
 	return angle * M_PI / 180;
 }
-
+/** Metod returning the current tilt angle of the Kinect in degrees
+ */
 float TF_Broadcaster::degrees(void){ 
 	return angle;
 }
