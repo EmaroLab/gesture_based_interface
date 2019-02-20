@@ -26,6 +26,7 @@ echo "
 source /opt/ros/melodic/setup.bash
 export ROS_LANG_DISABLE=genlisp:gennodejs:geneus
 export ANDROID_HOME=\$HOME/android-sdk
+export LC_NUMERIC='en_US.UTF-8'
 export PATH=\$PATH:\$ANDROID_HOME/tools/bin
 export PATH=\$PATH:\$ANDROID_HOME/platform-tools
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
