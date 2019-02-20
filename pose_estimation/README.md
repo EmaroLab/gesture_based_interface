@@ -16,3 +16,6 @@ Using the Kinect 360, we estimate a human in the environment by statistical mean
 * Linux Ubuntu 18.04
 * Ros Melodic
 * Kinect 360 or equivalent
+
+# Nodes
+* position_estimation
