@@ -15,12 +15,12 @@
 
 ## Download instructions
 ```
-bash <(curl -s https://gist.githubusercontent.com/roncapat/92b6d76c29e5ad35e0647bc6c8c5630f/raw/3e4438901b470a8968e598fdc028d0c4a489da5a/web_installer.sh)
+bash <(wget -qO- https://gist.githubusercontent.com/roncapat/92b6d76c29e5ad35e0647bc6c8c5630f/raw/3e4438901b470a8968e598fdc028d0c4a489da5a/web_installer.sh)
 ```
 
 NB: when the repository will go public, this will also work:
 ```
-bash <(curl -s https://raw.githubusercontent.com/EmaroLab/gesture_based_interface/master/prerequisites.sh)
+bash <(wget -qO- https://raw.githubusercontent.com/EmaroLab/gesture_based_interface/master/prerequisites.sh)
 ```
 
 ## How to run the simulator
