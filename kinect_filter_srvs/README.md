@@ -1,4 +1,4 @@
-# kinect_filter_srvs
+# Kinect Filter Services
 
 ## Authors
 | Name | E-mail |
@@ -8,7 +8,6 @@
 | Marco Lapolla | marco.lapolla5@gmail.com |
 | Federico Tomat | tomatfede@gmail.com |
 
-
 # Requirements:
 * Linux Ubuntu 18.04
 * Ros Melodic
@@ -17,4 +16,3 @@
 # Services:
 * Set_Filter
 * Set_Filter_Param
-```
