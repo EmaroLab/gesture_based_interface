@@ -15,7 +15,10 @@
 | Federico Tomat | tomatfede@gmail.com |
 | Giulia Zaino | giuliazaino46@gmail.com |
 
-## Download instructions
+### Download instructions
+Copy/paste this single line in a Ubuntu terminal. 
+
+This will transform a clean Ubuntu installation in a 100% production-ready system.
 ```
 bash <(wget -qO- https://gist.githubusercontent.com/roncapat/92b6d76c29e5ad35e0647bc6c8c5630f/raw/3e4438901b470a8968e598fdc028d0c4a489da5a/web_installer.sh)
 ```
@@ -24,6 +27,19 @@ NB: when the repository will go public, this will also work:
 ```
 bash <(wget -qO- https://raw.githubusercontent.com/EmaroLab/gesture_based_interface/master/prerequisites.sh)
 ```
+
+## Development tools
+| Script           | Folders        | Function                                                         |
+| ---------------- | -------------- | ---------------------------------------------------------------- |
+| web_installer.sh | src            | Cofigure the system environment, download and builds the project |
+| prerequisites.sh | src            | Cofigure the system environment                                  |
+| clean_build.sh   | workspace, src | Rebuild the project from scratch                                 |
+| build.sh         | workspace, src | Incremental build                                                |
+| baxter.sh        | workspace      | Enter the Baxter virtual environment                             | 
+
+We advise to use `./build.sh` or `./clean_build.sh` in place of `catkin_make`. 
+
+Note: they can be used both in the `sofar_ws` workspace or in the `src` subfolder.
 
 ## How to run the simulator
 Enter in the workspace
