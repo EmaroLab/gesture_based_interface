@@ -12,11 +12,11 @@
 
 This package contains node to manage the tilt of the Kinect, as well as the filters' parameters applied to the pointclouds.
 
-# Requirements:
+## Requirements
 * Linux Ubuntu 18.04
 * Ros Melodic
 * Kinect 360
 
-# Nodes:
+## Nodes
 * kinect_regulation_server
 * kinect_move_server
