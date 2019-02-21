@@ -1,4 +1,4 @@
-## beacons_presence_scanner
+# Beacons Presence Scanner
 
 ## Authors
 
