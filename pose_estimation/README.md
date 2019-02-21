@@ -8,6 +8,8 @@
 | Marco Lapolla | marco.lapolla5@gmail.com |
 | Federico Tomat | tomatfede@gmail.com |
 
+## Package Content 
+
 The aim of this work is to determine the pose of a human.
 
 Using the Kinect 360, we estimate a human in the environment by statistical mean of all the point clouds.
