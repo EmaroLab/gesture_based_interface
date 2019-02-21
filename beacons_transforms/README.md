@@ -13,5 +13,5 @@
 * Ros Melodic
 * Estimote Beacons 
 
-## Nodes
+## Node
 * beacon_broadcaster
