@@ -1,4 +1,4 @@
-## baxter_gbi_pbr_msgs
+# Baxter GBI PBR Messages
 
 ## Authors
 
@@ -9,7 +9,6 @@
 | Giulia Zaino | giuliazaino46@gmail.com |
 
 ## Messages 
-
 * mirror_end_effector
 * modify_playback 
 * playback_msg
