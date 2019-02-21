@@ -8,6 +8,10 @@
 | Marco Lapolla | marco.lapolla5@gmail.com |
 | Federico Tomat | tomatfede@gmail.com |
 
+## Package Content
+
+This package contains the nodes to manage and filter the pointclouds acquired by the Kinect.
+
 # Requirements:
 * Linux Ubuntu 18.04
 * Ros Melodic
