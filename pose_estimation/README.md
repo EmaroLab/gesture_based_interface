@@ -14,10 +14,10 @@ The aim of this work is to determine the pose of a human.
 
 Using the Kinect 360, we estimate a human in the environment by statistical mean of all the point clouds.
 
-# Requirements:
+## Requirements:
 * Linux Ubuntu 18.04
 * Ros Melodic
 * Kinect 360 or equivalent
 
-# Nodes
+## Node
 * position_estimation
