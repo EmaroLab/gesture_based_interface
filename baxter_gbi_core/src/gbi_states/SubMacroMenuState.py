@@ -2,6 +2,8 @@
 ## This package describes the structure of the sequence menu state 
 
 from MenuState import MenuState
+from baxter_gbi_pbr_srvs.srv import ListFiles
+import rospy
 
 ##  SubMacroMenuState
 #   inerithed form MenuState
@@ -16,6 +18,7 @@ class SubMacroMenuState(MenuState):
                            'Macro menu - selection',
                            input_keys=['macro_idx'],
                            fixed_options=['back', 'clean'])
+        self.list = rospy.ServiceProxy('files', ListFiles)
 
     ## method update_variable_options
     #  @param userdata 
@@ -23,8 +26,9 @@ class SubMacroMenuState(MenuState):
     #  override of MenuState.update_variable_options
     #  update the variable options of the menu
     def update_variable_options(self, userdata):
-        return ['demo record']  # TODO: ask PBR the list of files
-
+        list = self.list()
+        return list.list_files
+    
     ## method on_fixed_selection
     #  @param userdata 
     #  @param index

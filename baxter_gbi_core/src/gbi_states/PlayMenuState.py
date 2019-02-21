@@ -2,6 +2,8 @@
 ## This package describes the structure of the play menu state 
 
 from MenuState import MenuState
+from baxter_gbi_pbr_srvs.srv import ListFiles
+import rospy
 
 ##  PlayMenuState
 #   inerithed form MenuState
@@ -18,6 +20,8 @@ class PlayMenuState(MenuState):
                            'Playback menu',
                            fixed_options=['back'])
 
+        self.list = rospy.ServiceProxy('files', ListFiles)
+
     ## method update_variable_options
     #  @param userdata 
     #
@@ -31,5 +35,5 @@ class PlayMenuState(MenuState):
             return 'preempted'
         # call a service to ask and recieve the data
         # or parameter server or message
-
-        return ['demo record']  # TODO: ask PBR the list of files
+        list=self.list()
+        return list.list_files  # TODO: ask PBR the list of files

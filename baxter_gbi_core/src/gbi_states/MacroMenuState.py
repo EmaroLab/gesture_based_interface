@@ -3,6 +3,7 @@
 #  of the macro menu state
 from MenuState import MenuState
 
+
 ##  MacroMenuState
 #   inerithed form BlockingState
 class MacroMenuState(MenuState):
@@ -19,7 +20,6 @@ class MacroMenuState(MenuState):
                            input_keys=['macro_idx', 'macro_filename'])
 
         self.macro_slots = ["Empty", "Empty", "Empty", "Empty"]
-
     ## method update_variable_options
     #  @param userdata 
     #  

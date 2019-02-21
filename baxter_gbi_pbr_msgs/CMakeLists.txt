@@ -22,8 +22,7 @@ add_action_files(
    action
    FILES
    playback.action
-   record.action
-)
+ )
 
 generate_messages(
    DEPENDENCIES

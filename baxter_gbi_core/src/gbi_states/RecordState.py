@@ -2,6 +2,7 @@ from ActionState import ActionState
 import rospy
 import actionlib
 from baxter_gbi_pbr_msgs.msg import *
+from baxter_gbi_pbr_srvs.srv import RecordStart, RecordStop
 
 class RecordState(ActionState):
     def __init__(self, trigger_event):
@@ -13,22 +14,18 @@ class RecordState(ActionState):
                              status='record',
                              output_keys=[],
                              input_keys=input_keys)
-        self.goal = recordGoal()
+        self.record_start = rospy.ServiceProxy('record_start', RecordStart)
+        self.record_stop=rospy.ServiceProxy('record_stop', RecordStop)
         self.progress = 0
 
     def user_left(self, userdata):
         return None
+    
+    def action_6(self,userdata):
+        self.record_stop()
+        return 'done'
 
-    def feedback_cb(self,result):
-        self.progress = result
-
-    def done_cb(self,userdata):
-        self.signal('finished')
 
     def execute(self,userdata):
-        self.rec = actionlib.SimpleActionClient('playback', recordAction)
-        self.rec.wait_for_service()
-        self.goal.filename = userdata.filename
-        self.goal.record_rate=100
-        self.rec.send_goal(self.goal, self.done_cb, None, self.feedback_cb)
+        self.record_start('record_1','100')
         return ActionState.execute(userdata)

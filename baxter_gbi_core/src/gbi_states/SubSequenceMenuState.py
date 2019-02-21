@@ -1,6 +1,8 @@
 ## @package SubSequenceMenuState
 ## This package describes the structure of the sequence menu state 
 from MenuState import MenuState
+from baxter_gbi_pbr_srvs.srv import ListFiles
+import rospy
 
 ##  SubSequenceMenuState
 #   inerithed form MenuState
@@ -16,6 +18,7 @@ class SubSequenceMenuState(MenuState):
                            input_keys=['sequence_idx_in'],
                            output_keys=['sequence_idx'],
                            fixed_options=['back', 'clean'])
+        self.list = rospy.ServiceProxy('files', ListFiles)
 
     ## method update_variable_options
     #  @param userdata 
@@ -24,7 +27,8 @@ class SubSequenceMenuState(MenuState):
     #  update the variable options of the menu
     def update_variable_options(self, userdata):
         userdata.sequence_idx=userdata.sequence_idx_in
-        return ['demo record']  # TODO: ask PBR the list of files
+        list = self.list()
+        return list.list_files  # TODO: ask PBR the list of files
 
     ## method on_fixed_selection
     #  @param userdata 

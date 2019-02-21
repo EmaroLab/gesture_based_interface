@@ -122,7 +122,8 @@ class FSMThread(threading.Thread):
             
             self.sub_play = smach.StateMachine(outcomes=['user_missed',
                                                  'done',
-                                                'preempted'])
+                                                'preempted',
+                                                'rec_s'])
             self.sub_play.set_initial_state(['PLAYSTATE'])
             self.sub_play.register_transition_cb(self.transition_cb1)
             self.sub_record = smach.StateMachine(outcomes=['user_missed',
@@ -152,7 +153,8 @@ class FSMThread(threading.Thread):
                                         transitions={'user_missed':'user_missed',
                                                  'done':'done',
                                                  'resume':'PLAYSTATE',
-                                                 'preempted':'preempted'},
+                                                 'preempted':'preempted',
+                                                 'rec_s':'rec_s'},
                                         )
 
             with self.sub_record:
@@ -190,7 +192,8 @@ class FSMThread(threading.Thread):
             smach.StateMachine.add('PLAY', self.sub_play,
                                         transitions={'user_missed':'WAIT_USER',
                                                  'done':'MAIN_MENU',
-                                                 'preempted':'EXIT'})
+                                                 'preempted':'EXIT',
+                                                 'rec_s':'RECORD'})
 
             smach.StateMachine.add('RECORD', self.sub_record,
                                         transitions={'user_missed':'WAIT_USER',

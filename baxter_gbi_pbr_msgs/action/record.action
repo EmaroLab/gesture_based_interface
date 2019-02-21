@@ -1,6 +1,0 @@
-string filename
-uint16 record_rate
----
-uint8 isError
----
-float32 percent_complete
