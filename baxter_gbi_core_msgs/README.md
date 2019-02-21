@@ -1,4 +1,4 @@
-## baxter_gbi_core_msgs
+# Baxter GBI Core Messages
 
 ## Authors
 
