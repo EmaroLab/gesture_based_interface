@@ -10,7 +10,7 @@
 
 ## Package Content 
 
-This package contains node to manage all the tf system.
+This package contains nodes to manage all the tf system.
 
 # Requirements:
 * Linux Ubuntu 18.04
