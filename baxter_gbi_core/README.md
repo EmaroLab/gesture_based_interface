@@ -1,4 +1,4 @@
-## baxter_gbi_core
+# Baxter GBI Core
 
 ## Authors
 
@@ -13,5 +13,5 @@
 
 This package contains the *core* node
 
-## Nodes
+## Node
 * core
