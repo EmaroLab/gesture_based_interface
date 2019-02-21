@@ -1,4 +1,4 @@
-## baxter_gbi_pbr
+# Baxter GBI PBR
 
 ## Authors
 
