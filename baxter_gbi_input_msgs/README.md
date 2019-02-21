@@ -1,4 +1,4 @@
-## baxter_gbi_input_msgs
+# Baxter GBI Input Messages
 
 ## Authors
 
