@@ -20,11 +20,14 @@ find_package(catkin
   baxter_gbi_pbr_srvs
   baxter_gbi_pbr_msgs
   baxter_pykdl
+  genmsg
+  actionlib_msgs
 )
 
 roslaunch_add_file_check(launch)
 catkin_python_setup()
  
+
 catkin_package(
   CATKIN_DEPENDS
   rospy
@@ -42,6 +45,7 @@ catkin_package(
   baxter_gbi_pbr_srvs
   baxter_gbi_pbr_msgs
   baxter_pykdl
+  actionlib_msgs
 )
 
 install(

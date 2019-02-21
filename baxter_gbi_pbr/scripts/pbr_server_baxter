@@ -9,6 +9,8 @@ import argparse
 import sys
 
 import rospy
+import rospkg
+import actionlib
 
 from baxter_interface import Gripper
 
@@ -17,7 +19,7 @@ import os.path
 from os import listdir
 from geometry_msgs.msg import Point, Quaternion
 from baxter_gbi_pbr_msgs.msg import *
-from baxter_interface import CHECK_VERSION
+from baxter_interface import CHECK_VERSION, Limb
 from baxter_gbi_pbr_srvs.srv import *
 from baxter_gbi_pbr import *
 
@@ -28,7 +30,8 @@ from baxter_gbi_pbr.limb_mover import NewLimbMover
 
 global pb, playbacking, starting_pause, pause_state
 global file_playback, line_executed #Information for recording after playback
-
+global rospack
+rospack = rospkg.RosPack()
 line_executed = 0
 pause_state = 0
 starting_pause = 0
@@ -46,17 +49,22 @@ def playback_handler(req):
 
     rospy.loginfo("Called!!!")
 
+    global rospack, service1
     
+    service1.accept_new_goal()
     #Check if the file exists
-    file_path_string = "src/baxter_gbi_pbr/RecordedFile/"+req.msg.filename
+    file_path_string = rospack.get_path('baxter_gbi_pbr')+"/RecordedFile/"+req.msg.filename
     rospy.loginfo(file_path_string)
     if os.path.isfile(file_path_string) :
         global pb, playbacking, file_playback
         playbacking = True
         file_playback = file_path_string
-        pb.map_file(file_path_string, req.msg.loops, req.msg.scale_vel)
+        pb.map_file(file_path_string, req.msg.loops, req.msg.scale_vel, service1)
         playbacking = False
-        return 0
+        
+        service1.set_succeeded()
+	print("s")        
+	return 0
     else:
         rospy.logerr("The file doesn't exist!!")
         return 1
@@ -71,7 +79,8 @@ def playback_handler(req):
 # @returns isError: 0 on success, 1 on errors
 def record_start_handler(req):
     
-    global pb, playbacking, pause_state, file_playback, line_executed
+
+    global pb, playbacking, pause_state, file_playback, line_executed, rospack
     
     if playbacking == True and pause_state == 1:
         playbacking = False
@@ -79,7 +88,7 @@ def record_start_handler(req):
         
         msg = modify_playback()
         msg.old_filename = file_playback
-        msg.new_filename = "src/baxter_gbi_pbr/RecordedFile/"+req.filename
+        msg.new_filename = rospack.get_path('baxter_gbi_pbr')+"/RecordedFile/"+req.filename
         msg.mode = "start"
         msg.line_number = line_executed
         msg.record_rate = req.record_rate
@@ -99,7 +108,7 @@ def record_start_handler(req):
          
         msg = record_status()
         
-        msg.filename = "src/baxter_gbi_pbr/RecordedFile/"+req.filename
+        msg.filename = rospack.get_path('baxter_gbi_pbr')+"/RecordedFile/"+req.filename
         msg.mode = "start"
         msg.record_rate = req.record_rate
         pub.publish(msg)
@@ -158,7 +167,7 @@ def reach_goal_handler(req):
     
     if req.limb == "left" or req.limb == "right":
         arm = Limb(req.limb)
-        solver = NewLimbMover(limb)
+        solver = NewLimbMover(req.limb)
         
         #Define the final goal
         pos = []
@@ -178,6 +187,9 @@ def reach_goal_handler(req):
             if (solver.iksolve(pos) == True):
                 print("Solution is: "+str(solver.target_jts_dict))
                 arm.move_to_joint_positions(solver.target_jts_dict)
+                return 0
+    return 1
+
     
 
 
@@ -235,7 +247,10 @@ def pbr_server_baxter():
     rospy.loginfo("Enabling robot... ")
     rs.enable()
 
-    service1 = rospy.Service('playback', Playback, playback_handler)
+    global service1
+    #service1 = rospy.Service('playback', Playback, playback_handler)
+    service1 = actionlib.simple_action_server.SimpleActionServer('playback', playbackAction, playback_handler,False)
+    service1.start()
     service2 = rospy.Service('record_stop', RecordStop, record_stop_handler)
     service3 = rospy.Service('record_start', RecordStart, record_start_handler)
     service4 = rospy.Service('gripper', Gripper, gripper_handler)

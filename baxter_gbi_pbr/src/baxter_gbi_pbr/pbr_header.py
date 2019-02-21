@@ -10,6 +10,7 @@ import baxter_interface
 
 from baxter_interface import CHECK_VERSION
 from baxter_gbi_pbr_srvs.srv import *
+from baxter_gbi_pbr_msgs.msg import *
 from pbr_header import *
 
 
@@ -61,7 +62,7 @@ class PlaybackObj(object):
     # formats each line into a controller command in the form of
     # name/value pairs. Names come from the column headers
     # first column is the time stamp
-    def map_file(self, filename, loops=1, scale_vel=100):
+    def map_file(self, filename, loops=1, scale_vel=100, service=None):
         left = baxter_interface.Limb('left')
         right = baxter_interface.Limb('right')
         grip_left = baxter_interface.Gripper('left', CHECK_VERSION)
@@ -103,7 +104,10 @@ class PlaybackObj(object):
             number_lines = 0
             
             while ((number_lines < len(lines)-1) and self.stop == 0):
-            
+            	feedback = playbackFeedback()
+                feedback.percent_complete = 10.0
+                service.publish_feedback(feedback)
+
                 if self.pause_state == 0:
                     number_lines += 1
                     

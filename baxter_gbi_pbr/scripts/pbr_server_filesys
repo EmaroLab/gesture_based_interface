@@ -20,6 +20,9 @@ from baxter_interface import CHECK_VERSION
 from baxter_gbi_pbr_srvs.srv import *
 from baxter_gbi_pbr import pbr_header
 
+global rospack
+rospack = rospkg.RosPack()
+
 ## Service used to provide the entire list of the recorded files.
 #   
 # @returns n_files: number of records.
@@ -31,9 +34,8 @@ def list_files_handler(req):
 
     resp = ListFilesResponse()
     
-    rospy.loginfo(os.getcwd())
     #TODO -> With roslaunch the current directory changes !!!
-    path = "src/baxter_gbi_pbr/RecordedFile"
+    path = rospack.get_path('baxter_gbi_pbr')+"/RecordedFile/"
     files = os.listdir(path)
     
     
@@ -56,7 +58,7 @@ def list_files_handler(req):
 # @returns isError: 0 on success, 1 on error.
 def delete_file_handler(req):
     
-    file_path_string = "src/baxter_gbi_pbr/RecordedFile/"+req.filename
+    file_path_string = rospack.get_path('baxter_gbi_pbr')+"/RecordedFile/"+req.filename
         
     if os.path.isfile(file_path_string) :
         os.remove(file_path_string)
@@ -75,7 +77,7 @@ def delete_file_handler(req):
 #
 # @returns isError: 0 on success, 1 on error.
 def rename_file_handler(req):
-    path = "src/baxter_gbi_pbr/RecordedFile/"
+    path = rospack.get_path('baxter_gbi_pbr')+"/RecordedFile/"
     
     if os.path.isfile(path+req.old_filename) :
         os.rename(path+req.old_filename,path+req.new_filename)

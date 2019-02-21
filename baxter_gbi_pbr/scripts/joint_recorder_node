@@ -4,6 +4,7 @@ import argparse
 
 import rospy
 import sys
+import os
 
 import baxter_interface
 from baxter_gbi_pbr import JointRecorder
@@ -11,7 +12,6 @@ from baxter_gbi_pbr import JointRecorder
 from baxter_interface import CHECK_VERSION
 from baxter_gbi_pbr_msgs.msg import record_status, modify_playback
 
-import os
 
 
 ## joint_recorder_node
@@ -65,8 +65,6 @@ def callback_recording(data):
 # @returns isError: 0 on success, 1 on errors        
 def callback_modify_playback(data):
     
-    rospy.logwarn(os.getcwd())
-    
     rospy.loginfo("Called modify_playback!!")
     rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.mode)
     
@@ -91,7 +89,7 @@ def callback_modify_playback(data):
             #TODO -> change name
             if(f1 == f2):
                 to_rename = True
-                f2 = "src/baxter_gbi_pbr/RecordedFile/modify_old12345.baxter" #change it!!
+                f2 = "/sofar_ws/src/baxter_gbi_pbr/RecordedFile/modify_old12345.baxter" #change it!!
 
             file_to_copy = open(f1,"r")
             file_new = open(f2, "w+")
@@ -123,7 +121,6 @@ def callback_modify_playback(data):
 
 ## Node used for the recording mode.
 def main():
-    
     rospy.loginfo("Initializing node... ")
     rospy.init_node('joint_recorder_node', anonymous=True)
     rospy.Subscriber("recording_status", record_status, callback_recording)
