@@ -19,5 +19,5 @@ Using the Kinect 360, we estimate a human in the environment by statistical mean
 * Ros Melodic
 * Kinect 360 or equivalent
 
-## Node
+## Node:
 * position_estimation
