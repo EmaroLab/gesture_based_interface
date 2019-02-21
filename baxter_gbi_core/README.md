@@ -12,3 +12,6 @@
 ## Package content
 
 This package contains the *core* node
+
+## Nodes
+* core

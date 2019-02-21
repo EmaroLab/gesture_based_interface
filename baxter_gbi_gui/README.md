@@ -10,3 +10,6 @@
 ## Package content
 
 This package contains the *gui* node
+
+## Nodes 
+* gui

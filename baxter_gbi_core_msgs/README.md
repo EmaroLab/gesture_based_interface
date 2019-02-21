@@ -6,9 +6,9 @@
 |------|--------|
 | Patrick Roncagliolo | roncapat@gmail.com |
 
-## Package content
+## Message
 
-This package contains the structure of the message *status.msg*:
+* status.msg
 ```
 std_msgs/Header header
 string context_type

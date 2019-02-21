@@ -1,4 +1,4 @@
-cd ..## baxter_gbi_input_msgs
+## baxter_gbi_input_msgs
 
 ## Authors
 
@@ -6,9 +6,7 @@ cd ..## baxter_gbi_input_msgs
 |------|--------|
 | Patrick Roncagliolo | roncapat@gmail.com |
 
-## Package content
-
-This package contains the structure of the following messages:
+## Message
 * signal.msg:
 ```
 std_msgs/Header header
