@@ -1,4 +1,4 @@
-# Kinect Pcl Tools
+# Beacon Transforms Srvs
 
 ## Authors
 | Name | E-mail |
@@ -11,9 +11,7 @@
 # Requirements:
 * Linux Ubuntu 18.04
 * Ros Melodic
-* Kinect 360 or equivalent
 
-# Nodes:
-* pcl_record
-* pcl_background_segmentation
-* pcl_filter
+# Services:
+* MoveBeacon
+* SetRadius

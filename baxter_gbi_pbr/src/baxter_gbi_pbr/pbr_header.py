@@ -13,8 +13,6 @@ from baxter_gbi_pbr_srvs.srv import *
 from baxter_gbi_pbr_msgs.msg import *
 from pbr_header import *
 
-
-
 class PlaybackObj(object):
 
     def __init__(self):

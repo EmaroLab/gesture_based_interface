@@ -5,8 +5,6 @@
  * @file
  */
 
-
-
 /**@brief Class for tracking the head from the Kinect
  * 
  * The position of the head (info in /odometry/kinect/head) is followed by the Kinect. In particular, the Kinect changes its tilt angle and the ranges 
@@ -40,8 +38,8 @@ public:
 	}
 
 	protected:
-		ros::ServiceClient client_move; 
-		ros::NodeHandle nh;
+		ros::NodeHandle nh; /**< Node Handle */
+		ros::ServiceClient client_move; /**< Client for the service regulate_kinect_by_head */
 		ros::Subscriber head_sub; /**< Subscriber to /odometry/kinect/head */
 };
 /**

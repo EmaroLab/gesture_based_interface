@@ -1,45 +1,45 @@
 # Gesture-based interface for Baxter Robot
 
 ## Authors
-* Antonino Bongiovanni: antoniobongio@gmail.com
-* Alessio De Luca: alessio.deluca.iic96d@gmail.com
-* Luna Gava: lunagava@me.com
-* Alessandro Grattarola: alessandro.grt@gmail.com
-* Lucrezia Grassi: lucre.grassi@gmail.com
-* Marta Lagomarsino: marta.lago@hotmail.it
-* Marco Lapolla: marco.lapolla5@gmail.com
-* Antonio Marino: marinoantonio96@gmail.com
-* Patrick Roncagliolo: roncapat@gmail.com
-* Federico Tomat: tomatfede@gmail.com
-* Giulia Zaino: giuliazaino46@gmail.com
+| Name | E-mail |
+|------|--------|
+| Antonino Bongiovanni | antoniobongio@gmail.com |
+| Alessio De Luca | alessio.deluca.iic96d@gmail.com |
+| Luna Gava| lunagava@me.com |
+| Alessandro Grattarola | alessandro.grt@gmail.com |
+| Lucrezia Grassi | lucre.grassi@gmail.com |
+| Marta Lagomarsino | marta.lago@hotmail.it |
+| Marco Lapolla | marco.lapolla5@gmail.com |
+| Antonio Marino | marinoantonio96@gmail.com |
+| Patrick Roncagliolo | roncapat@gmail.com |
+| Federico Tomat | tomatfede@gmail.com |
+| Giulia Zaino | giuliazaino46@gmail.com |
 
 ## Download instructions
-```
-# Install git
-sudo apt install git
-# Create workspace and clone whole project
-mkdir ~/sofar_ws
-cd ~/sofar_ws
-git clone https://github.com/EmaroLab/gesture_based_interface.git src
-cd src
-git submodule init
-git submodule update
-# Install required stuff
-. prerequisites.sh
+Copy/paste this single line in a Ubuntu terminal. 
 
-cd ~/sofar_ws
-# Issue first clean build - It will probably fail at some point 
-# due to not yet accepted android sdk licenses
-. src/clean_build.sh
-# Accept all sdk licenses
-yes | sdkmanager --licences
-# Complete first build
-. src/build.sh
-# Link baxter environment loader
-ln -s src/baxter/baxter.sh ./baxter.sh
-ln -s src/build.sh ./build.sh
-ln -s src/clean_build.sh ./clean_build.sh
+This will transform a clean Ubuntu installation in a 100% production-ready system.
 ```
+bash <(wget -qO- https://gist.githubusercontent.com/roncapat/92b6d76c29e5ad35e0647bc6c8c5630f/raw/3e4438901b470a8968e598fdc028d0c4a489da5a/web_installer.sh)
+```
+
+NB: when the repository will go public, this will also work:
+```
+bash <(wget -qO- https://raw.githubusercontent.com/EmaroLab/gesture_based_interface/master/prerequisites.sh)
+```
+
+## Development tools
+| Script           | Folders        | Function                                                         |
+| ---------------- | -------------- | ---------------------------------------------------------------- |
+| web_installer.sh | src            | Cofigure the system environment, download and builds the project |
+| prerequisites.sh | src            | Cofigure the system environment                                  |
+| clean_build.sh   | workspace, src | Rebuild the project from scratch                                 |
+| build.sh         | workspace, src | Incremental build                                                |
+| baxter.sh        | workspace      | Enter the Baxter virtual environment                             | 
+
+We advise to use `./build.sh` or `./clean_build.sh` in place of `catkin_make`. 
+
+Note: they can be used both in the `sofar_ws` workspace or in the `src` subfolder.
 
 ## How to run the simulator
 Enter in the workspace
@@ -83,24 +83,9 @@ roscore
 ```
 Launch nodes for the Kinect
 ```
-roslaunch openni_launch openni.launch device_id:=A00362A07684107A
+roslaunch openni_launch openni.launch device_id:=<device id>
+roslaunch baxter_gbi_safety_monitor kinect_to_fsm.launch
 ```
-Configuration: generation of environments according to the orientation angle of the Kinect
 ```
-roslaunch kinect_pcl_tools configuration.launch
-```
-Estimation of the position of human's center of mass
-```
-roslaunch kinect_pcl_tools kinect_to_fsm.launch
-```
-Service for setting the orientation angle of the Kinect: 
-A node inside the package kinect_setup publishes the angle on the topic tilt_angle
-```
-rosservice call /move_kinect "angle: <float>"
-```
-
-```
-rviz -> topic : /camera/pcl_filtered
-	fixed frame: world_frame
-	orbit: fixed frame (on the right)
+Rviz, if the Baxter is not shown, run "export LC_NUMERIC='en_US.UTF-8'" on the shell
 ```

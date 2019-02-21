@@ -19,8 +19,7 @@ ros::Publisher pub;  /**< Publisher to /odometry/shadow/<passed frame> */
  * Main function: 
  * - create a TF broadcaster in order to fix the transformation from the frame attached in correspondence of the computed center of mass and the joint frame, passed as parameter (right hand frame, useful for the shadow motion of the Baxter). 
  * - publish odometry of the joint frame, passed as parameter, with respect to the center of mass.
- * @param[in]  frame    string that identifies the joint frame
- * 
+ * @param[in]  frame    string that identifies the joint frame 
  */
 int main(int argc, char** argv)
 {

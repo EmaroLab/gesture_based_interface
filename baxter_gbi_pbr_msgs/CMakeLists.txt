@@ -1,9 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(baxter_gbi_pbr_msgs)
 
-find_package(catkin
-  REQUIRED
-  COMPONENTS
+find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   nav_msgs
   message_generation
@@ -12,11 +10,11 @@ find_package(catkin
 )
 
 add_message_files(
-   FILES
-   playback_msg.msg
-   record_status.msg
-   mirror_end_effector.msg
-   modify_playback.msg
+  FILES
+  playback_msg.msg
+  record_status.msg
+  mirror_end_effector.msg
+  modify_playback.msg
 )
 
 add_action_files(

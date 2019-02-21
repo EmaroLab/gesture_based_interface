@@ -1,9 +1,7 @@
-package org.ros.android.android_wear_pub;
+package com.github.emaro.imu_wear;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -15,7 +13,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import org.ros.android.RosActivity;
-import org.ros.android.android_wear_pub.ImuPublisher;
+
+import com.github.emaro.imu_wear.R;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
 

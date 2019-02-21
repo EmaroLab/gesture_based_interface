@@ -1,4 +1,4 @@
-package org.ros.android.android_wear_pub;
+package com.github.emaro.imu_wear;
 
 import org.ros.internal.message.RawMessage;
 
