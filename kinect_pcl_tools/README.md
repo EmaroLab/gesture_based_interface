@@ -12,12 +12,12 @@
 
 This package contains the nodes to manage and filter the pointclouds acquired by the Kinect.
 
-# Requirements:
+## Requirements
 * Linux Ubuntu 18.04
 * Ros Melodic
 * Kinect 360 or equivalent
 
-# Nodes:
+## Nodes
 * pcl_record
 * pcl_background_segmentation
 * pcl_filter
