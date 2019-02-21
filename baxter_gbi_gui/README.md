@@ -1,4 +1,4 @@
-## baxter_gbi_gui
+# Baxter GBI GUI
 
 ## Authors
 
@@ -11,5 +11,5 @@
 
 This package contains the *gui* node
 
-## Nodes 
+## Node
 * gui
