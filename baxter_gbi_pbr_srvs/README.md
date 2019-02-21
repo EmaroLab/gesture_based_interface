@@ -1,4 +1,4 @@
-## baxter_gbi_pbr_srvs
+# Baxter GBI PBR Services
 
 ## Authors
 
