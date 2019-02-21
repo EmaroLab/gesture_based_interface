@@ -15,7 +15,7 @@ from graphviz import Digraph
 import std_msgs
 
 ##  class FSMThread 
-#   inerithed form threaing.Thread 
+#   inherited form threaing.Thread 
 class FSMThread(threading.Thread):
     ## the constructor
     def __init__(self):
