@@ -54,16 +54,14 @@ def mirror_callback(data):
     pos.y = data.position.y
     pos.z = data.position.z
     
-    global solver
+    global solver, file_output
         
     if (solver.iksolve(pos) == True):
         print("Solution is: "+str(solver.target_jts_dict))
         arm.move_to_joint_positions(solver.target_jts_dict)
+        resp = arm.endpoint_pose()
 
-    global file_output
-    resp = arm.endpoint_pose()
-    
-    #file_output.write(str(resp['position'].x)+","+str(resp['position'].y)+","+str(resp['position'].z)+"\n")
+        file_output.write(str(resp['position'].x)+","+str(resp['position'].y)+","+str(resp['position'].z)+"\n")
 
   
 ##Main of the node. Takes the information from the topic and move the baxter end effector based on those values.
@@ -81,7 +79,7 @@ def mirror_server():
     
     
     global file_output
-    file_output = open("baxter_data.csv","w+")
+    file_output = open("baxter_left_data.csv","w+")
     
 
     global arm, limb
@@ -93,7 +91,7 @@ def mirror_server():
     rospy.Subscriber("mirror_end_effector_left", mirror_end_effector, mirror_callback)
     
     def clean_shutdown():
-        rospy.loginfo("\nExiting example...")
+        rospy.loginfo("\nExiting mirror node...")
         if not init_state:
             rospy.loginfo("Disabling robot...")
             rs.disable()

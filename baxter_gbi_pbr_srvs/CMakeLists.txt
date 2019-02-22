@@ -24,6 +24,7 @@ add_service_files(
   CalibrateMirror.srv
   EnableMirroring.srv
   PauseResume.srv
+  GoToStart.srv
 )
 
 

@@ -61,7 +61,7 @@ class PlaybackObj(object):
     # and processed. Reads each line, split up in columns and
     # formats each line into a controller command in the form of
     # name/value pairs. Names come from the column headers
-    # first column is the time stamp
+	
     def map_file(self, filename, loops=1, scale_vel=100, service=None):
         left = baxter_interface.Limb('left')
         right = baxter_interface.Limb('right')
@@ -138,6 +138,11 @@ class PlaybackObj(object):
                         rate.sleep()
                     rospy.loginfo("-- "+str(rospy.get_time()))
                     
-                    self.line_executed = number_lines                    
-                
+                    self.line_executed = number_lines                   
+ 
+        rospy.loginfo("Moving to start position...")
+
+        _cmd, lcmd_start, rcmd_start, _raw = self.clean_line(lines[len(lines)-1], keys)
+        left.move_to_joint_positions(lcmd_start)
+        right.move_to_joint_positions(rcmd_start)
         return True

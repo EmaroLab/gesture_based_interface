@@ -23,15 +23,16 @@ from baxter_interface import CHECK_VERSION, Limb
 from baxter_gbi_pbr_srvs.srv import *
 from baxter_gbi_pbr import *
 
-from baxter_gbi_pbr.limb_mover import NewLimbMover
-
 ## Global Variables used to manage all the services.
 
 
 global pb, playbacking, starting_pause, pause_state
 global file_playback, line_executed #Information for recording after playback
-global rospack
+global folder_path, extension
 rospack = rospkg.RosPack()
+folder_path = rospack.get_path('baxter_gbi_pbr')+"/../../PBR_storage/"
+extension = ".baxter"
+
 line_executed = 0
 pause_state = 0
 starting_pause = 0
@@ -49,17 +50,18 @@ def playback_handler(req):
 
     rospy.loginfo("Called!!!")
 
-    global rospack, service1
+    global folder_path, extension, service1
     
     service1.accept_new_goal()
     #Check if the file exists
-    file_path_string = rospack.get_path('baxter_gbi_pbr')+"/RecordedFile/"+req.msg.filename
+    file_path_string = folder_path+req.msg.filename+extension
     rospy.loginfo(file_path_string)
     if os.path.isfile(file_path_string) :
         global pb, playbacking, file_playback
         playbacking = True
         file_playback = file_path_string
         pb.map_file(file_path_string, req.msg.loops, req.msg.scale_vel, service1)
+
         playbacking = False
         
         service1.set_succeeded()
@@ -80,15 +82,15 @@ def playback_handler(req):
 def record_start_handler(req):
     
 
-    global pb, playbacking, pause_state, file_playback, line_executed, rospack
+    global pb, playbacking, pause_state, file_playback, line_executed, folder_path, extension
     
     if playbacking == True and pause_state == 1:
         playbacking = False
         pause_state = 0
         
         msg = modify_playback()
-        msg.old_filename = file_playback
-        msg.new_filename = rospack.get_path('baxter_gbi_pbr')+"/RecordedFile/"+req.filename
+        msg.old_filename = file_playback+extension
+        msg.new_filename = folder_path+req.filename+extension
         msg.mode = "start"
         msg.line_number = line_executed
         msg.record_rate = req.record_rate
@@ -108,7 +110,7 @@ def record_start_handler(req):
          
         msg = record_status()
         
-        msg.filename = rospack.get_path('baxter_gbi_pbr')+"/RecordedFile/"+req.filename
+        msg.filename = folder_path+req.filename+extension
         msg.mode = "start"
         msg.record_rate = req.record_rate
         pub.publish(msg)
@@ -226,6 +228,25 @@ def pause_resume_handler(req):
         rospy.logwarn("Playback is stop running!")
         return 1
 
+def go_to_start_position(req):
+    left_arm = Limb("left")
+    right_arm = Limb("right")
+    
+    start_pos = open(folder_path+"Start_position.baxter", "r")
+
+    lines = start_pos.readlines()
+    
+    lines[0] = lines[0].rstrip().split(',')
+    lines[1] = [float(x) for x in lines[1].rstrip().split(',')]
+    lines[2] = lines[2].rstrip().split(',')
+    lines[3] = [float(x) for x in lines[3].rstrip().split(',')]
+
+    rospy.logwarn("ajd ")
+    left_arm.move_to_joint_positions(dict(zip(lines[0],lines[1])))
+    right_arm.move_to_joint_positions(dict(zip(lines[2],lines[3])))
+    
+    return 0
+
 ## Main of the node. It makes available the services and wait for requests.
 def pbr_server_baxter():
     
@@ -256,6 +277,7 @@ def pbr_server_baxter():
     service4 = rospy.Service('gripper', Gripper, gripper_handler)
     service5 = rospy.Service('reach_goal', ReachGoal, reach_goal_handler)
     service6 = rospy.Service('pause_resume', PauseResume, pause_resume_handler)
+    service7 = rospy.Service('go_to_start_pos', GoToStart, go_to_start_position)
     rospy.loginfo("PBR node executed -> providing playback/record services.")
 
     def clean_shutdown():
