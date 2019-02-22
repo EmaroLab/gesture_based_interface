@@ -33,7 +33,7 @@ extension = ".baxter"
 # @returns isError: 0 on success, 1 on errors
 def callback_recording(data):
     
-    rospy.loginfo("Called!!")
+    rospy.loginfo("Recorder Callback Called!!")
     rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.mode)
     global recorder, state, rate, go_to_start_pos, extension
     if data.mode == "stop":

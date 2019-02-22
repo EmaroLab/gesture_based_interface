@@ -48,7 +48,7 @@ pb = PlaybackObj()
 def playback_handler(req):
 
 
-    rospy.loginfo("Called!!!")
+    rospy.loginfo("Playback Called!!!")
 
     global folder_path, extension, service1
     
@@ -84,6 +84,8 @@ def record_start_handler(req):
 
     global pb, playbacking, pause_state, file_playback, line_executed, folder_path, extension
     
+    rospy.loginfo("Record Start Service Called!!")
+
     if playbacking == True and pause_state == 1:
         playbacking = False
         pause_state = 0
@@ -126,7 +128,7 @@ def record_start_handler(req):
 # @returns isError: 0 on success, 1 on errors
 def record_stop_handler(req):
     
-    rospy.loginfo("Called !!!")
+    rospy.loginfo("Record Stop Service Called !!!")
     msg = record_status()
     msg.filename = " "
     msg.mode = "stop"
@@ -144,6 +146,8 @@ def record_stop_handler(req):
 # @returns isError: 0 on success, 1 on errors
 def gripper_handler(req):
     
+    rospy.loginfo("Gripper Service Called!!")
+
     global left_gripper, right_gripper
     
     if req.limb == "left":
@@ -167,6 +171,8 @@ def gripper_handler(req):
 # @returns isError: 0 on success, 1 on errors
 def reach_goal_handler(req):
     
+    rospy.loginfo("Reach Goal Service Called!!")
+
     if req.limb == "left" or req.limb == "right":
         arm = Limb(req.limb)
         solver = NewLimbMover(req.limb)
@@ -202,6 +208,8 @@ def reach_goal_handler(req):
 # @returns isError: 0 on success, 1 on errors
 def pause_resume_handler(req):
     
+    rospy.loginfo("Pause-Resume Service Called!!")
+
     global pb, playbacking, starting_pause, pause_state
     
     #Every time we change from Resume to Pause -> We start counting the the time passed, then we add it to the pb.paused_time when resuming
@@ -229,6 +237,9 @@ def pause_resume_handler(req):
         return 1
 
 def go_to_start_position(req):
+    
+    rospy.loginfo("Go To Start Position Service Called!!")
+
     left_arm = Limb("left")
     right_arm = Limb("right")
     

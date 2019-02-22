@@ -32,7 +32,7 @@ extension = ".baxter"
 # @returns isError: 0 on success, 1 on error.
 def list_files_handler(req):
     
-    rospy.loginfo("Called!!")
+    rospy.loginfo("List File Service Called!!")
 
     resp = ListFilesResponse()
     
@@ -48,8 +48,9 @@ def list_files_handler(req):
 
     for file in files:
         if file.endswith(".baxter"):
-            path, filename = os.path.split(file)
-            files_name.append(filename)
+            path, filename_with_extension = os.path.split(file)
+            filename = filename_with_extension.split(".")
+            files_name.append(filename[0])
     
     resp.list_files = files_name
     resp.isError = 0
@@ -62,6 +63,8 @@ def list_files_handler(req):
 # @returns isError: 0 on success, 1 on error.
 def delete_file_handler(req):
     
+    rospy.loginfo("Delete File Service Called!!")
+
     global folder_path, extension
     file_path_string = folder_path+req.filename+extension
         
@@ -83,6 +86,8 @@ def delete_file_handler(req):
 # @returns isError: 0 on success, 1 on error.
 def rename_file_handler(req):
     
+    rospy.loginfo("Rename File Service Called!!")
+
     global folder_path, extension
 
     if os.path.isfile(folder_path+req.old_filename+extension) :
@@ -98,7 +103,6 @@ def pbr_server_filesys():
 
     rospy.loginfo("Initializing node... ")
     rospy.init_node('pbr_server_filesys')
-
 
     service1 = rospy.Service('files', ListFiles, list_files_handler)
     service2 = rospy.Service('delete_file', DeleteFile, delete_file_handler)

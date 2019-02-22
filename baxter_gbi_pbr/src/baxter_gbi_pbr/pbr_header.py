@@ -105,7 +105,8 @@ class PlaybackObj(object):
             
             while ((number_lines < len(lines)-1) and self.stop == 0):
             	feedback = playbackFeedback()
-                feedback.percent_complete = 10.0
+                feedback.percent_complete = (number_lines/float((len(lines)-1))*100.0)/float(loops - l + 1)
+                rospy.loginfo("Complete:"+str(feedback.percent_complete))
                 service.publish_feedback(feedback)
 
                 if self.pause_state == 0:
@@ -145,4 +146,5 @@ class PlaybackObj(object):
         _cmd, lcmd_start, rcmd_start, _raw = self.clean_line(lines[len(lines)-1], keys)
         left.move_to_joint_positions(lcmd_start)
         right.move_to_joint_positions(rcmd_start)
+	rospy.loginfo("End Playback!")
         return True
