@@ -26,7 +26,7 @@ QVector<QPair<QString, QString>> TabContent::getSelectedTopics(){
 }
 
 void TabContent::addMapping(){
-    Mapping *mapping = new Mapping(model);
+  Mapping *mapping = new Mapping(model);
 	mappings.append(mapping);
 	ui->topicsContainer->addWidget(mapping);
 	connect(mapping, &Mapping::removed, this, &TabContent::removeMapping);

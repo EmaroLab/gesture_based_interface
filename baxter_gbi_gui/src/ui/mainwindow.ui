@@ -28,6 +28,31 @@
   <property name="styleSheet">
    <string notr="true">QMainWindow{
 	background-color:#FFE3E2;
+}
+
+QScrollBar:vertical{
+  border:1px solid #FF756E;
+  background: white;
+  width: 30px;
+  margin: 0px;
+}
+
+QScrollBar::handle:vertical{
+  background: #FF756E;
+}
+
+QScrollBar::add-line:vertical{
+ background: green;
+ height: 0px;
+ subcontrol-position:bottom;
+ subcontrol-origin:margin;
+}
+
+QScrollBar::sub-line:vertical{
+ background: blue;
+ height:0px;
+ subcontrol-position:top;
+ subcontrol-origin:margin;
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget">
