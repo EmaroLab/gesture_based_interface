@@ -39,10 +39,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(worker, &Worker::actionFrame, this, &MainWindow::showAction);
 
 	rosThread->start();
-	
-	connect(ui->configModeButton, &QPushButton::clicked, this, &MainWindow::__setConfigMode);
-	connect(ui->actionModeButton, &QPushButton::clicked, this, &MainWindow::__setActionMode);
-	connect(ui->menuModeButton, &QPushButton::clicked, this, &MainWindow::__setMenuMode);
 }
 
 MainWindow::~MainWindow(){
