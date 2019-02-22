@@ -78,11 +78,16 @@ Where, based on mode you can ask for a specific server (and you have to pass spe
 
 
 ## Kinect launcher
-```
-roscore
-```
 Launch nodes for the Kinect
 ```
 roslaunch openni_launch openni.launch device_id:=<device id>
 roslaunch baxter_gbi_safety_monitor kinect_to_fsm.launch
+```
+In order to launch the mirroring mode
+```
+roslaunch baxter_gbi_safety_monitor shadow_function.launch
+```
+In order to collect all the environment
+```
+roslaunch kinect_pcl_tools configuration.launch
 ```
