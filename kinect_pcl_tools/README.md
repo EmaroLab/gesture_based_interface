@@ -1,21 +1,23 @@
-# kinect_pcl_tools
+# Kinect Pcl Tools
 
-This project was done for the coursework of Software Architecture by Marco Lapolla, Marta Lagomarsino, Alessandro Grattarola, Federico Tomat.
-The aim of this work is to determine the pose of a human.
+## Authors
+| Name | E-mail |
+|------|--------|
+| Alessandro Grattarola | alessandro.grt@gmail.com |
+| Marta Lagomarsino | marta.lago@hotmail.it |
+| Marco Lapolla | marco.lapolla5@gmail.com |
+| Federico Tomat | tomatfede@gmail.com |
 
-Using the Kinect 360, we would like to locate a human in the environment by estimating the position of his center of mass.
+## Package Content
 
-# Requirements:
+This package contains the nodes to manage and filter the pointclouds acquired by the Kinect.
+
+## Requirements
 * Linux Ubuntu 18.04
 * Ros Melodic
 * Kinect 360 or equivalent
 
-# Setup:
-
-It is requested to install [freenect]
-
-# Launching the nodes:
-You can start the all the nodes by launching:
-```
-roslaunch kinect_pcl_tools kinect_to_fsm.launch
-```
+## Nodes
+* pcl_record
+* pcl_background_segmentation
+* pcl_filter

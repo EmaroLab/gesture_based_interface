@@ -11,9 +11,10 @@
 using namespace std;
 
 // Parameters
-double security_distance = 1.5;
+/** Distance to avoid security risks */
+double security_distance = 1.5; 
+/** Small threshold for checking attention */
 double threshold = 0.7;
-
 
 /** @brief Class to send the activate signal to the control board and the proximity alert
  * 
@@ -80,15 +81,15 @@ class KinectActivate{
     }
 
 protected:
-	tf::Pose pose;				/**< Current Odometry of the head */
-	double yaw;					/**< Yaw angle of the head frame */
+	tf::Pose pose; /**< Current Odometry of the head */
+	double yaw;	/**< Yaw angle of the head frame */
 	
 	// Flags
-	bool beacon_presence = false;
-	bool attention = false;
-	bool secure = true;
+	bool beacon_presence = false; /**< Flag for identifying the presence of a human in the area, detected by beacons */
+	bool attention = false;	/**< Flag for attention */
+	bool secure = true;	/**< Flag for security */
 	
-    ros::NodeHandle nh;			/**< Private node handler */
+    ros::NodeHandle nh;	/**< Private Node Handle */
     ros::Subscriber beacon_sub;  /**< Subscriber to /beacon/presence */
     ros::Subscriber head_sub;  /**< Subscriber to /odometry/kinect/head */
     ros::Subscriber com_sub;  /**< Subscriber to /odometry/kinect/center_of_mass */ 

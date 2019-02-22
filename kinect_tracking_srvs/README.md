@@ -1,12 +1,19 @@
-# Kinect Setup
+# Kinect Tracking Services
 
+## Authors
+| Name | E-mail |
+|------|--------|
+| Alessandro Grattarola | alessandro.grt@gmail.com |
+| Marta Lagomarsino | marta.lago@hotmail.it |
+| Marco Lapolla | marco.lapolla5@gmail.com |
+| Federico Tomat | tomatfede@gmail.com |
 
-
-# Requirements:
+## Requirements
 * Linux Ubuntu 18.04
 * Ros Melodic
 * Kinect 360
 
-# Setup:
-
-It is requested to install [freenect].
+## Services
+* MoveKinect
+* RegulateKinectByHead
+* RegulateKinectByWrist

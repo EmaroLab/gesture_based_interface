@@ -187,7 +187,9 @@ main(int argc, char** argv)
 		else{
 			msg_for_rviz_visualization.color.a = 0.2; 		//Opacity
 		}
-		msg_for_rviz_visualization.pose.position.z = -z_beacon;
+		
+		//1.0m  is the distance from Baxter's world frame and the ground
+		msg_for_rviz_visualization.pose.position.z = -z_beacon-1.0; 
 		msg_for_rviz_visualization.header.stamp = ros::Time();
 		msg_for_rviz_visualization.scale.x = radius_presence;
 		msg_for_rviz_visualization.scale.y = radius_presence;

@@ -15,12 +15,12 @@
  
 using namespace std;
 
-std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr> backgrounds (61);
-pcl::PointCloud<pcl::PointXYZ>::Ptr actualImage(new pcl::PointCloud<pcl::PointXYZ>);
+/** Backgrounds acquired before according to the angle of the Kinect */		std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr> backgrounds (61);
+/** Actual Point Cloud acquired by the Kinect */	pcl::PointCloud<pcl::PointXYZ>::Ptr actualImage(new pcl::PointCloud<pcl::PointXYZ>);
 
-double delta = 0.08;
-int granularity = 1;
-int angle = 0;
+/** Sensitivity of the segmentation */				double delta = 0.08;
+/** Angle step between two consecutive records */	int granularity = 1;
+/** Current tilt angle of the Kinect */				int angle = 0;
 
 /** @brief Class to implement Background Segmentation
  * 
@@ -74,8 +74,8 @@ class PclBackgroundSegmentation{
     }
 
 protected:
-	sensor_msgs::PointCloud2 output;
-    ros::NodeHandle nh;
+	sensor_msgs::PointCloud2 output; /**< Output point cloud of the background segmentation */
+    ros::NodeHandle nh; /**< Node Handle */
     ros::Subscriber pcl_sub;  /**< Subscriber to /camera/depth/points */
     ros::Subscriber angle_sub;  /**< Subscriber to /cur_tilt_angle */
     ros::Publisher pcl_pub;  /**< Publisher of filtered point cloud on /camera/pcl_background_segmentation */

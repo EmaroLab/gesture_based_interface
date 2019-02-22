@@ -4,17 +4,17 @@
   <version>0.0.0</version>
   <description>The BaxterGBI_core package</description>
 
-  <maintainer email="roncapat@gmail.com">Patrick Roncagliolo</maintainer>
   <maintainer email="antoniobongio@gmail.com">Antonino Bongiovanni</maintainer>
-  <maintainer email="marinoantonio96@gmail.com">Antonio Marino</maintainer>
   <maintainer email="lucre.grassi@gmail.com">Lucrezia Grassi</maintainer>
+  <maintainer email="marinoantonio96@gmail.com">Antonio Marino</maintainer>
+  <maintainer email="roncapat@gmail.com">Patrick Roncagliolo</maintainer>
 
   <license>GPLv3</license>
 
-  <author email="roncapat@gmail.com">Patrick Roncagliolo</author>
   <author email="antoniobongio@gmail.com">Antonino Bongiovanni</author>
-  <author email="marinoantonio96@gmail.com">Antonio Marino</author>
   <author email="lucre.grassi@gmail.com">Lucrezia Grassi</author>
+  <author email="marinoantonio96@gmail.com">Antonio Marino</author>
+  <author email="roncapat@gmail.com">Patrick Roncagliolo</author>
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>rospy</build_depend>

@@ -6,11 +6,15 @@
 #include "kinect_filter_srvs/SetFilter.h"
 #include <cmath>
 #include <std_srvs/Empty.h>
+#include <std_msgs/Float64.h>
 #include <iostream>
 #include <unistd.h>
 #include <sys/types.h>
 #include <string>
-
+/** 
+ * Current tilt angle of the Kinect
+*/
+int current_angle = 0;
 /** 
  * Publisher, to control the tilt angle of the Kinect
 */
@@ -66,7 +70,7 @@ bool regulateWrist(kinect_tracking_srvs::RegulateKinectByWrist::Request  &req,
 	float y = req.y;
 	float z = req.z;
 	
-	float angle = -1 * atan(y/z) * 180 / M_PI;
+	float angle = current_angle -1 * atan(y/z) * 180 / M_PI;
 	float min_z = z - 0.50;
 	float max_z = z + 0.50;
 	float min_y = y - 1.50;
@@ -107,7 +111,7 @@ bool regulateHead(kinect_tracking_srvs::RegulateKinectByHead::Request  &req,
 	float y = req.y;
 	float z = req.z;
 	
-	float angle = -1 * atan(y/z) * 180 / M_PI;
+	float angle = current_angle -1 * atan(y/z) * 180 / M_PI;
 	
 	float min_z = z - 0.50;
 	float max_z = z + 0.15;
@@ -176,7 +180,14 @@ bool resetKinect(std_srvs::Empty::Request& request, std_srvs::Empty::Response& r
 
 	return true;
 }
-
+/** Callback to get the current tilt angle of the Kinect
+ */
+void angleCB(const std_msgs::Float64& angle_msg){
+	if(angle_msg.data <= 30.0 && angle_msg.data >= -30.0)
+	{
+		current_angle = floor(angle_msg.data);
+	}
+}
 /**
  * Main: 
  * Initialization of the parameter 
@@ -205,7 +216,8 @@ int main(int argc, char** argv)
 	// Acquire param
 	ros::NodeHandle nh("~");
     n.param<int>("initial_angle", initial_angle, 0);
-    
+    ros::Subscriber angle_sub = nh.subscribe("/cur_tilt_angle",10,angleCB);
+	
     ros::spin();
 
     return 0;
