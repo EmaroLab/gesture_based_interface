@@ -18,7 +18,7 @@ class SequenceMenuState(MenuState):
                            trigger_event,
                            'Sequence menu',
                            input_keys=['sequence_idx', 'sequence_filename'],
-                           output_keys=['sequence','m_index'])
+                           output_keys=['sequence'])
 
         self.sequence = ["Add"]
 
@@ -40,7 +40,7 @@ class SequenceMenuState(MenuState):
                     del self.sequence[userdata.sequence_idx]
         except KeyError:
             pass
-        self.userdata.sequence = self.sequence[:-1]
+        userdata.sequence = self.sequence[:-1]
         return self.sequence
 
     ## method update_variable_options

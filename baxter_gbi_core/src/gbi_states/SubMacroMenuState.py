@@ -17,6 +17,7 @@ class SubMacroMenuState(MenuState):
                            trigger_event,
                            'Macro menu - selection',
                            input_keys=['macro_idx'],
+                           output_keys=['macro_idx_out'],
                            fixed_options=['back', 'clean'])
         self.list = rospy.ServiceProxy('files', ListFiles)
 
@@ -26,10 +27,15 @@ class SubMacroMenuState(MenuState):
     #  override of MenuState.update_variable_options
     #  update the variable options of the menu
     def update_variable_options(self, userdata):
+        userdata.macro_idx_out = userdata.macro_idx
         list = self.list()
         return list.list_files
-    
-    ## method on_fixed_selection
+
+    def on_variable_selection(self, index, item, userdata):
+        userdata.selection = item
+        return 'selection'
+
+        ## method on_fixed_selection
     #  @param userdata 
     #  @param index
     #  @param item

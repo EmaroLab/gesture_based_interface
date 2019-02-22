@@ -29,6 +29,10 @@ class SubSequenceMenuState(MenuState):
         userdata.sequence_idx=userdata.sequence_idx_in
         list = self.list()
         return list.list_files  # TODO: ask PBR the list of files
+    
+    def on_variable_selection(self, index, item, userdata):
+        userdata.selection = item
+        return 'selection'
 
     ## method on_fixed_selection
     #  @param userdata 

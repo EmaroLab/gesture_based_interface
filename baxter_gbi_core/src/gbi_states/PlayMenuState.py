@@ -18,7 +18,7 @@ class PlayMenuState(MenuState):
                            outcomes,
                            trigger_event,
                            'Playback menu',
-                           fixed_options=['back'])
+                           fixed_options=['back','remove'])
 
         self.list = rospy.ServiceProxy('files', ListFiles)
 
@@ -28,12 +28,16 @@ class PlayMenuState(MenuState):
     #  override of MenuState.update_variable_options
     #  update the variable options of the menu
     def update_variable_options(self, userdata):
-        if self.preempt_requested():
-            return 'preempted'
-        event_id = self._trigger_event.wait()
-        if self.preempt_requested():
-            return 'preempted'
         # call a service to ask and recieve the data
         # or parameter server or message
-        list=self.list()
-        return list.list_files  # TODO: ask PBR the list of files
+        try:
+            list = self.list()
+            print list
+            return list.list_files
+        except rospy.ServiceException, e:
+            print "Service call failed: %s"%e
+            return []
+
+    def on_variable_selection(self, index, item, userdata):
+        userdata.selection = item
+        return 'selection'

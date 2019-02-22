@@ -8,7 +8,7 @@
 import argparse
 import sys
 
-import rospy
+import rospy, rospkg
 
 import baxter_interface
 
@@ -45,7 +45,7 @@ def list_files_handler(req):
     for file in files:
         if file.endswith(".baxter"):
             path, filename = os.path.split(file)
-            files_name.append(filename)
+            files_name.append(filename[:-7])
     
     resp.list_files = files_name
     resp.isError = 0
@@ -58,7 +58,7 @@ def list_files_handler(req):
 # @returns isError: 0 on success, 1 on error.
 def delete_file_handler(req):
     
-    file_path_string = rospack.get_path('baxter_gbi_pbr')+"/RecordedFile/"+req.filename
+    file_path_string = rospack.get_path('baxter_gbi_pbr')+"/RecordedFile/"+req.filename+".baxter"
         
     if os.path.isfile(file_path_string) :
         os.remove(file_path_string)

@@ -84,7 +84,7 @@ class MenuState(ExpiringState):
         self.msg.m_options = self.variable_options
         self.msg.m_fixed_options = self.fixed_options
         self.msg.m_selection = self.selection
-        rospy.loginfo(self.msg)
+        #rospy.loginfo(self.msg)
         self.pub.publish(self.msg)
 
     ## method update_variable_options

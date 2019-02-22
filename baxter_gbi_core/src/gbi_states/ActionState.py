@@ -33,7 +33,7 @@ class ActionState(ExpiringState):
         self.msg.context_type = self.type
         self.msg.pbr_action = self.status
         self.msg.pbr_msg = self.set_status()
-        rospy.loginfo(self.msg)
+        #rospy.loginfo(self.msg)
         self.pub.publish(self.msg)
 
     def feedback_cb(self,result):

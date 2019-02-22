@@ -15,7 +15,10 @@ class PlayState(ActionState):
                              output_keys=[],
                              input_keys=input_keys)
         self.goal = playbackGoal()
+        rospy.wait_for_service('pause_resume')
         self.pause = rospy.ServiceProxy('pause_resume',PauseResume)
+        self.playback = actionlib.SimpleActionClient('playback', playbackAction)
+        self.playback.wait_for_server()
         self.progress = 0
 
     def action_5(self,userdata):
@@ -29,22 +32,21 @@ class PlayState(ActionState):
         except rospy.ServiceException, e:
             print "Service call failed: %s"%e
             return None
-
-    def cb_done(self,userdata):
+        
+    def cb_done(self,status,result):
         self.signal('finished')
         
     def feedback_cb(self,result):
-        self.progress = result
+        self.progress = result.percent_complete
         self.publish_state()
 
     def set_status(self):
-        return "%d% completed" % self.progress
+        return "%d%% completed" % self.progress
 
     def execute(self,userdata):
-        self.playback = actionlib.SimpleActionClient('playback', playbackAction)
-        self.playback.wait_for_service()
-        self.goal.filename=userdata.filename
-        self.goal.loops=1;
-        self.goal.scale_vel=100;
+        print userdata
+        self.goal.msg.filename=userdata.filename
+        self.goal.msg.loops=1;
+        self.goal.msg.scale_vel=100;
         self.playback.send_goal(self.goal,self.cb_done, None,self.feedback_cb)
-        return ActionState.execute(userdata)
+        return ActionState.execute(self, userdata)

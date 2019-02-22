@@ -6,7 +6,7 @@ from baxter_gbi_pbr_srvs.srv import *
 
 class SequenceState(ActionState):
     def __init__(self, trigger_event):
-        input_keys = ['filename','m_index']
+        input_keys = ['sequence']
 
         ActionState.__init__(self,
                              outcomes=['pause'],
@@ -27,10 +27,10 @@ class SequenceState(ActionState):
             print "Service call failed: %s"%e
             return None
     
-    def fun(self,filename,vel):
+    def fun(self,sequence,vel):
         self.playback = actionlib.SimpleActionClient('playback', playbackAction)
         self.playback.wait_for_service()
-        self.goal.filename=filename
+        self.goal.sequence=sequence
         self.goal.loops=1;
         self.goal.scale_vel=vel;
         self.playback.send_goal(self.goal,self.done_cb,None,self.feedback_cb)
@@ -38,7 +38,7 @@ class SequenceState(ActionState):
     def cb_done(self, userdata):
         if self.index<=userdata.m_index:
             self.index+=1
-            self.fun(userdata.filename[self.index],100)
+            self.fun(userdata.sequence[self.index],100)
         else:
             self.signal('finished')
 
@@ -50,5 +50,5 @@ class SequenceState(ActionState):
         return "%d% completed" % self.progress
     
     def execute(self,userdata):
-        self.fun(userdata.filename[self.index],100)
+        self.fun(userdata.sequence[self.index],100)
         return ActionState.execute(userdata)

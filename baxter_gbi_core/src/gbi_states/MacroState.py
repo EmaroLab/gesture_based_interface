@@ -19,7 +19,10 @@ class MacroState(ActionState):
                              output_keys=[],
                              input_keys=input_keys)
         self.goal=playbackGoal()
+        self.goal=self.goal.msg
         self.pause=rospy.ServiceProxy('pause_resume',PauseResume)
+        self.playback = actionlib.SimpleActionClient('playback', playbackAction)
+        self.playback.wait_for_server()
         self.progress = 0
         self.current_file = ""
 
@@ -31,29 +34,34 @@ class MacroState(ActionState):
             print "Service call failed: %s"%e
             return None
 
+    def cb_done(self, status, result):
+        self.signal('finished')
+
+    def feedback_cb(self, result):
+        self.progress = result.percent_complete
+        self.publish_state()
+
     def fun(self,filename,vel):
-        self.playback = actionlib.SimpleActionClient('playback', playbackAction)
-        self.playback.wait_for_service()
         self.goal.filename=filename
         self.goal.loops=1;
         self.goal.scale_vel=vel;
-        self.playback.send_goal(self.goal,self.done_cb,None,self.feedback_cb)
+        self.playback.send_goal(self.goal,self.cb_done,None,self.feedback_cb)
 
     def action_5(self,userdata):
         return 'done'
 
     def action_4(self,userdata):
-        fun(userdata.filename[2],100)
+        self.fun(userdata.filename[2],100)
         return None
 
     def action_3(self,userdata):
-        fun(userdata.filename[3],100)
+        self.fun(userdata.filename[3],100)
         return None
 
     def action_2(self,userdata):
-        fun(userdata.filename[4],100)
+        self.fun(userdata.filename[4],100)
         return None
 
     def action_1(self,userdata):
-        fun(userdata.filename[5],100)
+        self.fun(userdata.filename[5],100)
         return None
