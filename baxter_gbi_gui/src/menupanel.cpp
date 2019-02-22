@@ -33,7 +33,7 @@ void MenuPanel::update(QString &title,
 
   //add options buttons to scroll area
   for (auto option: options){
-      auto button = new QPushButton(option, this);
+      auto button = new QPushButton(option, ui->scrollArea->widget());
       optionsButtons.push_back(button);
       ui->optionsContainer->addWidget(button);
   }
@@ -51,6 +51,7 @@ void MenuPanel::update(QString &title,
 	//manage selection
   optionsButtons.at(selection % optionsButtons.size())
                 ->setObjectName("selection");
-
   qApp->processEvents();
+  ui->scrollArea->ensureWidgetVisible(optionsButtons.at(selection),5,5);
+
 }

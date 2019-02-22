@@ -104,6 +104,9 @@ font-style:bold;
 }
 </string>
      </property>
+     <property name="verticalScrollBarPolicy">
+      <enum>Qt::ScrollBarAsNeeded</enum>
+     </property>
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
@@ -113,7 +116,7 @@ font-style:bold;
         <x>0</x>
         <y>0</y>
         <width>1006</width>
-        <height>514</height>
+        <height>507</height>
        </rect>
       </property>
       <property name="styleSheet">
