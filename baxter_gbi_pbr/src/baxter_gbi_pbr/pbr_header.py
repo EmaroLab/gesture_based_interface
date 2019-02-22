@@ -3,6 +3,7 @@
 import os
 import argparse
 import sys
+import actionlib
 
 import rospy
 
@@ -92,19 +93,22 @@ class PlaybackObj(object):
         self.stop = 0
         # If specified, repeat the file playback 'loops' number of times
         while loops < 1 or l < loops:
+            if service and service.is_preempt_requested(): break
             i = 0
             l += 1
             rospy.loginfo("Moving to start position...")
-
+            feedback = playbackFeedback()
+            feedback.percent_complete = -1
+            service.publish_feedback(feedback)
             _cmd, lcmd_start, rcmd_start, _raw = self.clean_line(lines[1], keys)
-            left.move_to_joint_positions(lcmd_start)
-            right.move_to_joint_positions(rcmd_start)
+            left.move_to_joint_positions(lcmd_start, threshold=baxter_interface.settings.JOINT_ANGLE_TOLERANCE*2.5)
+            right.move_to_joint_positions(rcmd_start, threshold=baxter_interface.settings.JOINT_ANGLE_TOLERANCE*2.5)
             start_time = rospy.get_time()
             
             number_lines = 0
             
             while ((number_lines < len(lines)-1) and self.stop == 0):
-            	feedback = playbackFeedback()
+                if service and service.is_preempt_requested(): break
                 feedback.percent_complete = (number_lines/float((len(lines)-1))*100.0)/float(loops - l + 1)
                 rospy.loginfo("Complete:"+str(feedback.percent_complete))
                 service.publish_feedback(feedback)
@@ -123,6 +127,7 @@ class PlaybackObj(object):
                     cmd, lcmd, rcmd, values = self.clean_line(values, keys)
                     #command this set of commands until the next frame
                     while (rospy.get_time() - start_time - self.paused_time) < values[0]*(100.0/scale_vel):
+                        if service and service.is_preempt_requested(): break
                         if rospy.is_shutdown():
                             rospy.loginfo("\n Aborting - ROS shutdown")
                             return False
@@ -143,8 +148,12 @@ class PlaybackObj(object):
  
         rospy.loginfo("Moving to start position...")
 
+        feedback.percent_complete = -1
+        service.publish_feedback(feedback)
         _cmd, lcmd_start, rcmd_start, _raw = self.clean_line(lines[len(lines)-1], keys)
         left.move_to_joint_positions(lcmd_start)
         right.move_to_joint_positions(rcmd_start)
-	rospy.loginfo("End Playback!")
+        feedback.percent_complete = 100
+        service.publish_feedback(feedback)
+        rospy.loginfo("End Playback!")
         return True
