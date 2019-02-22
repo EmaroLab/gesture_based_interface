@@ -37,7 +37,25 @@ from baxter_core_msgs.srv import (
 
 
    
-global file_output
+global file_output, enabled
+enabled = 0
+
+## Service used to enable/disable the mirroring functionality.
+#
+# @param req.mode: 1 to enable and 0 to disable.
+#
+# @returns isError: 0 on success, 1 on errors
+
+def enable_mirroring(req):
+
+    global enabled
+    if req.mode == enabled:
+        rospy.logwarn("Cannot change mode with the same (left)!")
+        return 1
+    else:
+        enabled = req.mode
+        rospy.loginfo("Mirroring (left) status changed:"+enabled)
+        return 0
 
 ## Callback function associated with the topic 'mirror_end_effector'.
 # Whenever a data is written in the topic, this function is called and obtain from ik_tracking function the joints values to assign and
@@ -49,21 +67,20 @@ def mirror_callback(data):
     
     global arm, limb
   
-    pos = Point()
-    pos.x = data.position.x
-    pos.y = data.position.y
-    pos.z = data.position.z
-    
-    global solver
+    if enabled == 1:
+        pos = Point()
+        pos.x = data.position.x
+        pos.y = data.position.y
+        pos.z = data.position.z
         
-    if (solver.iksolve(pos) == True):
-        print("Solution is: "+str(solver.target_jts_dict))
-        arm.move_to_joint_positions(solver.target_jts_dict)
+        global solver, file_output
+            
+        if (solver.iksolve(pos) == True):
+            print("Solution is: "+str(solver.target_jts_dict))
+            arm.move_to_joint_positions(solver.target_jts_dict)
+            resp = arm.endpoint_pose()
 
-    global file_output
-    resp = arm.endpoint_pose()
-    
-    #file_output.write(str(resp['position'].x)+","+str(resp['position'].y)+","+str(resp['position'].z)+"\n")
+            file_output.write(str(resp['position'].x)+","+str(resp['position'].y)+","+str(resp['position'].z)+"\n")
 
   
 ##Main of the node. Takes the information from the topic and move the baxter end effector based on those values.
@@ -77,11 +94,13 @@ def mirror_server():
     rospy.loginfo("Enabling robot... ")
     rs.enable()
     
+    service = rospy.Service('enable_mirroring_left', EnableMirroring, enable_mirroring)
+
     rospy.loginfo("Mirror Server executed -> mirror service available.")
     
     
     global file_output
-    file_output = open("baxter_data.csv","w+")
+    file_output = open("baxter_left_data.csv","w+")
     
 
     global arm, limb
@@ -93,7 +112,7 @@ def mirror_server():
     rospy.Subscriber("mirror_end_effector_left", mirror_end_effector, mirror_callback)
     
     def clean_shutdown():
-        rospy.loginfo("\nExiting example...")
+        rospy.loginfo("\nExiting mirror node...")
         if not init_state:
             rospy.loginfo("Disabling robot...")
             rs.disable()
