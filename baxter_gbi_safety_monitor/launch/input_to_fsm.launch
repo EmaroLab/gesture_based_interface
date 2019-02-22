@@ -1,8 +1,11 @@
 <launch>
+	<arg name="model" default="$(find baxter_description)/urdf/baxter.urdf"/>
+	<param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
+
 	<node name="kinect_broadcaster" pkg="kinect_transforms" type="kinect_broadcaster" output="screen">
-		<param name="x_kinect" value="0.3"/>
-		<param name="y_kinect" value="0.3"/>
-		<param name="z_kinect" value="0.3"/>
+		<param name="x_kinect" value="0"/>
+		<param name="y_kinect" value="0"/>
+		<param name="z_kinect" value="1.5"/>
 	</node>
 
 	<node name="kinect_to_baxter_broadcaster" pkg="kinect_transforms" type="kinect_to_baxter_broadcaster" output="screen">
@@ -21,7 +24,7 @@
 	</node>
 
 	<node name="pcl_background_segmentation" pkg ="kinect_pcl_tools" type="pcl_background_segmentation" output="screen">
-		<param name="granularity" value="5"/>
+		<param name="granularity" value="12"/>
 		<param name="delta" value="0.12"/>
 	</node>
 	
@@ -58,12 +61,6 @@
 	<node name="tf_tracker_head" pkg="kinect_transforms" type="tf_tracker" output="screen">
 		<param name="frame" value="kinect_head"/>
 	</node>
-	<node name="tf_tracker_left_hand" pkg="kinect_transforms" type="tf_tracker" output="screen">
-		<param name="frame" value="kinect_left_hand"/>
-	</node>
-	<node name="tf_tracker_right_hand" pkg="kinect_transforms" type="tf_tracker" output="screen">
-		<param name="frame" value="kinect_right_hand"/>
-	</node>
 
 	<node name="head_tracking" pkg="kinect_transforms" type="head_tracking" output="screen"/>
 
@@ -89,5 +86,7 @@
 		<param name="beacon_color" value="yellow"/>
 		<param name="beacon_hash" value="FFFF00"/>
 	</node>
+
 	<node name="rviz" pkg="rviz" type="rviz" args=" -d $(find baxter_gbi_safety_monitor)/rviz_resources/rviz_conf.rviz"/>
+
 </launch>
