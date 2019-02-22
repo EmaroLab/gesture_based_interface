@@ -42,6 +42,7 @@ class RemoveMenuState(MenuState):
     def on_variable_selection(self, index, item, userdata):
         delete=self.delete(item)
         del self.variable_options[index]
+        self.selection = 0
         return None
         
     

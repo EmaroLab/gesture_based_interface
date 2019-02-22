@@ -25,6 +25,7 @@ class BlockingState(smach.State):
         self.pub = rospy.Publisher('fsm_status', pub_status.status, queue_size=1, latch=True)
         ## message status
         self.msg = pub_status.status()
+        self.running = False
 
     ## method action_1
     #  @param userdata 
@@ -116,6 +117,7 @@ class BlockingState(smach.State):
     #  
     #  executable code of the blocking state
     def execute(self, userdata):
+        self.running = True
         while True:
             self.publish_state()
 
@@ -149,6 +151,7 @@ class BlockingState(smach.State):
                 ret = self.done(userdata)
 
             if ret:
+                self.running = False
                 return ret
 
     ## method request_preempt 
@@ -159,3 +162,6 @@ class BlockingState(smach.State):
 
     def signal(self, event_id):
         self._trigger_event.signal(event_id)
+        
+    def is_running(self):
+        return self.running

@@ -21,7 +21,7 @@ class MacroState(ActionState):
         self.goal=playbackGoal()
         self.goal=self.goal.msg
         self.pause=rospy.ServiceProxy('pause_resume',PauseResume)
-        self.playback = actionlib.SimpleActionClient('playback', playbackAction)
+        self.playback = actionlib.SimpleActionClient ('playback', playbackAction)
         self.playback.wait_for_server()
         self.progress = 0
         self.current_file = ""

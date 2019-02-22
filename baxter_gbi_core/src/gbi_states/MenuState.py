@@ -71,6 +71,7 @@ class MenuState(ExpiringState):
     #  
     #  override of BlockingState.execute
     def execute(self, userdata):
+        self.selection=0
         self.variable_options = self.update_variable_options(userdata)
         return ExpiringState.execute(self, userdata)
 

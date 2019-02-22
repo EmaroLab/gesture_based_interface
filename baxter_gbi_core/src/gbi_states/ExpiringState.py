@@ -17,7 +17,7 @@ class ExpiringState(BlockingState):
                                output_keys= output_keys,
                                input_keys=input_keys)
         ## timeout for the user presence
-        self.timeout = 5
+        self.timeout = 1
         self.t = None
 
     def user_left(self, userdata):
