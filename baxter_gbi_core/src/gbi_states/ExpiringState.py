@@ -17,8 +17,8 @@ class ExpiringState(BlockingState):
                                output_keys= output_keys,
                                input_keys=input_keys)
         ## timeout for the user presence
-        self.timeout = 5
-        self.t = Timer(self.timeout, self.timeout_cb)
+        self.timeout = 1
+        self.t = None
 
     def user_left(self, userdata):
         return 'user_missed'
@@ -27,10 +27,18 @@ class ExpiringState(BlockingState):
     #  overide of BlockingState.user_detected
     #  @param userdata data in input to the state
     def user_detected(self, userdata):
-        self.t.cancel()
+        if self.t:
+            self.t.cancel()
         self.t = Timer(self.timeout, self.timeout_cb)
         self.t.start()
         return None
 
     def timeout_cb(self):
         self._trigger_event.signal('user_left')
+
+    def execute(self, userdata):
+        self.t = Timer(self.timeout, self.timeout_cb)
+        self.t.start()
+        ret = BlockingState.execute(self, userdata)
+        self.t.cancel()
+        return ret

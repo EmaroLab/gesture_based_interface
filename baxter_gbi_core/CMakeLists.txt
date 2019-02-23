@@ -9,12 +9,18 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   std_srvs
   baxter_gbi_input_msgs
+  baxter_gbi_pbr_msgs
+  baxter_gbi_pbr_srvs
+  actionlib_msgs
+  actionlib
 )
 
 catkin_python_setup()
 
+
 catkin_package(
   CATKIN_DEPENDS rospy smach std_msgs std_srvs baxter_gbi_input_msgs
+  baxter_gbi_pbr_msgs baxter_gbi_pbr_srvs actionlib_msgs actionlib
 )
 
 include_directories(

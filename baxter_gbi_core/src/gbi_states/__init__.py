@@ -25,6 +25,5 @@ from RecordState import *
 from MacroState import *
 from SequenceState import *
 from PlayPause import *
-from RecordPause import *
 from SequencePause import *
 from MacroPause import *

@@ -6,27 +6,35 @@ from baxter_gbi_pbr_srvs.srv import *
 from baxter_gbi_pbr_msgs.msg import *
 
 
-import os
+import os, actionlib
 
 
 ## Node used to test the pbr_server.
 # Based on the input it will ask for record or playback service from the pbr_server.
 
+def cb_done(status=None, result='0'):
+    print("cb_done")
+
 
 ## Call the playback function provided by pbr_server.
 def call_playback(filename, loops, scale_vel):
     
-    rospy.wait_for_service('playback')
-    try:
-        playback = rospy.ServiceProxy('playback', Playback)
-        msg = playback_msg()
-        msg.filename = filename
-        msg.loops = loops
-        msg.scale_vel = scale_vel
-        isOk = playback(msg)
-    except rospy.ServiceException, e:
-        print("Service call failed: %s"%e)
-
+    #rospy.wait_for_service('playback')
+    pb = playbackGoal()
+    pb.msg.filename = filename
+    pb.msg.loops = loops
+    pb.msg.scale_vel = scale_vel
+    pb2 = actionlib.SimpleActionClient('playback',playbackAction)
+    pb2.wait_for_server() 	
+    pb2.send_goal(pb,cb_done)
+    print("call_service")
+    #playback = rospy.ServiceProxy('playback', Playback)
+    #msg = playback_msg()
+    #msg.filename = filename
+    #msg.loops = loops
+    #msg.scale_vel = scale_vel
+    #isOk = playback(msg)
+    
 ## Call the record function provided by pbr_server.
 def call_record(filename, record_rate, mode):
     if mode == 1:
@@ -144,6 +152,8 @@ def call_pause(mode):
 
 if __name__ == "__main__":
     """Acquire paramater specified in the command line and based on them ask for the specified service."""
+
+    rospy.init_node('pbr_client_baxter')
     type_service = int(sys.argv[1])
     if type_service == 1: #Playback
        filename = sys.argv[2]
@@ -178,3 +188,5 @@ if __name__ == "__main__":
     elif type_service == 9: #Pause-Resume
         call_pause(int(sys.argv[2]))
 	sys.exit(1)
+
+    rospy.spin()

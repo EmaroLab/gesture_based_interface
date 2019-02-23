@@ -10,6 +10,7 @@ import baxter_interface
 
 from baxter_interface import CHECK_VERSION
 from baxter_gbi_pbr_srvs.srv import *
+from baxter_gbi_pbr_msgs.msg import *
 from pbr_header import *
 
 class PlaybackObj(object):
@@ -58,8 +59,8 @@ class PlaybackObj(object):
     # and processed. Reads each line, split up in columns and
     # formats each line into a controller command in the form of
     # name/value pairs. Names come from the column headers
-    # first column is the time stamp
-    def map_file(self, filename, loops=1, scale_vel=100):
+	
+    def map_file(self, filename, loops=1, scale_vel=100, service=None):
         left = baxter_interface.Limb('left')
         right = baxter_interface.Limb('right')
         grip_left = baxter_interface.Gripper('left', CHECK_VERSION)
@@ -101,7 +102,11 @@ class PlaybackObj(object):
             number_lines = 0
             
             while ((number_lines < len(lines)-1) and self.stop == 0):
-            
+            	feedback = playbackFeedback()
+                feedback.percent_complete = (number_lines/float((len(lines)-1))*100.0)/float(loops - l + 1)
+                rospy.loginfo("Complete:"+str(feedback.percent_complete))
+                service.publish_feedback(feedback)
+
                 if self.pause_state == 0:
                     number_lines += 1
                     
@@ -132,6 +137,12 @@ class PlaybackObj(object):
                         rate.sleep()
                     rospy.loginfo("-- "+str(rospy.get_time()))
                     
-                    self.line_executed = number_lines                    
-                
+                    self.line_executed = number_lines                   
+ 
+        rospy.loginfo("Moving to start position...")
+
+        _cmd, lcmd_start, rcmd_start, _raw = self.clean_line(lines[len(lines)-1], keys)
+        left.move_to_joint_positions(lcmd_start)
+        right.move_to_joint_positions(rcmd_start)
+	rospy.loginfo("End Playback!")
         return True

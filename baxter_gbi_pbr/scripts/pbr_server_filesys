@@ -9,7 +9,7 @@ import argparse
 import sys
 
 import rospy
-
+import rospkg
 import baxter_interface
 
 import os.path
@@ -20,6 +20,11 @@ from baxter_interface import CHECK_VERSION
 from baxter_gbi_pbr_srvs.srv import *
 from baxter_gbi_pbr import pbr_header
 
+global folder_path, extension
+rospack = rospkg.RosPack()
+folder_path = rospack.get_path('baxter_gbi_pbr')+"/../../PBR_storage/"
+extension = ".baxter"
+
 ## Service used to provide the entire list of the recorded files.
 #   
 # @returns n_files: number of records.
@@ -27,14 +32,15 @@ from baxter_gbi_pbr import pbr_header
 # @returns isError: 0 on success, 1 on error.
 def list_files_handler(req):
     
-    rospy.loginfo("Called!!")
+    rospy.loginfo("List File Service Called!!")
 
     resp = ListFilesResponse()
     
-    rospy.loginfo(os.getcwd())
     #TODO -> With roslaunch the current directory changes !!!
-    path = "src/baxter_gbi_pbr/RecordedFile"
-    files = os.listdir(path)
+
+    global folder_path
+
+    files = os.listdir(folder_path)
     
     
     resp.n_files = len(files)
@@ -42,8 +48,9 @@ def list_files_handler(req):
 
     for file in files:
         if file.endswith(".baxter"):
-            path, filename = os.path.split(file)
-            files_name.append(filename)
+            path, filename_with_extension = os.path.split(file)
+            filename = filename_with_extension.split(".")
+            files_name.append(filename[0])
     
     resp.list_files = files_name
     resp.isError = 0
@@ -56,7 +63,10 @@ def list_files_handler(req):
 # @returns isError: 0 on success, 1 on error.
 def delete_file_handler(req):
     
-    file_path_string = "src/baxter_gbi_pbr/RecordedFile/"+req.filename
+    rospy.loginfo("Delete File Service Called!!")
+
+    global folder_path, extension
+    file_path_string = folder_path+req.filename+extension
         
     if os.path.isfile(file_path_string) :
         os.remove(file_path_string)
@@ -75,10 +85,13 @@ def delete_file_handler(req):
 #
 # @returns isError: 0 on success, 1 on error.
 def rename_file_handler(req):
-    path = "src/baxter_gbi_pbr/RecordedFile/"
     
-    if os.path.isfile(path+req.old_filename) :
-        os.rename(path+req.old_filename,path+req.new_filename)
+    rospy.loginfo("Rename File Service Called!!")
+
+    global folder_path, extension
+
+    if os.path.isfile(folder_path+req.old_filename+extension) :
+        os.rename(folder_path+req.old_filename+extension,folder_path+req.new_filename+extension)
     else:
         rospy.logwarn("There is no file with this name!")
         return 1
@@ -90,7 +103,6 @@ def pbr_server_filesys():
 
     rospy.loginfo("Initializing node... ")
     rospy.init_node('pbr_server_filesys')
-
 
     service1 = rospy.Service('files', ListFiles, list_files_handler)
     service2 = rospy.Service('delete_file', DeleteFile, delete_file_handler)

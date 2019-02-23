@@ -21,6 +21,12 @@ add_service_files(
   RecordStop.srv
   RecordStop.srv
   RenameFile.srv
+  Gripper.srv
+  ReachGoal.srv
+  CalibrateMirror.srv
+  EnableMirroring.srv
+  PauseResume.srv
+  GoToStart.srv
 )
 
 generate_messages(

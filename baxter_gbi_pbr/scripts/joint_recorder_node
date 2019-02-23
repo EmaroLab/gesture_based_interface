@@ -3,21 +3,25 @@
 import argparse
 
 import rospy
+import rospkg
 import sys
+import os
 
 import baxter_interface
 from baxter_gbi_pbr import JointRecorder
 
 from baxter_interface import CHECK_VERSION
 from baxter_gbi_pbr_msgs.msg import record_status, modify_playback
+from baxter_gbi_pbr_srvs.srv import GoToStart
 
-import os
 
+global folder_path, extension
+rospack = rospkg.RosPack()
+folder_path = rospack.get_path('baxter_gbi_pbr')+"/../../PBR_storage/"
+extension = ".baxter"
 
 ## joint_recorder_node
 # ROS node used to allow the user to record the baxter movements.
-
-
 
 
 ## Callback function called when a data is written on the topic, it enables/disables the recording mode.
@@ -29,9 +33,9 @@ import os
 # @returns isError: 0 on success, 1 on errors
 def callback_recording(data):
     
-    rospy.loginfo("Called!!")
+    rospy.loginfo("Recorder Callback Called!!")
     rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.mode)
-    global recorder, state, rate
+    global recorder, state, rate, go_to_start_pos, extension
     if data.mode == "stop":
         if state == 1:
            #Stop the recording
@@ -39,13 +43,14 @@ def callback_recording(data):
            recorder.stop()
            del recorder
            state = 0
+           go_to_start_pos()
            return 0
     elif data.mode == "start":
         if state == 0:
            rospy.loginfo("Start")
            #Start recording
            rate = rospy.Rate(data.record_rate)
-           recorder = JointRecorder(data.filename,"w+", 0)
+           recorder = JointRecorder(data.filename+extension,"w+", 0)
            state = 1
            return 0
     rospy.logwarn("Invalid mode!")
@@ -65,12 +70,10 @@ def callback_recording(data):
 # @returns isError: 0 on success, 1 on errors        
 def callback_modify_playback(data):
     
-    rospy.logwarn(os.getcwd())
-    
     rospy.loginfo("Called modify_playback!!")
     rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.mode)
     
-    global recorder, state, rate
+    global recorder, state, rate, go_to_start_pos, extension, folder_path
     #TODO -> Remove "stop" part, the stop arrives on the other topic
     if data.mode == "stop":
         if state == 1:
@@ -79,19 +82,21 @@ def callback_modify_playback(data):
            recorder.stop()
            del recorder
            state = 0
+           go_to_start_pos()
+           return 0
     elif data.mode == "start":
         if state == 0:
             rospy.loginfo("Start")
                    
-            f1 = data.old_filename
-            f2 = data.new_filename
+            f1 = data.old_filename+extension
+            f2 = data.new_filename+extension
             
             to_rename = False
             
             #TODO -> change name
             if(f1 == f2):
                 to_rename = True
-                f2 = "src/baxter_gbi_pbr/RecordedFile/modify_old12345.baxter" #change it!!
+                f2 = folder_path+"overwriteOld"+extension
 
             file_to_copy = open(f1,"r")
             file_new = open(f2, "w+")
@@ -119,15 +124,21 @@ def callback_modify_playback(data):
             rate = rospy.Rate(data.record_rate)
             recorder = JointRecorder(f2,"a", float(last_time_value))
             state = 1
+            return 0
 
 
 ## Node used for the recording mode.
 def main():
-    
     rospy.loginfo("Initializing node... ")
     rospy.init_node('joint_recorder_node', anonymous=True)
     rospy.Subscriber("recording_status", record_status, callback_recording)
     rospy.Subscriber("modify_playback_status", modify_playback, callback_modify_playback)
+    
+    
+    global go_to_start_pos
+    rospy.wait_for_service('go_to_start_pos')
+    go_to_start_pos = rospy.ServiceProxy('go_to_start_pos', GoToStart)
+    
     rospy.loginfo("Getting robot state... ")
     rs = baxter_interface.RobotEnable(CHECK_VERSION)
     rospy.loginfo("Enabling robot... ")
