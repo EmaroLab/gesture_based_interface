@@ -3,8 +3,8 @@
 #include <pcl/filters/extract_indices.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include <sensor_msgs/PointCloud2.h>
-#include <cmath>
-#include <cstring>
+#include <math.h>
+#include <string.h>
 #include "std_msgs/Float64.h"
 #include <Eigen/Geometry>
 #include <ros/package.h>
@@ -15,12 +15,12 @@
  
 using namespace std;
 
-/** Backgrounds acquired before according to the angle of the Kinect */		std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr> backgrounds (61);
-/** Actual Point Cloud acquired by the Kinect */	pcl::PointCloud<pcl::PointXYZ>::Ptr actualImage(new pcl::PointCloud<pcl::PointXYZ>);
+std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr> backgrounds (61);
+pcl::PointCloud<pcl::PointXYZ>::Ptr actualImage(new pcl::PointCloud<pcl::PointXYZ>);
 
-/** Sensitivity of the segmentation */				double delta = 0.08;
-/** Angle step between two consecutive records */	int granularity = 1;
-/** Current tilt angle of the Kinect */				int angle = 0;
+double delta = 0.08;
+int granularity = 1;
+int angle = 0;
 
 /** @brief Class to implement Background Segmentation
  * 
@@ -74,20 +74,21 @@ class PclBackgroundSegmentation{
     }
 
 protected:
-	sensor_msgs::PointCloud2 output; /**< Output point cloud of the background segmentation */
-    ros::NodeHandle nh; /**< Node Handle */
+	sensor_msgs::PointCloud2 output;
+    ros::NodeHandle nh;
     ros::Subscriber pcl_sub;  /**< Subscriber to /camera/depth/points */
     ros::Subscriber angle_sub;  /**< Subscriber to /cur_tilt_angle */
     ros::Publisher pcl_pub;  /**< Publisher of filtered point cloud on /camera/pcl_background_segmentation */
 };
 
 /**
+/**
  * Main function:
  * - initialize of the parameter delta and the handler
  * - acquire and save all backgrounds, associated to different angles of the Kinect
  * @param[in]  delta	sensitivity of the segmentation
  */
-int main(int argc, char** argv)
+main(int argc, char** argv)
 {
     ros::init(argc, argv, "pcl_background_segmentation");
     ros::NodeHandle n("~");

@@ -1,0 +1,19 @@
+<launch>
+
+	<node name="tf_tracker_left_hand" pkg="kinect_transforms" type="tf_tracker" output="screen">
+		<param name="frame" value="kinect_left_hand"/>
+	</node>
+
+	<node name="tf_tracker_right_hand" pkg="kinect_transforms" type="tf_tracker" output="screen">
+		<param name="frame" value="kinect_right_hand"/>
+	</node>
+
+	<node name="shadow_left" pkg="kinect_transforms" type="shadow_tf" output="screen">
+		<param name="frame" value="kinect_left_hand"/>
+	</node>
+
+	<node name="shadow_right" pkg="kinect_transforms" type="shadow_tf" output="screen">
+		<param name="frame" value="kinect_right_hand"/>
+	</node>
+
+</launch>

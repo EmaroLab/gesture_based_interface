@@ -14,29 +14,29 @@
  */
  
 // Filter parameters
-/** Enable downsampling filter */	bool use_downsampling = true;
-/** Enable z axis filter */			bool use_filter_z = true; 
-/** Enable y axis filter */			bool use_filter_y = true; 
-/** Enable x axis filter */			bool use_filter_x = true;
-/** Enable SOR filter */			bool use_filter_sor = true;
+bool use_downsampling = true;
+bool use_filter_z = true;
+bool use_filter_y = true;
+bool use_filter_x = true;
+bool use_filter_sor = true;
 
-/** if true use the complementar range */	bool revert_filter_z = false;
-/** if true use the complementar range */	bool revert_filter_y = false; 
-/** if true use the complementar range */	bool revert_filter_x = false;
+bool revert_filter_z = false;
+bool revert_filter_y = false;
+bool revert_filter_x = false;
 
-/** Parameter of downsampling filter */		double leaf_size = 0.1; 
+double leaf_size = 0.1;
 
-/** left limit of z range */		double min_z = 0.1;
-/** right limit of z range */		double max_z = 3;
+double min_z = 0.1;
+double max_z = 3;
 
-/** left limit of y range */		double min_y = -0.5; 
-/** right limit of y range */		double max_y = 0.5; 
+double min_y = -0.5;
+double max_y = 0.5;
 
-/** left limit of x range */		double min_x = -0.5; 
-/** right limit of x range */		double max_x = 0.5; 
+double min_x = -0.5;
+double max_x = 0.5;
 
-/** Parameter of SOR filter */		int sor_k = 40; 
-/**  Parameter of SOR filter */		double sor_stddev = 1.0;
+int sor_k = 40;
+double sor_stddev = 1.0;
 
 /** Callback function of enable_service
  * for enabling filters.
@@ -79,7 +79,6 @@ bool set_filter(kinect_filter_srvs::SetFilter::Request  &req,
 bool set_filter_param(kinect_filter_srvs::SetFilterParam::Request  &req,
          kinect_filter_srvs::SetFilterParam::Response &res)
 {
-	ROS_INFO("QUIII");
 	std::string str_leaf = "leaf_size";
 	std::string str_min_z = "min_z";
 	std::string str_max_z = "max_z";
@@ -142,7 +141,7 @@ bool set_filter_param(kinect_filter_srvs::SetFilterParam::Request  &req,
 	res.result = true;
 	return true;
 }
-/** @brief Class to filter the Point Cloud
+/**@brief Class to filter the Point Cloud
  * 
  * The class has the aim of filtering the Point Cloud obtained by the background segmentation and published on /camera/pcl_background_segmentation.
  * It uses different filters:
@@ -190,12 +189,6 @@ public:
 	 */
     void filterCB(const boost::shared_ptr<const sensor_msgs::PointCloud2>& input)
     {
-		ROS_INFO("min_x : %lf", min_x);
-		ROS_INFO("max_x : %lf", max_x);
-		ROS_INFO("min_y : %lf", min_y);
-		ROS_INFO("max_y : %lf", max_y);
-		ROS_INFO("min_z : %lf", min_z);
-		ROS_INFO("max_z : %lf", max_z);
 		pcl::PCLPointCloud2::Ptr input_pcl (new pcl::PCLPointCloud2 ());
 		pcl_conversions::toPCL(*input, *input_pcl);
 		
@@ -285,7 +278,7 @@ public:
     }
 
 protected:
-    ros::NodeHandle nh;		/**< Node Handle */
+    ros::NodeHandle nh;		/**< Node Handler */
     ros::Subscriber pcl_sub; /**< Subscriber to /camera/pcl_background_segmentation */
     ros::Publisher pcl_pub; /**< Publisher of filtered point cloud on /camera/pcl_filtered */
 	sensor_msgs::PointCloud2 output;		/**< Output Message to publish */
@@ -321,7 +314,7 @@ protected:
 	* set_filter: to enable/disable filters
 	* set_filter_param: to set a parameter of one filter
  */
-int main(int argc, char** argv)
+main(int argc, char** argv)
 {
     ros::init(argc, argv, "pcl_filter");
 	ros::NodeHandle n("~");
