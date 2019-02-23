@@ -64,31 +64,6 @@ QScrollBar::sub-line:vertical{
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <widget class="QPushButton" name="configModeButton">
-        <property name="text">
-         <string>Config mode</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="menuModeButton">
-        <property name="text">
-         <string>Menu mode</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="actionModeButton">
-        <property name="text">
-         <string>Action mode</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
      <widget class="QWidget" name="widget" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
