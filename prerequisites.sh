@@ -23,6 +23,10 @@ rosdep update
 sudo update-java-alternatives --set java-11-openjdk-amd64
 
 echo "
+function bashrc(){
+    source ~/.bashrc
+}
+
 source /opt/ros/melodic/setup.bash
 export ROS_LANG_DISABLE=genlisp:gennodejs:geneus
 export ANDROID_HOME=\$HOME/android-sdk
