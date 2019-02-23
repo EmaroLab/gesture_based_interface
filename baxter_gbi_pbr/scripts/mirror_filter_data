@@ -71,14 +71,15 @@ def kinect_data_callback(data):
 def mirror_filter_data():
     
     rospy.loginfo("Initializing node... ")
-    rospy.init_node('mirror_filter_data_right')
+    rospy.init_node("mirror_filter_data")
     
+    limb = sys.argv[1]
     
     global pub, filename
-    filename = open("baxter_right_data.csv","w+")
+    filename = open("baxter_"+limb+"_data.csv","w+")
     
-    pub = rospy.Publisher('mirror_end_effector_right', mirror_end_effector, queue_size=2)    
-    rospy.Subscriber("/shadow/kinect_right_hand", Odometry, kinect_data_callback)
+    pub = rospy.Publisher("mirror_end_effector_"+limb, mirror_end_effector, queue_size=2)    
+    rospy.Subscriber("/shadow/kinect_"+limb+"_hand", Odometry, kinect_data_callback)
     
 
     def clean_shutdown():

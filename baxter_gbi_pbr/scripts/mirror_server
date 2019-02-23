@@ -48,13 +48,13 @@ enabled = 0
 
 def enable_mirroring(req):
 
-    global enabled
+    global enabled, limb
     if req.mode == enabled:
-        rospy.logwarn("Cannot change mode with the same (left)!")
+        rospy.logwarn("Cannot change mode with the same ("+limb+")!")
         return 1
     else:
         enabled = req.mode
-        rospy.loginfo("Mirroring (left) status changed:"+enabled)
+        rospy.loginfo("Mirroring ("+limb+") status changed:"+enabled)
         return 0
 
 ## Callback function associated with the topic 'mirror_end_effector'.
@@ -87,29 +87,29 @@ def mirror_callback(data):
 def mirror_server():
     
     rospy.loginfo("Initializing node... ")
-    rospy.init_node('mirror_server_left')
+    rospy.init_node("mirror_server")
+
     rospy.loginfo("Getting robot state... ")
     rs = baxter_interface.RobotEnable(CHECK_VERSION)
     init_state = rs.state().enabled
     rospy.loginfo("Enabling robot... ")
     rs.enable()
     
-    service = rospy.Service('enable_mirroring_left', EnableMirroring, enable_mirroring)
+    global arm, limb
 
-    rospy.loginfo("Mirror Server executed -> mirror service available.")
-    
+    limb = sys.argv[1]
+
+    service = rospy.Service("enable_mirroring_"+limb, EnableMirroring, enable_mirroring)
+    rospy.loginfo("Mirror Server executed -> mirror service available.")    
     
     global file_output
-    file_output = open("baxter_left_data.csv","w+")
+    file_output = open("baxter_"+limb+"_data.csv","w+")
     
-
-    global arm, limb
-    limb = "left"
     arm = Limb(limb)
     global solver
     solver = NewLimbMover(limb)
     
-    rospy.Subscriber("mirror_end_effector_left", mirror_end_effector, mirror_callback)
+    rospy.Subscriber("mirror_end_effector_"+limb, mirror_end_effector, mirror_callback)
     
     def clean_shutdown():
         rospy.loginfo("\nExiting mirror node...")

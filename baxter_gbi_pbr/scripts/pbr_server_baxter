@@ -228,6 +228,7 @@ def pause_resume_handler(req):
                 pb.pause_state = pause_state
                 rospy.loginfo("Resumed!")
                 pb.paused_time += rospy.get_time() - starting_pause
+                return 0
                 
         else:
             rospy.logwarn("Cannot change to state to the same one!")
