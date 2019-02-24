@@ -18,50 +18,38 @@ class MacroState(ActionState):
                              status='pause',
                              output_keys=[],
                              input_keys=input_keys)
-        self.goal=playbackGoal()
-        self.goal=self.goal.msg
-        self.pause=rospy.ServiceProxy('pause_resume',PauseResume)
-        self.playback = actionlib.SimpleActionClient ('playback', playbackAction)
-        self.playback.wait_for_server()
-        self.progress = 0
-        self.current_file = ""
-
-    def action_6(self,userdata):
-        try:
-            pause=self.pause(1)
-            return 'pause'
-        except rospy.ServiceException, e:
-            print "Service call failed: %s"%e
-            return None
+        
+        
 
     def cb_done(self, status, result):
-        self.signal('finished')
-
-    def feedback_cb(self, result):
-        self.progress = result.percent_complete
-        self.publish_state()
+        return None
 
     def fun(self,filename,vel):
-        self.goal.filename=filename
-        self.goal.loops=1;
-        self.goal.scale_vel=vel;
-        self.playback.send_goal(self.goal,self.cb_done,None,self.feedback_cb)
+        if (filename!="Empty"):
+            self.playback.cancel_goal()
+            self.goal.msg.filename=filename
+            self.goal.msg.loops=1
+            self.goal.msg.scale_vel=vel
+            self.playback.send_goal(self.goal,self.cb_done,None,self.feedback_cb)
 
-    def action_5(self,userdata):
-        return 'done'
+    def set_status(self):
+        if self.progress >= 0:
+            return self.goal.msg.filename + "%d%% completed" % self.progress
+        else:
+            return "reaching initial position... "
 
     def action_4(self,userdata):
-        self.fun(userdata.filename[2],100)
+        self.fun(userdata.filename[0],100)
         return None
 
     def action_3(self,userdata):
-        self.fun(userdata.filename[3],100)
+        self.fun(userdata.filename[1],100)
         return None
 
     def action_2(self,userdata):
-        self.fun(userdata.filename[4],100)
+        self.fun(userdata.filename[2],100)
         return None
 
     def action_1(self,userdata):
-        self.fun(userdata.filename[5],100)
+        self.fun(userdata.filename[3],100)
         return None
