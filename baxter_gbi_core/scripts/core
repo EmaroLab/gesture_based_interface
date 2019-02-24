@@ -26,11 +26,6 @@ class FSMThread(threading.Thread):
         smach.set_loggers(smach.loginfo,smach.logwarn,self.logdebug,smach.logerr)
         self.subscr = rospy.Subscriber("/beacons/presence", std_msgs.msg.Header, self.presence_cb, callback_args=[self])
         ## attribute to manage the graph in graphviz
-        #self.image = ImageTk.PhotoImage(Image.open("state_machine.png"))
-        #self.panel = tk.Label(self.widget, image=self.image) 
-        #self.display = self.image
-        #self.panel.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.YES)
-        
         self.imageFile = "state_machine"
         self.imageFile1 = "play_state"
         self.imageFile2 = "record_machine"
@@ -210,7 +205,6 @@ class FSMThread(threading.Thread):
                                                      'resume':'MACROSTATE',
                                                      'preempted':'preempted'},
                                             )
-
             with self.sub_sequence:
                 smach.StateMachine.add('SEQUENCESTATE', SequenceState(self.event),
                                             transitions={'user_missed':'user_missed',
@@ -268,9 +262,7 @@ class FSMThread(threading.Thread):
         image1 = ImageTk.PhotoImage(Image.open(filename))
         w = image1.width()
         h = image1.height()
-        x = 0
-        y = 0
-        self.widget.geometry("%dx%d+%d+%d" % (w, h, x, y))
+        self.widget.geometry("%dx%d+%d+%d" % (w, h, 0, 0))
         self.panel.configure(image=image1)
         self.display = image1
         self.widget.update()
@@ -299,7 +291,6 @@ class FSMThread(threading.Thread):
     #  @param params list of parameters
     def presence_cb(self, msg, params):
         self.event.signal('user_detected')
-
         #rospy.loginfo("Action %d triggered by the %s:\n%s\n", params["code"], params["topic"], msg)
 
 
@@ -319,19 +310,17 @@ class FSMThread(threading.Thread):
 
     ## method run
     def run(self):
+        ## equal to rendering but with tk.label and panle.pack to generate the label and the background space
         self.f.render(filename='state_machine',directory=None,view=False,cleanup=True)
         self.widget=tk.Tk()
         self.widget.title('State_Machine')
         image = ImageTk.PhotoImage(Image.open("state_machine.png"))
         w = image.width()
         h = image.height()
-        x = 0
-        y = 0
         self.panel = tk.Label(self.widget, image=image) 
         self.display = image
         self.panel.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.YES)
-        
-        self.widget.geometry("%dx%d+%d+%d" % (w, h, x, y))
+        self.widget.geometry("%dx%d+%d+%d" % (w, h, 0, 0))
 
         self.widget.update()
         rospy.Service('/fsm_config', Trigger, self.config_cb)
@@ -371,13 +360,9 @@ def config_server():
     rospy.init_node('config_server')
     t = FSMThread()
     t.graph_gen()
-    
     t.start()
     rospy.on_shutdown(t.stop)
     rospy.spin()
 
 if __name__ == "__main__":
     config_server()
-
-
-    
