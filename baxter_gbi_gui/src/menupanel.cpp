@@ -53,5 +53,4 @@ void MenuPanel::update(QString &title,
                 ->setObjectName("selection");
   qApp->processEvents();
   ui->scrollArea->ensureWidgetVisible(optionsButtons.at(selection),5,5);
-
 }

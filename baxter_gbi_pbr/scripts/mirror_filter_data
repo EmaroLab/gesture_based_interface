@@ -27,15 +27,16 @@ from std_msgs.msg import Header
 
 ## Callback function associated with the topic used to obtain the Kinect data.
 #
-# @param data.pose.pose.position: position of the the hand.
+# @param pos: position of the the hand.
 # @param data.pose.pose.orientation: orientation of the the hand.
 global msg_to_skip, msgs_read
 msg_to_skip = 40
 msgs_read = 0
 
+
 def kinect_data_callback(data):
     
-    global rate, pub
+    global rate, pub, filename
     global msg_to_skip, msgs_read
 
     if msgs_read % msg_to_skip == 0:
@@ -43,38 +44,49 @@ def kinect_data_callback(data):
      
         #TODO -> Parameter to change
         pos = Point()
-        pos.x = -data.pose.pose.position.z*3
-        pos.y = data.pose.pose.position.x*1.5
-        pos.z = -data.pose.pose.position.y*2
+        pos.x = -pos.z*3
+        pos.y = pos.x*1.5
+        pos.z = -pos.y*2
         
         msg.position = pos
         
         
         #TODO -> Now is useless
         orient = Quaternion()
-        orient.x = data.pose.pose.orientation.x
-        orient.y = data.pose.pose.orientation.y
-        orient.z = data.pose.pose.orientation.z
-        orient.w = data.pose.pose.orientation.w
+        #orient.x = data.pose.pose.orientation.x
+        #orient.y = data.pose.pose.orientation.y
+        #orient.z = data.pose.pose.orientation.z
+        #orient.w = data.pose.pose.orientation.w
         
         msg.quaternion = orient
         
+        filename.write(str(pos.x)+","+str(pos.y)+","+str(pos.z)+"\n")
+
         pub.publish(msg)
         
     msgs_read += 1
+
 
 ## Node which subscribes to the Kinect's topic (of the hand) and publish on "mirror_end_effector"
 def mirror_filter_data():
     
     rospy.loginfo("Initializing node... ")
-    rospy.init_node('mirror_filter_data_right')
+    rospy.init_node("mirror_filter_data")
     
+    limb = sys.argv[1]
     
-    global pub
+    global pub, filename
+    filename = open("baxter_"+limb+"_data.csv","w+")
     
-    pub = rospy.Publisher('mirror_end_effector_right', mirror_end_effector, queue_size=2)    
-    rospy.Subscriber("/shadow/kinect_right_hand", Odometry, kinect_data_callback)
+    pub = rospy.Publisher("mirror_end_effector_"+limb, mirror_end_effector, queue_size=2)    
+    rospy.Subscriber("/shadow/kinect_"+limb+"_hand", Odometry, kinect_data_callback)
     
+
+    def clean_shutdown():
+        rospy.loginfo("\nExiting node...")
+        filename.close()
+    rospy.on_shutdown(clean_shutdown)
+
     rospy.spin()
 
 if __name__ == "__main__":

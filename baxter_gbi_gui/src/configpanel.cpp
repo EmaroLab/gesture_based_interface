@@ -52,6 +52,7 @@ void ConfigPanel::scan(){
   model->clear();
   scanner();
   if(scanner.count() < 6) return;
+  n_topics = scanner.count();
 
   for(auto a = scanner.begin(); a != scanner.end(); ++a){
     qInfo() << "Topic " << a.key() << ": ";

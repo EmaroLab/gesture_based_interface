@@ -1,0 +1,5 @@
+baxter_gbi_pbr_msgs/playback_msg msg
+---
+uint8 isError
+---
+float32 percent_complete	

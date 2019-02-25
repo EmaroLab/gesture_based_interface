@@ -22,10 +22,10 @@ class BlockingState(smach.State):
         ## type to be fill in each subclass
         self.type = None
         ## publisher of topic fsm_status
-        self.pub = rospy.Publisher('fsm_status', pub_status.status, queue_size=1)
-        time.sleep(0.2)
+        self.pub = rospy.Publisher('fsm_status', pub_status.status, queue_size=1, latch=True)
         ## message status
         self.msg = pub_status.status()
+        self.running = False
 
     ## method action_1
     #  @param userdata 
@@ -99,6 +99,9 @@ class BlockingState(smach.State):
         # to override 
         return None
 
+    def done(self,userdata):
+        return None
+
     ## method publish_state
     #  @param userdata 
     #  
@@ -106,12 +109,15 @@ class BlockingState(smach.State):
     def publish_state(self):
         # to override
         raise NotImplemented
+    
+
 
     ## method execute
     #  @param userdata 
     #  
     #  executable code of the blocking state
     def execute(self, userdata):
+        self.running = True
         while True:
             self.publish_state()
 
@@ -141,8 +147,11 @@ class BlockingState(smach.State):
                 ret = self.user_left(userdata)
             elif event_id == 'config':
                 ret = self.config(userdata)
+            elif event_id == 'finished':
+                ret = self.done(userdata)
 
             if ret:
+                self.running = False
                 return ret
 
     ## method request_preempt 
@@ -150,3 +159,9 @@ class BlockingState(smach.State):
     def request_preempt(self):
         smach.State.request_preempt(self)
         self._trigger_event.signal('preempt')
+
+    def signal(self, event_id):
+        self._trigger_event.signal(event_id)
+        
+    def is_running(self):
+        return self.running

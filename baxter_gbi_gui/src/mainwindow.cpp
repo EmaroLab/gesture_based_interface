@@ -8,24 +8,39 @@
 #include <QImage>
 #include <QKeyEvent>
 
-#define SHARED_KEY_PUB(x) QSharedPointer<KeystrokePublisher>(new KeystrokePublisher("/keyboard/keystroke_" #x))
+#define SHARED_KEY_PUB(x) QSharedPointer<KeystrokePublisher>(new KeystrokePublisher("/keyboard/key_" #x))
 #define SHARED_KEY_PUB_MAPPING(x) {Qt::Key_##x, SHARED_KEY_PUB(x)}
 
-MainWindow::MainWindow(QWidget *parent) :
-	QMainWindow(parent),
-	ui(new Ui::MainWindow),
-	rosThread(new QThread),
-	worker(new Worker),
-	current_page(nullptr),
-    map{
-        SHARED_KEY_PUB_MAPPING(1),
-        SHARED_KEY_PUB_MAPPING(2),
-        SHARED_KEY_PUB_MAPPING(3),
-        SHARED_KEY_PUB_MAPPING(4),
-        SHARED_KEY_PUB_MAPPING(5),
-        SHARED_KEY_PUB_MAPPING(6)
-    },
-	display(QString("/robot/xdisplay"))
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+    , rosThread(new QThread)
+    , worker(new Worker)
+    , current_page(nullptr)
+    , display(QString("/robot/xdisplay"))
+    , map{
+          SHARED_KEY_PUB_MAPPING(1),
+          SHARED_KEY_PUB_MAPPING(2),
+          SHARED_KEY_PUB_MAPPING(3),
+          SHARED_KEY_PUB_MAPPING(4),
+          SHARED_KEY_PUB_MAPPING(5),
+          SHARED_KEY_PUB_MAPPING(6),
+          SHARED_KEY_PUB_MAPPING(7),
+          SHARED_KEY_PUB_MAPPING(8),
+          SHARED_KEY_PUB_MAPPING(9),
+          SHARED_KEY_PUB_MAPPING(0),
+          SHARED_KEY_PUB_MAPPING(Up),
+          SHARED_KEY_PUB_MAPPING(Down),
+          SHARED_KEY_PUB_MAPPING(Left),
+          SHARED_KEY_PUB_MAPPING(Right),
+          SHARED_KEY_PUB_MAPPING(Super_L),
+          SHARED_KEY_PUB_MAPPING(Super_R),
+          SHARED_KEY_PUB_MAPPING(PageUp),
+          SHARED_KEY_PUB_MAPPING(PageDown),
+          SHARED_KEY_PUB_MAPPING(End),
+          SHARED_KEY_PUB_MAPPING(Control),
+          SHARED_KEY_PUB_MAPPING(Shift)
+      }
 {
 	ui->setupUi(this);
 	worker->moveToThread(rosThread);

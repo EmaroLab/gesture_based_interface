@@ -15,7 +15,7 @@ class MenuState(ExpiringState):
     #  @param output_keys set of data in the output state
     #  @param input_keys set of data in the input state
     #  @param fixed_options fixed options of the menu
-    def __init__(self, outcomes, trigger_event, page_title, output_keys=[], input_keys=[], fixed_options=['back', 'play']):
+    def __init__(self, outcomes, trigger_event, page_title, output_keys=[], input_keys=[], fixed_options=[]):
         ExpiringState.__init__(self,
                                outcomes = ['selection'] + outcomes,
                                trigger_event = trigger_event,
@@ -37,7 +37,7 @@ class MenuState(ExpiringState):
     #  action_1 assuming to go up in menu
     def action_1(self, userdata):
         max_selection = len(self.variable_options) + len(self.fixed_options)
-        if self.selection < max_selection:
+        if self.selection < max_selection - 1:
             self.selection += 1
         return None
 
@@ -71,6 +71,7 @@ class MenuState(ExpiringState):
     #  
     #  override of BlockingState.execute
     def execute(self, userdata):
+        self.selection=0
         self.variable_options = self.update_variable_options(userdata)
         return ExpiringState.execute(self, userdata)
 
@@ -84,7 +85,7 @@ class MenuState(ExpiringState):
         self.msg.m_options = self.variable_options
         self.msg.m_fixed_options = self.fixed_options
         self.msg.m_selection = self.selection
-        rospy.loginfo(self.msg)
+        #rospy.loginfo(self.msg)
         self.pub.publish(self.msg)
 
     ## method update_variable_options

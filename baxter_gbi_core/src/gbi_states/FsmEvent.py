@@ -26,5 +26,5 @@ class FsmEvent:
     #  set the trigger 
     def signal(self, event_id):
         self.event_id = event_id
-        rospy.loginfo("Received event " + self.event_id)
+        #rospy.loginfo("Received event " + self.event_id)
         self.trigger.set()
