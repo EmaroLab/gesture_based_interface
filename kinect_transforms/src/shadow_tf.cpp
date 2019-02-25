@@ -37,13 +37,13 @@ int main(int argc, char** argv)
 	
 	ros::NodeHandle nh;  
 	// Initilize Publishers for the odometry wrt center of mass
-	pub = nh.advertise<nav_msgs::Odometry>(pub_path.str(), 5);
+	pub = nh.advertise<nav_msgs::Odometry>(pub_path.str(), 1);
     
 	tf::StampedTransform t_com_to_frame;
 	
 	tf::Transform transform;
 	
-	ros::Rate r(50);
+	ros::Rate r(10);
 
 	while(ros::ok()){
 		try{    

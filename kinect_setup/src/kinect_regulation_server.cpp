@@ -111,12 +111,11 @@ bool regulateHead(kinect_tracking_srvs::RegulateKinectByHead::Request  &req,
 	float y = req.y;
 	float z = req.z;
 	
-	float angle = current_angle -1 * atan(y/z) * 180 / M_PI;
-	
+	float angle = current_angle -1 * atan(y/z) * 180 / M_PI - 9.0;
 	float min_z = z - 0.50;
-	float max_z = z + 0.15;
+	float max_z = z + 0.20;
 	float min_y = y - 0.40;
-	float max_y = y + 1.50;
+	float max_y = y + 1.80;
 	float min_x = x - 0.50;
 	float max_x = x + 0.50;
 	
@@ -167,9 +166,9 @@ bool resetKinect(std_srvs::Empty::Request& request, std_srvs::Empty::Response& r
 	set_filter_param("min_x", min_x);
 	set_filter_param("max_x", max_x);
 	
-	set_filter_param("revert_x", 1.0);
-	set_filter_param("revert_y", 1.0);
-	set_filter_param("revert_z", 1.0);
+	set_filter_param("revert_x", 0.0);
+	set_filter_param("revert_y", 0.0);
+	set_filter_param("revert_z", 0.0);
 	
 	// Reset all filters to true	
 	set_filter("downsampling_filter", true);
@@ -185,7 +184,9 @@ bool resetKinect(std_srvs::Empty::Request& request, std_srvs::Empty::Response& r
 void angleCB(const std_msgs::Float64& angle_msg){
 	if(angle_msg.data <= 30.0 && angle_msg.data >= -30.0)
 	{
-		current_angle = floor(angle_msg.data);
+		//ROS_INFO("QUI %lf", angle_msg.data);
+		float a = angle_msg.data;
+		current_angle = floor(a);
 	}
 }
 /**
@@ -215,7 +216,7 @@ int main(int argc, char** argv)
 	
 	// Acquire param
 	ros::NodeHandle nh("~");
-    n.param<int>("initial_angle", initial_angle, 0);
+    nh.param<int>("initial_angle", initial_angle, 0);
     ros::Subscriber angle_sub = nh.subscribe("/cur_tilt_angle",10,angleCB);
 	
     ros::spin();

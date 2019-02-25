@@ -61,7 +61,7 @@ class KinectActivate{
 		yaw = fmod(tf::getYaw(pose.getRotation()), 2*M_PI);
 		
 		if(abs(yaw - M_PI/2) < threshold){
-			ROS_INFO("Attention");
+			//ROS_INFO("Attention");
 			attention = true;
 		}
 		// check security

@@ -344,7 +344,7 @@ Visualization Manager:
         kinect_head:
           Value: true
         kinect_left_hand:
-          Value: false
+          Value: true
         kinect_right_hand:
           Value: true
         l_gripper_l_finger:
@@ -563,8 +563,8 @@ Visualization Manager:
                 {}
               kinect_left_hand:
                 {}
-            kinect_right_hand:
-              {}
+              kinect_right_hand:
+                {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -672,10 +672,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.3003973364830017
+      Pitch: 0.3003973066806793
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 1.9335826635360718
+      Yaw: 2.9335837364196777
     Saved: ~
 Window Geometry:
   Displays:

@@ -69,7 +69,8 @@ class PclBackgroundSegmentation{
     void angleCB(const std_msgs::Float64& angle_msg){
         if(angle_msg.data <= 30.0 && angle_msg.data >= -30.0)
         {
-                angle = floor(angle_msg.data);
+				float a = angle_msg.data;
+                angle = floor(a);
         }
     }
 

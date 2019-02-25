@@ -30,7 +30,7 @@
 	
 	<node name="pcl_filter" pkg ="kinect_pcl_tools" type="pcl_filter" output="screen">
 		<param name="use_downsampling" value="true"/>
-		<param name="downsampling_leaf_size" value="0.05"/>
+		<param name="downsampling_leaf_size" value="0.03"/>
 
 		<param name="use_filter_z" value="true"/>
 		<param name="min_z" value="0.1"/>
@@ -38,8 +38,8 @@
 		<param name="revert_filter_z" value="false"/>
 
 		<param name="use_filter_y" value="true"/>
-		<param name="min_y" value="-0.5"/>
-		<param name="max_y" value="0.5"/>
+		<param name="min_y" value="-1.0"/>
+		<param name="max_y" value="1.0"/>
 		<param name="revert_filter_y" value="false"/>
 
 		<param name="use_filter_x" value="true"/>
