@@ -75,6 +75,16 @@ int main(int argc, char** argv)
 	ros::Rate r(10000);
 	tf::TransformBroadcaster broadcaster;
 	
+    tf::Transform image_frame;
+    image_frame.setOrigin(tf::Vector3(0.20, 0.0, 0.90));
+	tf::Quaternion image_rotation;
+	image_rotation.setRPY(-1.57, 0, 1.57);
+	image_frame.setRotation(image_rotation);
+	
+    tf::Transform image_frame_fsm;
+    image_frame_fsm.setOrigin(tf::Vector3(0.20, 0.90, 1.40));
+	image_frame_fsm.setRotation(image_rotation);
+    
     tf::Transform change_frame;
     change_frame.setOrigin(tf::Vector3(x_kinect, y_kinect, z_kinect));
 
@@ -89,6 +99,8 @@ int main(int argc, char** argv)
 		change_frame.setRotation(frame_rotation);
 		
 		broadcaster.sendTransform(tf::StampedTransform(change_frame, ros::Time::now(), "world_frame", "camera_link"));
+		broadcaster.sendTransform(tf::StampedTransform(image_frame, ros::Time::now(), "world_frame", "image_frame"));
+		broadcaster.sendTransform(tf::StampedTransform(image_frame_fsm, ros::Time::now(), "world_frame", "image_frame_fsm"));
 				
 		ros::spinOnce();
 		r.sleep();
