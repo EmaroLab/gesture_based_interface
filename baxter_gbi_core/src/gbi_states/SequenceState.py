@@ -14,41 +14,33 @@ class SequenceState(ActionState):
                              status='play',
                              output_keys=[],
                              input_keys=input_keys)
-        self.goal = playbackGoal()
-        self.pause = rospy.ServiceProxy('pause_resume', PauseResume)
-        self.progress = 0
         self.index=0
-
-    def action_6(self,userdata):
-        try:
-            pause=self.pause(1)
-            return 'pause'
-        except rospy.ServiceException, e:
-            print "Service call failed: %s"%e
-            return None
     
     def fun(self,sequence,vel):
-        self.playback = actionlib.SimpleActionClient('playback', playbackAction)
-        self.playback.wait_for_service()
-        self.goal.sequence=sequence
-        self.goal.loops=1;
-        self.goal.scale_vel=vel;
-        self.playback.send_goal(self.goal,self.done_cb,None,self.feedback_cb)
+        self.playback.cancel_goal()
+        self.goal.msg.filename=sequence
+        self.goal.msg.loops=1
+        self.goal.msg.scale_vel=vel
+        self.playback.send_goal(self.goal,self.cb_done,None,self.feedback_cb)
 
-    def cb_done(self, userdata):
-        if self.index<=userdata.m_index:
+    def cb_done(self,status, result):
+        if  self.index<=len(self.sequence):
             self.index+=1
-            self.fun(userdata.sequence[self.index],100)
+            self.fun(self.sequence[self.index],100)
         else:
             self.signal('finished')
 
-    def feedback_cb(self, result):
-        self.progress = result
-        self.publish_state()
-
     def set_status(self):
-        return "%d% completed" % self.progress
+        if self.progress >= 0:
+            return self.goal.msg.filename + "%d%% completed" % self.progress
+        else:
+            return "reaching initial position... "
     
     def execute(self,userdata):
-        self.fun(userdata.sequence[self.index],100)
-        return ActionState.execute(userdata)
+        self.sequence = userdata.sequence
+        self.fun(self.sequence[self.index],100)
+        return ActionState.execute(self,userdata)
+    
+    def action_1(self,userdata):
+        self.cb_done(None,None)
+        return None
