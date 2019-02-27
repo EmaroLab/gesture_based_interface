@@ -1,3 +1,4 @@
+# -*- coding: latin-1 -*-
 ## @package PlayMenuState
 ## This package describes the structure of the play menu state 
 

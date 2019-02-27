@@ -1,3 +1,4 @@
+# -*- coding: latin-1 -*-
 ## @package WaitConfigState
 ## This package describes the structure of the 'wait for configuration' state
 

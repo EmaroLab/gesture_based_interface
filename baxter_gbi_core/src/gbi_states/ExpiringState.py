@@ -1,3 +1,4 @@
+# -*- coding: latin-1 -*-
 import rospy
 import time
 from threading import Timer

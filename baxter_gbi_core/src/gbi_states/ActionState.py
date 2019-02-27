@@ -1,3 +1,4 @@
+# -*- coding: latin-1 -*-
 ## @package ActionState
 #  This package defines the essential structure for all the action states
 
@@ -16,6 +17,10 @@ class ActionState(ExpiringState):
     # @param action executable action
     # @param output_keys set of the data in output
     # @param input_keys set of the data in input
+    progress = 0
+    end = False
+    killing = False
+
     def __init__(self, outcomes, trigger_event, status, output_keys=[], input_keys=[]):
         ExpiringState.__init__(self,
                                outcomes = ['done'] + outcomes,
@@ -27,41 +32,26 @@ class ActionState(ExpiringState):
         self.status = status
         self.goal = playbackGoal()
         rospy.wait_for_service('pause_resume')
-        self.pause = rospy.ServiceProxy('pause_resume', PauseResume)
+        self.pause_resume = rospy.ServiceProxy('pause_resume', PauseResume)
         self.playback = actionlib.SimpleActionClient('playback', playbackAction)
         self.playback.wait_for_server()
-        self.progress = 0
-        
-    def action_5(self,userdata):
-        self.playback.cancel_goal()
-        while(self.progress<100):
-            print self.progress
-        return 'done'
 
-    def action_6(self,userdata):
-        try:
-            self.pause(1)
-            return 'pause'
-        except rospy.ServiceException, e:
-            print "Service call failed: %s"%e
-            return None
+    def action_5(self, userdata):
+        ActionState.killing = True
+        self.playback.cancel_all_goals()
+        while not ActionState.end:
+            pass
+        return 'done'
     
     def user_left(self, userdata):
-        self.playback.cancel_goal()
-        while(self.progress<100):
-            print self.progress
+        ActionState.killing = True
+        self.playback.cancel_all_goals()
+        while not ActionState.end:
+            pass
         return 'user_missed'
     
-    def done(self,userdata):
+    def done(self, userdata):
         return 'done'
-
-    def cb_done(self, status, result):
-        self.signal('finished')
-
-    def feedback_cb(self, result):
-        if (self.is_running()):
-            self.progress = result.percent_complete
-            self.publish_state()
 
     ## method publish_state
     #  overide of BlockingState.publish_state
@@ -75,4 +65,3 @@ class ActionState(ExpiringState):
     ## method set_status
     def set_status(self):
         return ""
-        

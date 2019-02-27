@@ -1,3 +1,4 @@
+# -*- coding: latin-1 -*-
 ## @package ConfigState
 #  The package defines the structure of the configuration state
 

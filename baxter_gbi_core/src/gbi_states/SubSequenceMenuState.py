@@ -1,3 +1,4 @@
+# -*- coding: latin-1 -*-
 ## @package SubSequenceMenuState
 ## This package describes the structure of the sequence menu state 
 from MenuState import MenuState

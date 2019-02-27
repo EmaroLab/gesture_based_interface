@@ -1,3 +1,4 @@
+# -*- coding: latin-1 -*-
 ## @package MenuState
 ## This package describes the general structure
 #  of the menu states 

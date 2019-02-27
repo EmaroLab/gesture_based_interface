@@ -1,3 +1,4 @@
+# -*- coding: latin-1 -*-
 ## @package MainMenuState
 ## This package describes the structure of main menu state 
 

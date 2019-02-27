@@ -1,3 +1,4 @@
+# -*- coding: latin-1 -*-
 ## @package MacroState
 ## This package describes the structure
 #  of the macro state 
@@ -8,48 +9,48 @@ import actionlib
 from baxter_gbi_pbr_msgs.msg import playbackAction, playbackGoal
 from baxter_gbi_pbr_srvs.srv import *
 
+
 class MacroState(ActionState):
     def __init__(self, trigger_event):
-        input_keys = ['filename']
+        input_keys = ['filenames']
+        output_keys = ['filename']
 
         ActionState.__init__(self,
-                             outcomes=['pause'],
+                             outcomes=['play'],
                              trigger_event=trigger_event,
-                             status='pause',
-                             output_keys=[],
+                             status='wait',
+                             output_keys=output_keys,
                              input_keys=input_keys)
-        
-        
-
-    def cb_done(self, status, result):
-        return None
-
-    def fun(self,filename,vel):
-        if (filename!="Empty"):
-            self.playback.cancel_goal()
-            self.goal.msg.filename=filename
-            self.goal.msg.loops=1
-            self.goal.msg.scale_vel=vel
-            self.playback.send_goal(self.goal,self.cb_done,None,self.feedback_cb)
 
     def set_status(self):
-        if self.progress >= 0:
-            return self.goal.msg.filename + "%d%% completed" % self.progress
-        else:
-            return "reaching initial position... "
+        return "waiting for action request"
 
-    def action_4(self,userdata):
-        self.fun(userdata.filename[0],100)
+    def action_1(self, userdata):
+        if userdata.filenames[0] != "Empty":
+            userdata.filename = userdata.filenames[0]
+            return "play"
         return None
 
-    def action_3(self,userdata):
-        self.fun(userdata.filename[1],100)
+    def action_2(self, userdata):
+        if userdata.filenames[1] != "Empty":
+            userdata.filename = userdata.filenames[1]
+            return "play"
         return None
 
-    def action_2(self,userdata):
-        self.fun(userdata.filename[2],100)
+    def action_3(self, userdata):
+        if userdata.filenames[2] != "Empty":
+            userdata.filename = userdata.filenames[2]
+            return "play"
         return None
 
-    def action_1(self,userdata):
-        self.fun(userdata.filename[3],100)
+    def action_4(self, userdata):
+        if userdata.filenames[3] != "Empty":
+            userdata.filename = userdata.filenames[3]
+            return "play"
         return None
+
+    def action_5(self, userdata):
+        return 'done'
+
+    def user_left(self, userdata):
+        return 'user_missed'

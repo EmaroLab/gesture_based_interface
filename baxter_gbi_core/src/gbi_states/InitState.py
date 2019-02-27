@@ -1,3 +1,4 @@
+# -*- coding: latin-1 -*-
 ## @package InitState
 #  This package defines the structure of the INIT state
 

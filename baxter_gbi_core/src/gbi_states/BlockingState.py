@@ -1,3 +1,4 @@
+# -*- coding: latin-1 -*-
 ## @package BlockingState
 ## This package describes the general blocking 
 #  state 

@@ -1,3 +1,4 @@
+# -*- coding: latin-1 -*-
 ## @package SequenceMenuState
 ## This package describes the structure
 #  of the sequence menu state 

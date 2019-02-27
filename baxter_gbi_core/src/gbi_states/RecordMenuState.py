@@ -1,3 +1,4 @@
+# -*- coding: latin-1 -*-
 ## @package RecordMenuState
 ## This package describes the structure of the record menu state 
 
