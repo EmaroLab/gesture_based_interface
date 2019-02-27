@@ -13,7 +13,6 @@
 * Ros Melodic
 * ROSJava
 * Smartwatch Android
-* 
 
 ## Package Content
-Android Wearable application to send imu data from the smartwatch to the imu_data topic
+Android Wearable application to send imu data from the smartwatch to the /imu_data topic
