@@ -1,6 +1,7 @@
 #include <ros/ros.h>
 #include "std_msgs/Float64.h"
 #include "std_msgs/Empty.h"
+#include "std_msgs/String.h"
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_datatypes.h>
 #include <math.h>
@@ -37,7 +38,7 @@ class Beacon_Radius{
 	/**
 	 * Callback function to set presence flag to true
 	 */
-	void beaconCB(const std_msgs::Empty& input){
+	void beaconCB(const std_msgs::String& input){
 		presence = true;
 	}
 	/**
@@ -138,7 +139,7 @@ main(int argc, char** argv)
 	ros::ServiceServer service = n.advertiseService("move_beacon", move);
 	ros::ServiceServer service2 = n.advertiseService("set_beacon_radius", set_radius);
 	
-	ros::Rate r(100);
+	ros::Rate r(0.1);
 	tf::TransformBroadcaster broadcaster;
 	
     tf::Transform change_frame(tf::Quaternion(0, 0, 0, 1), tf::Vector3(x_beacon, y_beacon, z_beacon));
