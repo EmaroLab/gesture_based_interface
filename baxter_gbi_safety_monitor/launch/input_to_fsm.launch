@@ -3,9 +3,9 @@
 	<param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
 
 	<node name="kinect_broadcaster" pkg="kinect_transforms" type="kinect_broadcaster" output="screen">
-		<param name="x_kinect" value="0"/>
+		<param name="x_kinect" value="0.30"/>
 		<param name="y_kinect" value="0"/>
-		<param name="z_kinect" value="1.5"/>
+		<param name="z_kinect" value="-0.50"/>
 	</node>
 
 	<node name="kinect_to_baxter_broadcaster" pkg="kinect_transforms" type="kinect_to_baxter_broadcaster" output="screen">
@@ -30,7 +30,7 @@
 	
 	<node name="pcl_filter" pkg ="kinect_pcl_tools" type="pcl_filter" output="screen">
 		<param name="use_downsampling" value="true"/>
-		<param name="downsampling_leaf_size" value="0.03"/>
+		<param name="downsampling_leaf_size" value="0.05"/>
 
 		<param name="use_filter_z" value="true"/>
 		<param name="min_z" value="0.1"/>
@@ -78,15 +78,28 @@
 		<param name="beacon_hash" value="FF00FF"/>
 	</node>
 
-	<node name="beacon_blue" pkg="beacons_transforms" type="beacon_broadcaster" output="screen">
+	<node name="beacon_violet" pkg="beacons_transforms" type="beacon_broadcaster" output="screen">
 		<param name="x_beacon" value="0"/>
 		<param name="y_beacon" value="0"/>
+		<param name="z_beacon" value="1"/>
+		<param name="radius_presence" value="4.0"/>
+		<param name="beacon_color" value="violet"/>
+		<param name="beacon_hash" value="0000FF"/>
+	</node>
+
+	<node name="beacon_yellow" pkg="beacons_transforms" type="beacon_broadcaster" output="screen">
+		<param name="x_beacon" value="0"/>
+		<param name="y_beacon" value="1"/>
 		<param name="z_beacon" value="1"/>
 		<param name="radius_presence" value="4.0"/>
 		<param name="beacon_color" value="yellow"/>
 		<param name="beacon_hash" value="FFFF00"/>
 	</node>
 
+
+	<node name="sloth" pkg="sloth_gesture_recognition" type="gesture_recogniton.py" output="log"/>
+
 	<node name="rviz" pkg="rviz" type="rviz" args=" -d $(find baxter_gbi_safety_monitor)/rviz_resources/rviz_conf.rviz"/>
+
 
 </launch>
