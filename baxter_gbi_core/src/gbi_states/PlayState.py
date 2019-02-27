@@ -13,6 +13,7 @@ class PlayState(ActionState):
                              status='play',
                              output_keys=[],
                              input_keys=input_keys)
+        self.progress = 0
 
     def cb_done(self, status, result):
         ActionState.end = True
@@ -20,8 +21,7 @@ class PlayState(ActionState):
             self.signal("finished")
 
     def cb_feedback(self, result):
-        ActionState.progress = result.percent_complete
-        print ActionState.progress
+        self.progress = result.percent_complete
         if self.is_running():
             self.publish_state()
 
@@ -37,7 +37,7 @@ class PlayState(ActionState):
         return self.pause()
 
     def set_status(self):
-        if ActionState.progress >= 0:
+        if self.progress >= 0:
             return "%d%% completed" % self.progress
         else:
             return "reaching initial position... "
@@ -45,15 +45,14 @@ class PlayState(ActionState):
     def new_instance(self, userdata):
         try:
             if userdata.resume:
-                print userdata.resume
                 return False
         except KeyError:
             return True
 
     def play(self, filename):
-        ActionState.progress = 110
         ActionState.end = False
         ActionState.killing = False
+        self.progress = 110
         self.goal.msg.filename = filename
         self.goal.msg.loops = 1
         self.goal.msg.scale_vel = 100

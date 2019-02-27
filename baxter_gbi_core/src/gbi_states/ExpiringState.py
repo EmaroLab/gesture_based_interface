@@ -35,7 +35,7 @@ class ExpiringState(BlockingState):
         return None
 
     def timeout_cb(self):
-        self._trigger_event.signal('user_left')
+        self.signal('user_left')
 
     def execute(self, userdata):
         self.t = Timer(self.timeout, self.timeout_cb)

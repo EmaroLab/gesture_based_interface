@@ -25,29 +25,24 @@ class MacroState(ActionState):
     def set_status(self):
         return "waiting for action request"
 
-    def action_1(self, userdata):
-        if userdata.filenames[0] != "Empty":
-            userdata.filename = userdata.filenames[0]
+    @staticmethod
+    def play_file(userdata, index):
+        if userdata.filenames[index] != "Empty":
+            userdata.filename = userdata.filenames[index]
             return "play"
         return None
+
+    def action_1(self, userdata):
+        return self.play_file(userdata, 0)
 
     def action_2(self, userdata):
-        if userdata.filenames[1] != "Empty":
-            userdata.filename = userdata.filenames[1]
-            return "play"
-        return None
+        return self.play_file(userdata, 1)
 
     def action_3(self, userdata):
-        if userdata.filenames[2] != "Empty":
-            userdata.filename = userdata.filenames[2]
-            return "play"
-        return None
+        return self.play_file(userdata, 2)
 
     def action_4(self, userdata):
-        if userdata.filenames[3] != "Empty":
-            userdata.filename = userdata.filenames[3]
-            return "play"
-        return None
+        return self.play_file(userdata, 3)
 
     def action_5(self, userdata):
         return 'done'

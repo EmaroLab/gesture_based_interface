@@ -37,5 +37,4 @@ class WaitUserState(BlockingState):
     #  publish the message on the topic
     def publish_state(self):
         self.msg.context_type = self.type
-        rospy.loginfo(self.msg)
         self.pub.publish(self.msg)

@@ -29,7 +29,6 @@ class MenuState(ExpiringState):
         self.variable_options = []
         self.fixed_options = fixed_options
         self.selection = 0
-        ## timeout_t for the MenuState
 
     ## method action_1
     #  @param userdata 

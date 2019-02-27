@@ -33,7 +33,7 @@ class SequenceMenuState(MenuState):
             idx = userdata.sequence_idx
             try:
                 fname = userdata.sequence_filename
-                if not self.sequence[idx]:
+                if not self.sequence[idx]: #FIXME
                     self.sequence += "Add"
                 self.sequence[idx] = fname
             except KeyError:
@@ -43,15 +43,3 @@ class SequenceMenuState(MenuState):
             pass
         userdata.sequence = self.sequence[:-1]
         return self.sequence
-
-    ## method update_variable_options
-    #  @param userdata 
-    #  @param index
-    #  @param item
-    #  
-    #  override of MenuState.on_variable_selection
-    def on_variable_selection(self, index, item, userdata):
-        userdata.selection = index
-        return 'selection'
-
-    # FIXME: 'play' outcome does not outputs sequence configuration

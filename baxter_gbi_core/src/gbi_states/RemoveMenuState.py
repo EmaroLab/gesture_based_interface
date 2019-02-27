@@ -31,8 +31,13 @@ class RemoveMenuState(MenuState):
     #  override of MenuState.update_variable_options
     #  update the variable options of the menu
     def update_variable_options(self, userdata):
-        list = self.list()
-        return list.list_files
+        try:
+            list = self.list()
+            #print list
+            return list.list_files
+        except rospy.ServiceException, e:
+            print "Service call failed: %s"%e
+            return []
 
     ## method update_variable_options
     #  @param index
@@ -41,7 +46,7 @@ class RemoveMenuState(MenuState):
     #  
     #  override of MenuState.on_variable_selection
     def on_variable_selection(self, index, item, userdata):
-        delete=self.delete(item)
+        self.delete(item)
         del self.variable_options[index]
         self.selection = 0
         return None

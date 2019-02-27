@@ -21,6 +21,7 @@ class PlayMenuState(MenuState):
                            'Playback menu',
                            fixed_options=['back','remove'])
 
+        rospy.wait_for_service('files')
         self.list = rospy.ServiceProxy('files', ListFiles)
 
     ## method update_variable_options
@@ -33,7 +34,7 @@ class PlayMenuState(MenuState):
         # or parameter server or message
         try:
             list = self.list()
-            print list
+            #print list
             return list.list_files
         except rospy.ServiceException, e:
             print "Service call failed: %s"%e

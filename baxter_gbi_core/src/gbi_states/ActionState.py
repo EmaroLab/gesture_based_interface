@@ -17,7 +17,6 @@ class ActionState(ExpiringState):
     # @param action executable action
     # @param output_keys set of the data in output
     # @param input_keys set of the data in input
-    progress = 0
     end = False
     killing = False
 

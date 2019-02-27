@@ -360,7 +360,8 @@ class FSMThread(threading.Thread):
     ## method stop
     def stop(self):
         self.sm.request_preempt()
-        while self.sm.is_running(): pass
+        while self.sm.is_running():
+            pass
 
     ## method graph_gen
     #  graph generation
