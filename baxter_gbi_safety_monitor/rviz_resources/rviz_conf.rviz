@@ -442,7 +442,7 @@ Visualization Manager:
     - Class: rviz_textured_quads/MeshDisplayCustom
       Enabled: true
       Image Topic: /camera/rgb/image_color
-      Meters per pixel: 0.0010000000474974513
+      Meters per pixel: 0.0015
       Name: MeshDisplayCustom
       Quad Frame: image_frame_fsm
       Value: true

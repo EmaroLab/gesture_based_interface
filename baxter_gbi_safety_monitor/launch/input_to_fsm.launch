@@ -96,6 +96,10 @@
 		<param name="beacon_hash" value="FFFF00"/>
 	</node>
 
+
+	<node name="sloth" pkg="sloth_gesture_recognition" type="gesture_recogniton.py" output="log"/>
+
 	<node name="rviz" pkg="rviz" type="rviz" args=" -d $(find baxter_gbi_safety_monitor)/rviz_resources/rviz_conf.rviz"/>
+
 
 </launch>
