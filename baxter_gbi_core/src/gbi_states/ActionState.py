@@ -3,7 +3,10 @@
 
 import rospy
 from ExpiringState import ExpiringState
-
+import rospy
+import actionlib
+from baxter_gbi_pbr_msgs.msg import playbackAction, playbackGoal
+from baxter_gbi_pbr_srvs.srv import *
 ##  ActionState
 
 class ActionState(ExpiringState):
@@ -22,10 +25,43 @@ class ActionState(ExpiringState):
         ## attribute of type action
         self.type = 'action'
         self.status = status
-        ## attribute for the timeout
+        self.goal = playbackGoal()
+        rospy.wait_for_service('pause_resume')
+        self.pause = rospy.ServiceProxy('pause_resume', PauseResume)
+        self.playback = actionlib.SimpleActionClient('playback', playbackAction)
+        self.playback.wait_for_server()
+        self.progress = 0
+        
+    def action_5(self,userdata):
+        self.playback.cancel_goal()
+        while(self.progress<100):
+            print self.progress
+        return 'done'
 
+    def action_6(self,userdata):
+        try:
+            self.pause(1)
+            return 'pause'
+        except rospy.ServiceException, e:
+            print "Service call failed: %s"%e
+            return None
+    
+    def user_left(self, userdata):
+        self.playback.cancel_goal()
+        while(self.progress<100):
+            print self.progress
+        return 'user_missed'
+    
     def done(self,userdata):
         return 'done'
+
+    def cb_done(self, status, result):
+        self.signal('finished')
+
+    def feedback_cb(self, result):
+        if (self.is_running()):
+            self.progress = result.percent_complete
+            self.publish_state()
 
     ## method publish_state
     #  overide of BlockingState.publish_state
@@ -35,9 +71,6 @@ class ActionState(ExpiringState):
         self.msg.pbr_msg = self.set_status()
         #rospy.loginfo(self.msg)
         self.pub.publish(self.msg)
-
-    def feedback_cb(self,result):
-        pass
 
     ## method set_status
     def set_status(self):

@@ -18,7 +18,8 @@ class MacroMenuState(MenuState):
                            trigger_event,
                            'Macro menu',
                            fixed_options=['back'],
-                           input_keys=['macro_idx', 'macro_filename'])
+                           input_keys=['macro_idx', 'macro_filename'],
+                           output_keys=['macros'])
 
         self.macro_slots = ["Empty", "Empty", "Empty", "Empty"]
     ## method update_variable_options
@@ -36,7 +37,7 @@ class MacroMenuState(MenuState):
             self.macro_slots[userdata.macro_idx] = userdata.macro_filename
         except KeyError:
             pass
-        print self.macro_slots
+        userdata.macros=self.macro_slots
         return self.macro_slots
 
 
