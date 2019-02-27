@@ -23,8 +23,17 @@ public class Speaker extends AbstractNodeMain {
     }
 
     public GraphName getDefaultNodeName() {
-        return GraphName.of("android_tutorial_pubsub/talker");
+        String nodeName = null;
+        if(this.topicName == "/beacon/pink/presence")
+            nodeName = "talkerPink";
+        if(this.topicName == "/beacon/yellow/presence")
+            nodeName = "talkerYellow";
+        if(this.topicName == "/beacon/violet/presence")
+            nodeName = "talkerViolet";
+
+        return GraphName.of("beacons_proximity/" + nodeName);
     }
+
 
     public void onStart(ConnectedNode connectedNode) {
         final Publisher<std_msgs.String> publisher = connectedNode.newPublisher(this.topicName, "std_msgs/String");
