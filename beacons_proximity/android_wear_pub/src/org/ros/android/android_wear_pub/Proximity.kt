@@ -17,7 +17,7 @@ import org.ros.node.NodeMainExecutor
 import java.net.URI
 
 class Proximity(): RosActivity("Pubsub Tutorial", "Pubsub Tutorial",
-            URI.create("http://192.168.43.143:11311")) {
+            URI.create("http://192.168.43.214:11311")) {
 
     private var talkerPink: Speaker? = null
     private var talkerYellow: Speaker? = null

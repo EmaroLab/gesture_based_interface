@@ -21,7 +21,7 @@ import org.ros.node.NodeMainExecutor;
 public class SendingActivity extends RosActivity implements SensorEventListener {
 
     public SendingActivity() {
-        super("IMU Wear", "IMU Wear", URI.create("http://192.168.43.164:11311"));
+        super("IMU Wear", "IMU Wear", URI.create("http://192.168.43.214:11311"));
     }
 
     private ImuPublisher pub = new ImuPublisher("imu_data");

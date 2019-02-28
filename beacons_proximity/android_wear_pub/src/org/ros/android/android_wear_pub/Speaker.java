@@ -36,10 +36,10 @@ public class Speaker extends AbstractNodeMain {
             }
 
             protected void loop() throws InterruptedException {
-                std_msgs.String str = (std_msgs.String)publisher.newMessage();
+                std_msgs.String str = publisher.newMessage();
                 if(presence){
                     str.setData("Presence!" + this.sequenceNumber);
-                    Log.d("Debug.. ", "Published presence message");
+                    Log.d("Debug..", "Published presence message");
                     publisher.publish(str);
                 }
                 ++this.sequenceNumber;
