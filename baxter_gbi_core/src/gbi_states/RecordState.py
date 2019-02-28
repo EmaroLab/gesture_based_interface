@@ -3,6 +3,9 @@ from ActionState import ActionState
 import rospy
 from baxter_gbi_pbr_srvs.srv import RecordStart, RecordStop, Gripper
 
+import os
+debug = os.environ.get('BGI_DEBUG')
+
 class RecordState(ActionState):
     def __init__(self, trigger_event):
         input_keys = ['filename']
@@ -12,11 +15,14 @@ class RecordState(ActionState):
                              status='rec',
                              input_keys=input_keys,
                              output_keys=[])
-        rospy.wait_for_service('record_start')
+        if not debug:
+            rospy.wait_for_service('record_start')
         self.record_start = rospy.ServiceProxy('record_start', RecordStart)
-        rospy.wait_for_service('record_stop')
+        if not debug:
+            rospy.wait_for_service('record_stop')
         self.record_stop=rospy.ServiceProxy('record_stop', RecordStop)
-        rospy.wait_for_service('gripper')
+        if not debug:
+            rospy.wait_for_service('gripper')
         self.gripper = rospy.ServiceProxy('gripper', Gripper)
         self.left_grip = True
         self.right_grip = True
@@ -27,7 +33,7 @@ class RecordState(ActionState):
     def action_6(self,userdata):
         self.record_stop()
         return 'done'
-    
+
     def action_1(self, userdata):
         self.right_grip = not self.right_grip
         self.gripper("right", 100 if self.right_grip else 0)

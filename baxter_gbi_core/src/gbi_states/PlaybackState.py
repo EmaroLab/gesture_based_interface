@@ -8,6 +8,10 @@ import rospy
 import actionlib
 from baxter_gbi_pbr_msgs.msg import playbackAction, playbackGoal
 from baxter_gbi_pbr_srvs.srv import *
+
+import os
+debug = os.environ.get('BGI_DEBUG')
+
 ##  ActionState
 
 class PlaybackState(ActionState):
@@ -29,10 +33,12 @@ class PlaybackState(ActionState):
                              input_keys=input_keys)
 
         self.goal = playbackGoal()
-        rospy.wait_for_service('/pause_resume')
+        if not debug:
+            rospy.wait_for_service('/pause_resume')
         self.pause_resume = rospy.ServiceProxy('/pause_resume', PauseResume)
         self.playback = actionlib.SimpleActionClient('/playback', playbackAction)
-        self.playback.wait_for_server()
+        if not debug:
+            self.playback.wait_for_server()
 
     def action_5(self, userdata):
         PlaybackState.killing = True
