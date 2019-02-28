@@ -90,7 +90,7 @@ def record_start_handler(req):
         pause_state = 0
         
         msg = modify_playback()
-        msg.old_filename = file_playback+extension
+        msg.old_filename = file_playback
         msg.new_filename = folder_path+req.filename+extension
         msg.mode = "start"
         msg.line_number = line_executed

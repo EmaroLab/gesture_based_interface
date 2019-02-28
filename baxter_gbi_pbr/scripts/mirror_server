@@ -55,6 +55,9 @@ def enable_mirroring(req):
     else:
         enabled = req.mode
         rospy.loginfo("Mirroring ("+limb+") status changed:"+str(enabled))
+        
+        global file_output
+        file_output = open("baxter_"+limb+"_data.txt","w+")
         return 0
 
 ## Callback function associated with the topic 'mirror_end_effector'.
@@ -104,7 +107,6 @@ def mirror_server():
     rospy.loginfo("Mirror Server executed -> mirror service available.")    
     
     global file_output
-    file_output = open("baxter_"+limb+"_data.txt","w+")
     
     arm = Limb(limb)
     global solver
