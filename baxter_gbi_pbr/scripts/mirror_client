@@ -26,27 +26,14 @@ def main():
 
     rospy.loginfo("Initializing node... ")
     rospy.init_node('mirror_client', anonymous=True)
-    pub = rospy.Publisher('mirror_end_effector', mirror_end_effector, queue_size=2)
+    pub = rospy.Publisher('mirror_end_effector_left', mirror_end_effector, queue_size=2)
     
     init_pos = [0.163716,0.421201,-0.440442]
     init_orient = [0.54,-0.84,-0.005,0.003]
     
-    rospy.wait_for_service('calibrate_mirroring')
+    rospy.wait_for_service('enable_mirroring_left')
     try:
-        calibrate = rospy.ServiceProxy('calibrate_mirroring', CalibrateMirror)
-        response = calibrate("left",init_pos,init_orient)
-        if response.isError == 0:
-            print("Calibrated!")
-        else:
-            print("Error calibrating")
-            return
-        
-    except rospy.ServiceException, e:
-        print("Service call failed: %s"%e)
-    
-    rospy.wait_for_service('enable_mirroring')
-    try:
-        enableMirroring = rospy.ServiceProxy('enable_mirroring', EnableMirroring)
+        enableMirroring = rospy.ServiceProxy('enable_mirroring_left', EnableMirroring)
         response = enableMirroring(1)
         if response.isError == 0:
             print("Started!")
@@ -88,12 +75,12 @@ def main():
         orient = Quaternion()
 
         i += 0.2
-        quaternion = tf.transformations.quaternion_from_euler(3.129668, -0.000121, -2.002885)
+        #quaternion = tf.transformations.quaternion_from_euler(3.129668, -0.000121, -2.002885)
         #type(pose) = geometry_msgs.msg.Pose
-        orient.x = quaternion[0]
-        orient.y = quaternion[1]
-        orient.z = quaternion[2]
-        orient.w = quaternion[3]
+        #orient.x = quaternion[0]
+        #orient.y = quaternion[1]
+        #orient.z = quaternion[2]
+        #orient.w = quaternion[3]
         
         #print(str(orient))
         data = mirror_end_effector()

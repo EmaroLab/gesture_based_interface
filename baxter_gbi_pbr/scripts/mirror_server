@@ -54,7 +54,7 @@ def enable_mirroring(req):
         return 1
     else:
         enabled = req.mode
-        rospy.loginfo("Mirroring ("+limb+") status changed:"+enabled)
+        rospy.loginfo("Mirroring ("+limb+") status changed:"+str(enabled))
         return 0
 
 ## Callback function associated with the topic 'mirror_end_effector'.
@@ -68,6 +68,7 @@ def mirror_callback(data):
     global arm, limb
   
     if enabled == 1:
+        rospy.logwarn("Server callback "+limb)
         pos = Point()
         pos.x = data.position.x
         pos.y = data.position.y
@@ -76,10 +77,10 @@ def mirror_callback(data):
         global solver, file_output
             
         if (solver.iksolve(pos) == True):
-            print("Solution is: "+str(solver.target_jts_dict))
-            arm.move_to_joint_positions(solver.target_jts_dict)
+            rospy.loginfo("Solution is: "+str(solver.target_jts_dict))
+            arm.move_to_joint_positions(solver.target_jts_dict,5.0,0.03)
             resp = arm.endpoint_pose()
-
+            rospy.logerr("Finished "+limb)
             file_output.write(str(resp['position'].x)+","+str(resp['position'].y)+","+str(resp['position'].z)+"\n")
 
   
@@ -103,7 +104,7 @@ def mirror_server():
     rospy.loginfo("Mirror Server executed -> mirror service available.")    
     
     global file_output
-    file_output = open("baxter_"+limb+"_data.csv","w+")
+    file_output = open("baxter_"+limb+"_data.txt","w+")
     
     arm = Limb(limb)
     global solver

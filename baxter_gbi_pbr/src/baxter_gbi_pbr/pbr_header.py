@@ -110,7 +110,8 @@ class PlaybackObj(object):
             while ((number_lines < len(lines)-1) and self.stop == 0):
                 if service and service.is_preempt_requested(): break
                 feedback.percent_complete = (number_lines/float((len(lines)-1))*100.0)/float(loops - l + 1)
-                rospy.loginfo("Complete:"+str(feedback.percent_complete))
+                #rospy.loginfo("Complete:"+str(feedback.percent_complete))
+                rospy.loginfo("Preempted :"+str(service.is_preempt_requested()))
                 service.publish_feedback(feedback)
 
                 if self.pause_state == 0:
