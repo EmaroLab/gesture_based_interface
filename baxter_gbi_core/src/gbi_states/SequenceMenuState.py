@@ -11,8 +11,7 @@ class SequenceMenuState(MenuState):
     ## the constructor
     #  @param trigger_event istance of the class FsmEvent
     def __init__(self, trigger_event):
-        outcomes = ['play',
-                    'back']
+        outcomes = ['back', 'play']
 
         MenuState.__init__(self,
                            outcomes=outcomes,
@@ -20,7 +19,7 @@ class SequenceMenuState(MenuState):
                            page_title='Sequence menu',
                            fixed_options=outcomes,
                            input_keys=['sequence_idx', 'sequence_item'],
-                           output_keys=['sequence'])
+                           output_keys=['sequence', 'new_sequence'])
 
         self.sequence = ["Add"]
 
@@ -43,4 +42,5 @@ class SequenceMenuState(MenuState):
         except KeyError:
             pass
         userdata.sequence = self.sequence[:-1]
+        userdata.new_sequence = True
         return self.sequence

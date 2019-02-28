@@ -5,19 +5,21 @@ from baxter_gbi_pbr_srvs.srv import RecordStart, RecordStop, Gripper
 
 class RecordState(ActionState):
     def __init__(self, trigger_event):
-
+        input_keys = ['filename']
         ActionState.__init__(self,
                              outcomes=[],
                              trigger_event=trigger_event,
-                             status='record',
-                             output_keys=[],
-                             )
+                             status='rec',
+                             input_keys=input_keys,
+                             output_keys=[])
         rospy.wait_for_service('record_start')
         self.record_start = rospy.ServiceProxy('record_start', RecordStart)
         rospy.wait_for_service('record_stop')
         self.record_stop=rospy.ServiceProxy('record_stop', RecordStop)
         rospy.wait_for_service('gripper')
         self.gripper = rospy.ServiceProxy('gripper', Gripper)
+        self.left_grip = True
+        self.right_grip = True
 
     def user_left(self, userdata):
         return None
@@ -25,18 +27,17 @@ class RecordState(ActionState):
     def action_6(self,userdata):
         self.record_stop()
         return 'done'
-
-    def action_5(self,userdata):
-        return None
     
     def action_1(self, userdata):
-        self.gripper("right",100)
+        self.right_grip = not self.right_grip
+        self.gripper("right", 100 if self.right_grip else 0)
         return None
 
     def action_2(self, userdata):
-        self.gripper("left",100)
+        self.left_grip = not self.left_grip
+        self.gripper("left", 100 if self.left_grip else 0)
         return None
     
-    def execute(self,userdata):
-        self.record_start('100') # il messaggio va cambiato perchè il nome lo decide il nodo pbr
-        return ActionState.execute(self,userdata)
+    def execute(self, userdata):
+        self.record_start(userdata.filename, 100)
+        return ActionState.execute(self, userdata)

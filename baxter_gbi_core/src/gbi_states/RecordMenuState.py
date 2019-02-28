@@ -28,7 +28,8 @@ class RecordMenuState(FileMenuState):
     #  override of MenuState.on_fixed_selection
     def on_fixed_selection(self, index, item, userdata):
         if item == 'new':
-            userdata.selection = datetime.datetime.now().replace(microsecond=0).isoformat().replace("T", " ")
+            userdata.selected_idx = -1
+            userdata.selected_item = datetime.datetime.now().replace(microsecond=0).isoformat().replace("T", " ")
             return 'selection'
         else:
             return FileMenuState.on_fixed_selection(self, index, item, userdata)

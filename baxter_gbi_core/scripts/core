@@ -113,7 +113,9 @@ class FSMThread(threading.Thread):
                                                 'selection': 'RECORD',
                                                 'back': 'MAIN_MENU',
                                                 'remove': 'REMOVE_MENU_RECORD',
-                                                'preempted': 'EXIT'})
+                                                'preempted': 'EXIT'},
+                                   remapping={'selected_item': 'filename',
+                                              'selected_idx': 'context_idx'})
 
             smach.StateMachine.add('MENU_MACRO',
                                    MacroMenuState(self.event),
@@ -139,7 +141,8 @@ class FSMThread(threading.Thread):
                                               'sequence_idx': 'sequence_idx',
                                               'selected_item': 'selected_item',
                                               'selected_idx': 'context_idx',
-                                              'sequence': 'sequence'})
+                                              'sequence': 'sequence',
+                                              'new_sequence': 'new_sequence'})
 
             smach.StateMachine.add('REMOVE_MENU_PLAY',
                                    RemoveMenuState(self.event),
@@ -254,30 +257,33 @@ class FSMThread(threading.Thread):
 
             ## RECORD
             self.sub_record = smach.StateMachine(outcomes=['user_missed',
-                                                     'done',
-                                                    'preempted']
-                                                     )
+                                                           'done',
+                                                           'preempted'],
+                                                 input_keys=['filename'])
 
-            self.sub_record.set_initial_state(['RECORDSTATE'])
+            self.sub_record.set_initial_state(['RECORDREC'])
             self.sub_record.register_transition_cb(self.transition_cb2)
 
-            with self.sub_record:
-                smach.StateMachine.add('RECORDSTATE', RecordState(self.event),
-                                        transitions={'user_missed':'user_missed',
-                                                     'done':'done',
-                                                     'preempted':'preempted'})
+            smach.StateMachine.add('RECORD',
+                                   self.sub_record,
+                                   transitions={'user_missed': 'WAIT_USER',
+                                                'done': 'MENU_RECORD',
+                                                'preempted': 'EXIT'},
+                                   remapping={'filename': 'filename'})
 
-            smach.StateMachine.add('RECORD', self.sub_record,
-                                            transitions={'user_missed':'WAIT_USER',
-                                                     'done':'MENU_RECORD',
-                                                     'preempted':'EXIT'})
+            with self.sub_record:
+                smach.StateMachine.add('RECORDREC',
+                                       RecordState(self.event),
+                                       transitions={'user_missed': 'user_missed',
+                                                    'done': 'done',
+                                                    'preempted': 'preempted'})
 
 
             ##SEQUENCE
             self.sub_sequence = smach.StateMachine(outcomes=['user_missed',
                                                              'done',
                                                              'preempted'],
-                                                   input_keys=['sequence'])
+                                                   input_keys=['sequence', 'new_sequence'])
             self.sub_sequence.set_initial_state(['SEQUENCENEXT'])
             self.sub_sequence.register_transition_cb(self.transition_cb4)
 
@@ -285,7 +291,8 @@ class FSMThread(threading.Thread):
                                    transitions={'user_missed': 'WAIT_USER',
                                                 'done': 'MENU_SEQUENCE',
                                                 'preempted': 'EXIT'},
-                                   remapping={'sequence': 'sequence'})
+                                   remapping={'sequence': 'sequence',
+                                              'new_sequence': 'new_sequence'})
 
             with self.sub_sequence:
                 smach.StateMachine.add('SEQUENCENEXT',
@@ -295,6 +302,7 @@ class FSMThread(threading.Thread):
                                                     'play': 'SEQUENCEPLAY',
                                                     'preempted': 'preempted'},
                                        remapping={'sequence': 'sequence',
+                                                  'new_sequence': 'new_sequence',
                                                   'filename': 'filename'})
                 smach.StateMachine.add('SEQUENCEPLAY',
                                        PlayState(self.event),
