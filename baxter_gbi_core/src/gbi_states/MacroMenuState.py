@@ -12,14 +12,14 @@ class MacroMenuState(MenuState):
     #  @param trigger_event istance of the class FsmEvent
     def __init__(self, trigger_event):
 
-        outcomes = ['back', 'start']
+        fixed_options = ['back', 'start']
 
         MenuState.__init__(self,
-                           outcomes,
-                           trigger_event,
-                           'Macro menu',
-                           fixed_options=['back', 'start'],
-                           input_keys=['macro_idx', 'macro_filename'],
+                           outcomes=fixed_options,
+                           trigger_event=trigger_event,
+                           page_title='Macro menu',
+                           fixed_options=fixed_options,
+                           input_keys=['macro_idx', 'macro_item'],
                            output_keys=['macros'])
 
         self.macro_slots = ["Empty", "Empty", "Empty", "Empty"]
@@ -32,7 +32,7 @@ class MacroMenuState(MenuState):
 
     def update_variable_options(self, userdata):
         try:
-            self.macro_slots[userdata.macro_idx] = userdata.macro_filename
+            self.macro_slots[userdata.macro_idx] = userdata.macro_item
         except KeyError:
             pass
         userdata.macros = self.macro_slots

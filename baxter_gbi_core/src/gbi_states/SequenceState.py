@@ -16,6 +16,7 @@ class SequenceState(ActionState):
                              output_keys=[],
                              input_keys=input_keys)
         self.index=0
+        self.sequence=[]
     
     def fun(self,sequence,vel):
         self.playback.cancel_goal()

@@ -11,14 +11,15 @@ class SequenceMenuState(MenuState):
     ## the constructor
     #  @param trigger_event istance of the class FsmEvent
     def __init__(self, trigger_event):
-        outcomes=['play',
-                  'back']
+        outcomes = ['play',
+                    'back']
 
         MenuState.__init__(self,
-                           outcomes,
-                           trigger_event,
-                           'Sequence menu',
-                           input_keys=['sequence_idx', 'sequence_filename'],
+                           outcomes=outcomes,
+                           trigger_event=trigger_event,
+                           page_title='Sequence menu',
+                           fixed_options=outcomes,
+                           input_keys=['sequence_idx', 'sequence_item'],
                            output_keys=['sequence'])
 
         self.sequence = ["Add"]
@@ -31,14 +32,14 @@ class SequenceMenuState(MenuState):
     def update_variable_options(self, userdata):
         try:
             idx = userdata.sequence_idx
-            try:
-                fname = userdata.sequence_filename
-                if not self.sequence[idx]: #FIXME
-                    self.sequence += "Add"
+            fname = userdata.sequence_item
+            if self.sequence[idx] == "Add" and fname != "Empty":
+                self.sequence.append("Add")
                 self.sequence[idx] = fname
-            except KeyError:
-                if self.sequence[userdata.sequence_idx]:
-                    del self.sequence[userdata.sequence_idx]
+            elif self.sequence[idx] != "Add" and fname == "Empty":
+                del self.sequence[idx]
+            elif self.sequence[idx] != "Add" and fname != "Empty":
+                self.sequence[idx] = fname
         except KeyError:
             pass
         userdata.sequence = self.sequence[:-1]

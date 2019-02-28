@@ -20,7 +20,7 @@ class MenuState(ExpiringState):
         ExpiringState.__init__(self,
                                outcomes = ['selection'] + outcomes,
                                trigger_event = trigger_event,
-                               output_keys=['selection'] + output_keys,
+                               output_keys=['selected_item', 'selected_idx'] + output_keys,
                                input_keys = input_keys)
 
         ## type for the topic
@@ -102,7 +102,8 @@ class MenuState(ExpiringState):
     #  
     #  fill the field userdata.selection with item 
     def on_variable_selection(self, index, item, userdata):
-        userdata.selection = index
+        userdata.selected_idx = index
+        userdata.selected_item = item
         return 'selection'
 
     ## method on_fixed_selection

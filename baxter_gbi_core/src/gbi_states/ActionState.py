@@ -30,9 +30,9 @@ class ActionState(ExpiringState):
         self.type = 'action'
         self.status = status
         self.goal = playbackGoal()
-        rospy.wait_for_service('pause_resume')
-        self.pause_resume = rospy.ServiceProxy('pause_resume', PauseResume)
-        self.playback = actionlib.SimpleActionClient('playback', playbackAction)
+        rospy.wait_for_service('/pause_resume')
+        self.pause_resume = rospy.ServiceProxy('/pause_resume', PauseResume)
+        self.playback = actionlib.SimpleActionClient('/playback', playbackAction)
         self.playback.wait_for_server()
 
     def action_5(self, userdata):

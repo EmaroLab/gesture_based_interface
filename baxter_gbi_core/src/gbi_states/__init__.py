@@ -18,11 +18,11 @@ from RecordMenuState import *
 from MacroMenuState import *
 from SequenceMenuState import *
 from RemoveMenuState import *
-from SubMacroMenuState import *
-from SubSequenceMenuState import *
+from SelectionMenuState import *
 from PlayState import *
 from RecordState import *
 from MacroState import *
 from SequenceState import *
 from PauseState import *
 from Macro_SequencePause import *
+from FileMenuState import *
