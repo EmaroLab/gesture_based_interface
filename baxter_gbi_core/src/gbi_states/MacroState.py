@@ -44,8 +44,5 @@ class MacroState(ActionState):
     def action_4(self, userdata):
         return self.play_file(userdata, 3)
 
-    def action_5(self, userdata):
-        return 'done'
-
     def user_left(self, userdata):
         return 'user_missed'

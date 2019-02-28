@@ -9,7 +9,7 @@ import smach
 #   outcomes: (config_available,config_missing,'preempted')
 class InitState(smach.State):
     ## constructor
-    def __init__(self):
+    def __init__(self, trigger_event = None):
         outcomes = list(['config_available',
                          'config_missing',
                          'preempted'])

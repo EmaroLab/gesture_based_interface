@@ -64,7 +64,7 @@ void MainWindow::showConfig(){
 	action_page.update("config", "Waiting for configuration");
 	switchPage(&conf_page);
 	auto pixmap = action_page.grab();
-  display(pixmap);
+    display(pixmap);
 }
 
 void MainWindow::showMenu(QString title,

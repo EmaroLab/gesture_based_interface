@@ -10,14 +10,16 @@ import baxter_gbi_input_msgs.msg as bgi_io
 import smach
 from std_srvs.srv import Trigger, TriggerResponse
 import threading
-from gbi_states import *
 from graphviz import Digraph
 import std_msgs
 from mttkinter import mtTkinter as tk
 from PIL import Image, ImageTk
+from gbi_states import *
 
 ##  class FSMThread 
-#   inherited form threaing.Thread 
+#   inherited form threaing.Thread
+
+
 class FSMThread(threading.Thread):
     ## the constructor
     def __init__(self):
@@ -75,7 +77,7 @@ class FSMThread(threading.Thread):
                                                 'preempted': 'EXIT'})
 
             smach.StateMachine.add('CONFIG',
-                                   ConfigState(bgi_io.signal, self.action_cb),
+                                   ConfigState(self.event),
                                    transitions={'invalid': 'WAIT_CONFIG',
                                                 'success': 'WAIT_USER',
                                                 'preempted': 'EXIT'})
@@ -124,7 +126,7 @@ class FSMThread(threading.Thread):
                                               'macro_idx': 'macro_idx',
                                               'selected_item': 'selected_item',
                                               'selected_idx': 'context_idx',
-                                              'macros': 'macros'})
+                                              'macros': 'filenames'})
 
             smach.StateMachine.add('MENU_SEQUENCE',
                                    SequenceMenuState(self.event),
@@ -194,17 +196,19 @@ class FSMThread(threading.Thread):
             with self.sub_play:
                 smach.StateMachine.add('PLAYPLAY',
                                        PlayState(self.event),
-                                       transitions={'user_missed':'user_missed',
-                                                    'done':'done',
-                                                    'pause':'PLAYPAUSE',
-                                                    'preempted':'preempted'},
-                                       remapping={'filename':'filename'})
+                                       transitions={'user_missed': 'user_missed',
+                                                    'done': 'done',
+                                                    'stop': 'done',
+                                                    'pause': 'PLAYPAUSE',
+                                                    'preempted': 'preempted'},
+                                       remapping={'filename': 'filename'})
                 smach.StateMachine.add('PLAYPAUSE',
                                        PauseState(self.event),
-                                       transitions={'user_missed':'user_missed',
-                                                    'done':'done',
-                                                    'resume':'PLAYPLAY',
-                                                    'preempted':'preempted'})
+                                       transitions={'user_missed': 'user_missed',
+                                                    'done': 'done',
+                                                    'stop': 'done',
+                                                    'resume': 'PLAYPLAY',
+                                                    'preempted': 'preempted'})
 
 
             ## MACRO
@@ -225,25 +229,27 @@ class FSMThread(threading.Thread):
             with self.sub_macro:
                 smach.StateMachine.add('MACROWAIT',
                                        MacroState(self.event),
-                                       transitions={'user_missed':'user_missed',
-                                                    'done':'done',
-                                                    'play':'MACROPLAY',
-                                                    'preempted':'preempted'},
-                                       remapping={'filenames':'filenames',
-                                                  'filename':'filename'})
+                                       transitions={'user_missed': 'user_missed',
+                                                    'done': 'done',
+                                                    'play': 'MACROPLAY',
+                                                    'preempted': 'preempted'},
+                                       remapping={'filenames': 'filenames',
+                                                  'filename': 'filename'})
                 smach.StateMachine.add('MACROPLAY',
                                        PlayState(self.event),
-                                       transitions={'user_missed':'user_missed',
-                                                    'done':'MACROWAIT',
-                                                    'pause':'MACROPAUSE',
-                                                    'preempted':'preempted'},
-                                       remapping={'filename':'filename'})
+                                       transitions={'user_missed': 'user_missed',
+                                                    'done': 'MACROWAIT',
+                                                    'stop': 'MACROWAIT',
+                                                    'pause': 'MACROPAUSE',
+                                                    'preempted': 'preempted'},
+                                       remapping={'filename': 'filename'})
                 smach.StateMachine.add('MACROPAUSE',
                                        PauseState(self.event),
-                                       transitions={'user_missed':'user_missed',
-                                                    'done':'MACROWAIT',
-                                                    'resume':'MACROPLAY',
-                                                    'preempted':'preempted'})
+                                       transitions={'user_missed': 'user_missed',
+                                                    'done': 'MACROWAIT',
+                                                    'stop': 'MACROWAIT',
+                                                    'resume': 'MACROPLAY',
+                                                    'preempted': 'preempted'})
 
 
             ## RECORD
@@ -269,11 +275,10 @@ class FSMThread(threading.Thread):
 
             ##SEQUENCE
             self.sub_sequence = smach.StateMachine(outcomes=['user_missed',
-                                                     'done',
-                                                    'preempted'],
-                                                  input_keys=['sequence']
-                                                  )
-            self.sub_sequence.set_initial_state(['SEQUENCESTATE'])
+                                                             'done',
+                                                             'preempted'],
+                                                   input_keys=['sequence'])
+            self.sub_sequence.set_initial_state(['SEQUENCENEXT'])
             self.sub_sequence.register_transition_cb(self.transition_cb4)
 
             smach.StateMachine.add('SEQUENCE', self.sub_sequence,
@@ -283,18 +288,29 @@ class FSMThread(threading.Thread):
                                    remapping={'sequence': 'sequence'})
 
             with self.sub_sequence:
-                smach.StateMachine.add('SEQUENCESTATE', SequenceState(self.event),
-                                            transitions={'user_missed':'user_missed',
-                                                     'done':'done',
-                                                     'pause':'PAUSES',
-                                                    'preempted':'preempted'},
-                                            remapping = { 'sequence': 'sequence'})
-                smach.StateMachine.add('PAUSES', Macro_SequencePause(self.event),
-                                            transitions={'user_missed':'user_missed',
-                                                     'done':'done',
-                                                     'resume':'SEQUENCESTATE',
-                                                     'preempted':'preempted'},
-                                            )
+                smach.StateMachine.add('SEQUENCENEXT',
+                                       SequenceState(self.event),
+                                       transitions={'user_missed': 'user_missed',
+                                                    'done': 'done',
+                                                    'play': 'SEQUENCEPLAY',
+                                                    'preempted': 'preempted'},
+                                       remapping={'sequence': 'sequence',
+                                                  'filename': 'filename'})
+                smach.StateMachine.add('SEQUENCEPLAY',
+                                       PlayState(self.event),
+                                       transitions={'user_missed': 'user_missed',
+                                                    'done': 'SEQUENCENEXT',
+                                                    'stop': 'done',
+                                                    'pause': 'SEQUENCEPAUSE',
+                                                    'preempted': 'preempted'},
+                                       remapping={'filename': 'filename'})
+                smach.StateMachine.add('SEQUENCEPAUSE',
+                                       PauseState(self.event),
+                                       transitions={'user_missed': 'user_missed',
+                                                    'done': 'done',
+                                                    'stop': 'done',
+                                                    'resume': 'SEQUENCEPLAY',
+                                                    'preempted': 'preempted'})
 
     def logdebug(self,msg):
         pass
@@ -303,15 +319,15 @@ class FSMThread(threading.Thread):
     #  overide of contaneir.register_transition_cb
     #  @param transition_cb function associating to the transition 
     def register_transition_cb(self, transition_cb): 
-        self._transition_cbs.append((transition_cb)) 
+        self._transition_cbs.append(transition_cb)
 
-    def rendering(self,filename,active_states):
-        root =tk.Tk()
-        root.withdraw()
-        self.f.node_attr.update(color="0.000 1.000 1.000")
-        self.f.node(active_states[0],color="0.201 0.753 1.000")
-        self.f.render(filename=filename,directory=None,view=None,cleanup=False,format='png')
-        self.f.node(active_states[0],color="0.000 1.000 1.000")
+    def rendering(self, filename, active_states, f):
+        #root =tk.Tk()
+        #root.withdraw()
+        f.node_attr.update(color="0.000 1.000 1.000")
+        f.node(active_states[0],color="0.201 0.753 1.000")
+        f.render(filename=filename,directory=None,view=None,cleanup=False,format='png')
+        f.node(active_states[0],color="0.000 1.000 1.000")
         filename=filename+".png"
         image1 = ImageTk.PhotoImage(Image.open(filename))
         w = image1.width()
@@ -326,33 +342,25 @@ class FSMThread(threading.Thread):
     #  @param active_states list of the active states after the transition
     #  @param *cb_args additional arguments
     def transition_cb(self,userdata,active_states,*cb_args):
-        self.rendering(self.imageFile,active_states)
+        self.rendering(self.imageFile,active_states,self.f)
 
     def transition_cb1(self,userdata,active_states,*cb_args):
-        self.rendering(self.imageFile1,active_states)
+        self.rendering(self.imageFile1,active_states,self.f1)
 
     def transition_cb2(self,userdata,active_states,*cb_args):
-        self.rendering(self.imageFile2,active_states)
+        self.rendering(self.imageFile2,active_states,self.f2)
 
     def transition_cb3(self,userdata,active_states,*cb_args):
-        self.rendering(self.imageFile3,active_states)
+        self.rendering(self.imageFile3,active_states,self.f3)
 
     def transition_cb4(self,userdata,active_states,*cb_args):
-        self.rendering(self.imageFile4,active_states)
+        self.rendering(self.imageFile4,active_states,self.f4)
 
     ## method presence_cb
     #  @param msg message of the topic
     #  @param params list of parameters
     def presence_cb(self, msg, params):
         self.event.signal('user_detected')
-        #rospy.loginfo("Action %d triggered by the %s:\n%s\n", params["code"], params["topic"], msg)
-
-
-    ## method action_cb
-    #  @param msg message of the topic
-    #  @param params list of parameters
-    def action_cb(self, msg, params):
-        self.event.signal('action_' + str(params["code"]))
         #rospy.loginfo("Action %d triggered by the %s:\n%s\n", params["code"], params["topic"], msg)
 
     ## method config_cb
@@ -394,8 +402,8 @@ class FSMThread(threading.Thread):
         tr_edge=self.sm.get_internal_edges()
         tr_edge1=self.sub_play.get_internal_edges()
         tr_edge2=self.sub_record.get_internal_edges()
-        tr_edge3=self.sub_sequence.get_internal_edges()
-        tr_edge4=self.sub_macro.get_internal_edges()
+        tr_edge3=self.sub_macro.get_internal_edges()
+        tr_edge4=self.sub_sequence.get_internal_edges()
         
         self.f.node(self.sm.get_initial_states()[0])
         for i in range(0,len(tr_edge)):

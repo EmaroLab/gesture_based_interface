@@ -4,6 +4,7 @@
 
 import rospy
 import smach
+import baxter_gbi_input_msgs.msg as bgi_io
 
 ##  ConfigState
 #   outcomes: (invalid,success,'preempted')
@@ -11,17 +12,19 @@ class ConfigState(smach.State):
     ## constructor
     #  @param msg_type 
     #  @param callback
-    def __init__(self, msg_type, callback):
+    def __init__(self, trigger_event):
         outcomes = ['invalid',
                     'success',
                     'preempted']
 
+        self._trigger_event = trigger_event
         smach.State.__init__(
             self,
             outcomes)
-        self._callback = callback
-        self._msg_type = msg_type
         self.subscribers = []
+
+    def action_cb(self, msg, params):
+        self._trigger_event.signal('action_' + str(params["code"]))
 
     ## method execute
     #  @param userdata
@@ -41,8 +44,8 @@ class ConfigState(smach.State):
         for i in range(1, 7):
             for topic in rospy.get_param("key_" + str(i) + "_topics"):
                 sub = rospy.Subscriber(topic,
-                                       self._msg_type,
-                                       self._callback,
+                                       bgi_io.signal,
+                                       self.action_cb,
                                        {"topic": topic, "code": i}
                                        )
                 self.subscribers.append(sub)

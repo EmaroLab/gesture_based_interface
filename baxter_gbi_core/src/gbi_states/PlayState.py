@@ -1,23 +1,23 @@
 # -*- coding: latin-1 -*-
-from ActionState import ActionState
+from PlaybackState import PlaybackState
 import rospy
 
 
-class PlayState(ActionState):
+class PlayState(PlaybackState):
     def __init__(self, trigger_event):
         input_keys = ['filename', 'resume']
 
-        ActionState.__init__(self,
-                             outcomes=["pause"],
-                             trigger_event=trigger_event,
-                             status='play',
-                             output_keys=[],
-                             input_keys=input_keys)
+        PlaybackState.__init__(self,
+                               outcomes=["pause"],
+                               trigger_event=trigger_event,
+                               status='play',
+                               output_keys=[],
+                               input_keys=input_keys)
         self.progress = 0
 
     def cb_done(self, status, result):
-        ActionState.end = True
-        if not ActionState.killing:
+        PlaybackState.end = True
+        if not PlaybackState.killing:
             self.signal("finished")
 
     def cb_feedback(self, result):
@@ -50,8 +50,8 @@ class PlayState(ActionState):
             return True
 
     def play(self, filename):
-        ActionState.end = False
-        ActionState.killing = False
+        PlaybackState.end = False
+        PlaybackState.killing = False
         self.progress = 110
         self.goal.msg.filename = filename
         self.goal.msg.loops = 1
@@ -61,5 +61,5 @@ class PlayState(ActionState):
     def execute(self, userdata):
         if self.new_instance(userdata):
             self.play(userdata.filename)
-        return ActionState.execute(self, userdata)
+        return PlaybackState.execute(self, userdata)
 

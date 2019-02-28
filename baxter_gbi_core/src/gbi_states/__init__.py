@@ -24,5 +24,5 @@ from RecordState import *
 from MacroState import *
 from SequenceState import *
 from PauseState import *
-from Macro_SequencePause import *
 from FileMenuState import *
+from PlaybackState import *

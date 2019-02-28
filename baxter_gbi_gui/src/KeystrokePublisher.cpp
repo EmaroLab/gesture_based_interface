@@ -6,7 +6,7 @@ KeystrokePublisher::KeystrokePublisher(QString topic){
 }
 
 void KeystrokePublisher::operator()(){
-  msg.device_id = "123";
+    msg.device_id = "123"; //TODO: take ID from launch file
 	msg.device_type = "Keyboard";
 	msg.device_model = "PC";
 	msg.action_descr = "Key pressed";

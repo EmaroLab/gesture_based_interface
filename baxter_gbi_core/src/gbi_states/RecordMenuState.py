@@ -3,6 +3,7 @@
 ## This package describes the structure of the record menu state 
 
 from FileMenuState import FileMenuState
+import datetime
 
 ##  RecordMenuState
 #   inerithed form MenuState
@@ -27,7 +28,7 @@ class RecordMenuState(FileMenuState):
     #  override of MenuState.on_fixed_selection
     def on_fixed_selection(self, index, item, userdata):
         if item == 'new':
-            userdata.selection = "new_name"  # TODO: generate new unique name for recording
+            userdata.selection = datetime.datetime.now().replace(microsecond=0).isoformat().replace("T", " ")
             return 'selection'
         else:
-            return FileMenuState.on_fixed_selection(index, item, userdata)
+            return FileMenuState.on_fixed_selection(self, index, item, userdata)

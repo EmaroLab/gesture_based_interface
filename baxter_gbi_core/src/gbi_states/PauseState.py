@@ -1,14 +1,10 @@
 # -*- coding: latin-1 -*-
-from ActionState import ActionState
-import rospy
-import actionlib
-from baxter_gbi_pbr_msgs.msg import playbackAction, playbackGoal
-from baxter_gbi_pbr_srvs.srv import*
+from PlaybackState import PlaybackState
 
 
-class PauseState(ActionState):
+class PauseState(PlaybackState):
     def __init__(self, trigger_event):
-        ActionState.__init__(self,
+        PlaybackState.__init__(self,
                              outcomes=['resume'],
                              trigger_event=trigger_event,
                              status='pause',

@@ -59,7 +59,7 @@ private slots:
 private:
   static unsigned int _id; /**< mapping id */
   unsigned int id = 0; /**< id of the new mapping added */
-	Ui::Mapping* ui; /**< user interface mapping object */
+  Ui::Mapping* ui; /**< user interface mapping object */
   QStandardItemModel *model; /**< pointer to the model */
   SelectionFilterModel *filter; /**< proxy for the model */
   QStandardItem *topic, *subtopic; /** topic and subtopic items */
