@@ -1,3 +1,4 @@
+# -*- coding: latin-1 -*-
 from ActionState import ActionState
 import rospy
 from baxter_gbi_pbr_srvs.srv import*

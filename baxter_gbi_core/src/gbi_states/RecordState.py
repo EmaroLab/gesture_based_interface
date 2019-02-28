@@ -1,3 +1,4 @@
+# -*- coding: latin-1 -*-
 from ActionState import ActionState
 import rospy
 from baxter_gbi_pbr_srvs.srv import RecordStart, RecordStop, Gripper
@@ -37,5 +38,5 @@ class RecordState(ActionState):
         return None
     
     def execute(self,userdata):
-        self.record_start('100') # il messaggio va cambiato perchÃ¨ il nome lo decide il nodo pbr
+        self.record_start('100') # il messaggio va cambiato perchè il nome lo decide il nodo pbr
         return ActionState.execute(self,userdata)

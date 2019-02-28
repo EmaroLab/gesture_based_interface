@@ -1,3 +1,4 @@
+# -*- coding: latin-1 -*-
 from ActionState import ActionState
 import rospy
 import actionlib

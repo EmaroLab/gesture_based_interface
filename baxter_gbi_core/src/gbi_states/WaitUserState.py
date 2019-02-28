@@ -1,3 +1,4 @@
+# -*- coding: latin-1 -*-
 ## @package WaitUserState
 ## This package describes the structure of the 'waiting for user' state
 
@@ -10,7 +11,7 @@ import time
 class WaitUserState(BlockingState):
     ## the constructor
     #  @param outcomes outcomes of the state
-    #  @param trigger_event istance of FsmEvent class
+    #  @param trigger_event instance of FsmEvent class
     def __init__(self, trigger_event):
         outcomes=['reconf_requested',
                   'user_detected']
@@ -36,5 +37,4 @@ class WaitUserState(BlockingState):
     #  publish the message on the topic
     def publish_state(self):
         self.msg.context_type = self.type
-        rospy.loginfo(self.msg)
         self.pub.publish(self.msg)

@@ -61,3 +61,6 @@
 [submodule "_dependencies/gesture/sloth_gesture_recognition"]
 	path = _dependencies/gesture/sloth_gesture_recognition
 	url = https://github.com/EmaroLab/SLOTH
+[submodule "_dependencies/rviz_textured_quads"]
+	path = _dependencies/rviz_textured_quads
+	url = https://github.com/lucasw/rviz_textured_quads

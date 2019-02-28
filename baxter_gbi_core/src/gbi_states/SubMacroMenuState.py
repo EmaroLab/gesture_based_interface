@@ -1,3 +1,4 @@
+# -*- coding: latin-1 -*-
 ## @package SubMacroMenuState
 ## This package describes the structure of the sequence menu state 
 
@@ -19,6 +20,8 @@ class SubMacroMenuState(MenuState):
                            input_keys=['macro_idx'],
                            output_keys=['macro_idx_out'],
                            fixed_options=['back', 'clean'])
+
+        rospy.wait_for_service('files')
         self.list = rospy.ServiceProxy('files', ListFiles)
 
     ## method update_variable_options
@@ -43,7 +46,9 @@ class SubMacroMenuState(MenuState):
     #  override of MenuState.on_fixed_selection
     def on_fixed_selection(self, index, item, userdata):
         if item == 'clean':
-            userdata.selection = ''
+            userdata.selection = 'Empty'
             return 'selection'
         else:
-            return item
+            return MenuState.on_fixed_selection(index, item, userdata)
+
+#TODO: merge with SubSequenceMenuState
