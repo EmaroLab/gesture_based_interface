@@ -94,5 +94,5 @@ roslaunch kinect_pcl_tools configuration.launch
 ## Input Launcher
 To launch all the input nodes 
 ```
-roslaunch baxter_gbi_safety_monitor kinect_to_fsm.launch
+roslaunch baxter_gbi_safety_monitor input_to_fsm.launch
 ```
