@@ -322,19 +322,16 @@ class FSMThread(threading.Thread):
         self._transition_cbs.append(transition_cb)
 
     def rendering(self, filename, active_states, f):
-        #root =tk.Tk()
-        #root.withdraw()
         f.node_attr.update(color="0.000 1.000 1.000")
         f.node(active_states[0],color="0.201 0.753 1.000")
-        f.render(filename=filename,directory=None,view=None,cleanup=False,format='png')
+        f.render(filename=filename,directory=None,view=None,cleanup=True,format='png')
         f.node(active_states[0],color="0.000 1.000 1.000")
-        filename=filename+".png"
-        image1 = ImageTk.PhotoImage(Image.open(filename))
-        w = image1.width()
-        h = image1.height()
+        image = ImageTk.PhotoImage(Image.open(filename+".png"))
+        w = image.width()
+        h = image.height()
         self.widget.geometry("%dx%d+%d+%d" % (w, h, 0, 0))
-        self.panel.configure(image=image1)
-        self.display = image1
+        self.panel.configure(image=image)
+        self.display = image
         self.widget.update()
    
     ## method register_transition_cb
