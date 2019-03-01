@@ -9,16 +9,28 @@ import signal
 import baxter_gbi_input_msgs.msg as bgi_io
 import smach
 from std_srvs.srv import Trigger, TriggerResponse
+from sensor_msgs.msg import Image as RosImage
 import threading
 from graphviz import Digraph
 import std_msgs
 from mttkinter import mtTkinter as tk
 from PIL import Image, ImageTk
 from gbi_states import *
+from parser import *
+import cv2
+from cv_bridge import CvBridge, CvBridgeError
 
 ##  class FSMThread 
 #   inherited form threaing.Thread
 
+class ImageConverter(object):
+    @staticmethod
+    def to_ros(img):
+        rosimage = RosImage()
+        bridge = CvBridge()
+        image = cv2.imread(img)
+        rosimage = bridge.cv2_to_imgmsg(image, encoding="bgr8")
+        return rosimage
 
 class FSMThread(threading.Thread):
     ## the constructor
@@ -60,265 +72,26 @@ class FSMThread(threading.Thread):
         self.f4.attr('node', shape='circle',style='filled')
         self.f4.format="pdf"
         ## sm instance of the container StateMachine with outome=EXIT
-        self.sm = smach.StateMachine(outcomes=['EXIT'])
         self.event = FsmEvent()
-        self.sm.register_transition_cb(self.transition_cb)
-        self.sm.set_initial_state(['INIT'])
-        with self.sm:
-            smach.StateMachine.add('INIT',
-                                   InitState(),
-                                   transitions={'config_available': 'CONFIG',
-                                                'config_missing': 'WAIT_CONFIG',
-                                                'preempted': 'EXIT'})
 
-            smach.StateMachine.add('WAIT_CONFIG',
-                                   WaitConfigState(self.event),
-                                   transitions={'config_available': 'CONFIG',
-                                                'preempted': 'EXIT'})
+        parser = Parser(gbi_states, self.event)
+        self.sm, machines = parser.parse()
 
-            smach.StateMachine.add('CONFIG',
-                                   ConfigState(self.event),
-                                   transitions={'invalid': 'WAIT_CONFIG',
-                                                'success': 'WAIT_USER',
-                                                'preempted': 'EXIT'})
-
-            smach.StateMachine.add('WAIT_USER',
-                                   WaitUserState(self.event),
-                                   transitions={'reconf_requested': 'CONFIG',
-                                                'user_detected': 'MAIN_MENU',
-                                                'preempted': 'EXIT'})
-
-            smach.StateMachine.add('MAIN_MENU',
-                                   MainMenuState(self.event),
-                                   transitions={'user_missed': 'WAIT_USER',
-                                                'play': 'MENU_PLAY',
-                                                'record': 'MENU_RECORD',
-                                                'macro': 'MENU_MACRO',
-                                                'sequence': 'MENU_SEQUENCE',
-                                                'selection': 'MAIN_MENU',
-                                                'preempted': 'EXIT'})
-
-            smach.StateMachine.add('MENU_PLAY',
-                                   PlayMenuState(self.event),
-                                   transitions={'user_missed': 'WAIT_USER',
-                                                'selection': 'PLAY',
-                                                'back': 'MAIN_MENU',
-                                                'remove': 'REMOVE_MENU_PLAY',
-                                                'preempted': 'EXIT'},
-                                   remapping={'selected_item': 'filename'})
-
-            smach.StateMachine.add('MENU_RECORD',
-                                   RecordMenuState(self.event),
-                                   transitions={'user_missed': 'WAIT_USER',
-                                                'selection': 'RECORD',
-                                                'back': 'MAIN_MENU',
-                                                'remove': 'REMOVE_MENU_RECORD',
-                                                'preempted': 'EXIT'},
-                                   remapping={'selected_item': 'filename',
-                                              'selected_idx': 'context_idx'})
-
-            smach.StateMachine.add('MENU_MACRO',
-                                   MacroMenuState(self.event),
-                                   transitions={'user_missed': 'WAIT_USER',
-                                                'selection': 'SELECTION_MENU_MACRO',
-                                                'start': 'MACRO',
-                                                'back': 'MAIN_MENU',
-                                                'preempted': 'EXIT'},
-                                   remapping={'macro_item': 'macro_item',
-                                              'macro_idx': 'macro_idx',
-                                              'selected_item': 'selected_item',
-                                              'selected_idx': 'context_idx',
-                                              'macros': 'filenames'})
-
-            smach.StateMachine.add('MENU_SEQUENCE',
-                                   SequenceMenuState(self.event),
-                                   transitions={'user_missed': 'WAIT_USER',
-                                                'selection': 'SELECTION_MENU_SEQUENCE',
-                                                'play': 'SEQUENCE',
-                                                'back': 'MAIN_MENU',
-                                                'preempted': 'EXIT'},
-                                   remapping={'sequence_item': 'sequence_item',
-                                              'sequence_idx': 'sequence_idx',
-                                              'selected_item': 'selected_item',
-                                              'selected_idx': 'context_idx',
-                                              'sequence': 'sequence',
-                                              'new_sequence': 'new_sequence'})
-
-            smach.StateMachine.add('REMOVE_MENU_PLAY',
-                                   RemoveMenuState(self.event),
-                                   transitions={'user_missed': 'WAIT_USER',
-                                                'selection': 'MENU_PLAY',
-                                                'back': 'MENU_PLAY',
-                                                'preempted': 'EXIT'})
-
-            smach.StateMachine.add('REMOVE_MENU_RECORD',
-                                   RemoveMenuState(self.event),
-                                   transitions={'user_missed': 'WAIT_USER',
-                                                'selection': 'MENU_RECORD',
-                                                'back': 'MENU_RECORD',
-                                                'preempted': 'EXIT'})
-
-            smach.StateMachine.add('SELECTION_MENU_MACRO',
-                                   SelectionMenuState(self.event),
-                                   transitions={'user_missed': 'WAIT_USER',
-                                                'selection': 'MENU_MACRO',
-                                                'back': 'MENU_MACRO',
-                                                'preempted': 'EXIT'},
-                                   remapping={'selected_item': 'macro_item',
-                                              'selected_idx': 'selected_idx',
-                                              'context_idx':'context_idx',
-                                              'context_idx_out': 'macro_idx'})
-
-            smach.StateMachine.add('SELECTION_MENU_SEQUENCE',
-                                   SelectionMenuState(self.event),
-                                   transitions={'user_missed': 'WAIT_USER',
-                                                'selection': 'MENU_SEQUENCE',
-                                                'back': 'MENU_SEQUENCE',
-                                                'preempted': 'EXIT'},
-                                   remapping={'selected_item': 'sequence_item',
-                                              'selected_idx': 'selected_idx',
-                                              'context_idx': 'context_idx',
-                                              'context_idx_out': 'sequence_idx'})
-
-
-            ## PLAY
-            self.sub_play = smach.StateMachine(outcomes=['user_missed',
-                                                         'done',
-                                                         'preempted'],
-                                               input_keys=['filename'])
-            self.sub_play.set_initial_state(['PLAYPLAY'])
-            self.sub_play.register_transition_cb(self.transition_cb1)
-
-            smach.StateMachine.add('PLAY',
-                                   self.sub_play,
-                                   transitions={'user_missed': 'WAIT_USER',
-                                                'done': 'MENU_PLAY',
-                                                'preempted': 'EXIT'},
-                                   remapping={'filename': 'filename'})
-
-            with self.sub_play:
-                smach.StateMachine.add('PLAYPLAY',
-                                       PlayState(self.event),
-                                       transitions={'user_missed': 'user_missed',
-                                                    'done': 'done',
-                                                    'stop': 'done',
-                                                    'pause': 'PLAYPAUSE',
-                                                    'preempted': 'preempted'},
-                                       remapping={'filename': 'filename'})
-                smach.StateMachine.add('PLAYPAUSE',
-                                       PauseState(self.event),
-                                       transitions={'user_missed': 'user_missed',
-                                                    'done': 'done',
-                                                    'stop': 'done',
-                                                    'resume': 'PLAYPLAY',
-                                                    'preempted': 'preempted'})
-
-
-            ## MACRO
-            self.sub_macro = smach.StateMachine(outcomes=['user_missed',
-                                                          'done',
-                                                          'preempted'],
-                                                input_keys=['filenames'])
-            self.sub_macro.set_initial_state(['MACROWAIT'])
-            self.sub_macro.register_transition_cb(self.transition_cb3)
-
-            smach.StateMachine.add('MACRO',
-                                   self.sub_macro,
-                                   transitions={'user_missed': 'WAIT_USER',
-                                                'done': 'MENU_MACRO',
-                                                'preempted': 'EXIT'},
-                                   remapping={'filenames': 'filenames'})
-
-            with self.sub_macro:
-                smach.StateMachine.add('MACROWAIT',
-                                       MacroState(self.event),
-                                       transitions={'user_missed': 'user_missed',
-                                                    'done': 'done',
-                                                    'play': 'MACROPLAY',
-                                                    'preempted': 'preempted'},
-                                       remapping={'filenames': 'filenames',
-                                                  'filename': 'filename'})
-                smach.StateMachine.add('MACROPLAY',
-                                       PlayState(self.event),
-                                       transitions={'user_missed': 'user_missed',
-                                                    'done': 'MACROWAIT',
-                                                    'stop': 'MACROWAIT',
-                                                    'pause': 'MACROPAUSE',
-                                                    'preempted': 'preempted'},
-                                       remapping={'filename': 'filename'})
-                smach.StateMachine.add('MACROPAUSE',
-                                       PauseState(self.event),
-                                       transitions={'user_missed': 'user_missed',
-                                                    'done': 'MACROWAIT',
-                                                    'stop': 'MACROWAIT',
-                                                    'resume': 'MACROPLAY',
-                                                    'preempted': 'preempted'})
-
-
-            ## RECORD
-            self.sub_record = smach.StateMachine(outcomes=['user_missed',
-                                                           'done',
-                                                           'preempted'],
-                                                 input_keys=['filename'])
-
-            self.sub_record.set_initial_state(['RECORDREC'])
-            self.sub_record.register_transition_cb(self.transition_cb2)
-
-            smach.StateMachine.add('RECORD',
-                                   self.sub_record,
-                                   transitions={'user_missed': 'WAIT_USER',
-                                                'done': 'MENU_RECORD',
-                                                'preempted': 'EXIT'},
-                                   remapping={'filename': 'filename'})
-
-            with self.sub_record:
-                smach.StateMachine.add('RECORDREC',
-                                       RecordState(self.event),
-                                       transitions={'user_missed': 'user_missed',
-                                                    'done': 'done',
-                                                    'preempted': 'preempted'})
-
-
-            ##SEQUENCE
-            self.sub_sequence = smach.StateMachine(outcomes=['user_missed',
-                                                             'done',
-                                                             'preempted'],
-                                                   input_keys=['sequence', 'new_sequence'])
-            self.sub_sequence.set_initial_state(['SEQUENCENEXT'])
-            self.sub_sequence.register_transition_cb(self.transition_cb4)
-
-            smach.StateMachine.add('SEQUENCE', self.sub_sequence,
-                                   transitions={'user_missed': 'WAIT_USER',
-                                                'done': 'MENU_SEQUENCE',
-                                                'preempted': 'EXIT'},
-                                   remapping={'sequence': 'sequence',
-                                              'new_sequence': 'new_sequence'})
-
-            with self.sub_sequence:
-                smach.StateMachine.add('SEQUENCENEXT',
-                                       SequenceState(self.event),
-                                       transitions={'user_missed': 'user_missed',
-                                                    'done': 'done',
-                                                    'play': 'SEQUENCEPLAY',
-                                                    'preempted': 'preempted'},
-                                       remapping={'sequence': 'sequence',
-                                                  'new_sequence': 'new_sequence',
-                                                  'filename': 'filename'})
-                smach.StateMachine.add('SEQUENCEPLAY',
-                                       PlayState(self.event),
-                                       transitions={'user_missed': 'user_missed',
-                                                    'done': 'SEQUENCENEXT',
-                                                    'stop': 'done',
-                                                    'pause': 'SEQUENCEPAUSE',
-                                                    'preempted': 'preempted'},
-                                       remapping={'filename': 'filename'})
-                smach.StateMachine.add('SEQUENCEPAUSE',
-                                       PauseState(self.event),
-                                       transitions={'user_missed': 'user_missed',
-                                                    'done': 'done',
-                                                    'stop': 'done',
-                                                    'resume': 'SEQUENCEPLAY',
-                                                    'preempted': 'preempted'})
+        for key, machine in machines.iteritems():
+            if key == 'FSM':
+                machine.register_transition_cb(self.transition_cb)
+            elif key == 'PLAY':
+                machine.register_transition_cb(self.transition_cb1)
+                self.sub_play = machine
+            elif key == 'RECORD':
+                machine.register_transition_cb(self.transition_cb2)
+                self.sub_record = machine
+            elif key == 'MACRO':
+                machine.register_transition_cb(self.transition_cb3)
+                self.sub_macro = machine
+            elif key == 'SEQUENCE':
+                machine.register_transition_cb(self.transition_cb4)
+                self.sub_sequence = machine
 
     def logdebug(self,msg):
         pass
@@ -389,6 +162,7 @@ class FSMThread(threading.Thread):
         self.panel.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.YES)
         self.widget.geometry("%dx%d+%d+%d" % (w, h, 0, 0))
 
+        
         self.widget.update()
         rospy.Service('/fsm_config', Trigger, self.config_cb)
         
@@ -429,8 +203,13 @@ def config_server():
     t = FSMThread()
     t.graph_gen()
     t.start()
+    image_publisher = rospy.Publisher('/fsm/image', RosImage, queue_size=1)
+    rate = rospy.Rate(1)
     rospy.on_shutdown(t.stop)
-    rospy.spin()
+    while not rospy.is_shutdown():
+        image_message = ImageConverter.to_ros('state_machine.png')
+        image_publisher.publish(image_message)
+        rate.sleep()
 
 if __name__ == "__main__":
     config_server()

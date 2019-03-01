@@ -1,0 +1,682 @@
+Machines:
+ Machine1: 
+  name: FSM
+  parent : 
+  outcomes: 
+   out1: EXIT
+  initial_state: INIT
+  input_keys:
+  output_keys:
+  remapping:
+  nodes:
+   node1:
+    name: INIT
+    class: InitState
+    remapping: 
+   node2:
+    name: CONFIG
+    class: ConfigState
+    remapping: 
+   node3:
+    name: WAIT_CONFIG
+    class: WaitConfigState
+    remapping: 
+   node4:
+    name: WAIT_USER
+    class: WaitUserState
+    remapping: 
+   node5:
+    name: MAIN_MENU
+    class: MainMenuState
+    remapping: 
+   node6:
+    name: MENU_PLAY
+    class: PlayMenuState
+    remapping:
+     remap1:
+      from: selected_item
+      to: filename
+   node7:
+    name: REMOVE_MENU_PLAY
+    class: RemoveMenuState
+    remapping: 
+   node8:
+    name: REMOVE_MENU_RECORD
+    class: RemoveMenuState
+    remapping: 
+   node9: 
+    name: MENU_RECORD
+    class: RecordMenuState
+    remapping: 
+     remap1:
+      from: selected_item
+      to: filename
+     remap2:
+      from: selected_idx
+      to: context_idx
+   node10: 
+    name: MENU_MACRO
+    class: MacroMenuState
+    remapping:
+     remap1:
+      from: macro_item
+      to: macro_item
+     remap2: 
+      from: macro_idx
+      to: macro_idx
+     remap3:
+      from: selected_item
+      to: selected_item
+     remap4:
+      from: selected_idx
+      to: context_idx
+     remap5:
+      from: macros
+      to: filenames
+   node11: 
+    name: SELECTION_MENU_MACRO
+    class: SelectionMenuState
+    remapping:
+     remap1:
+      from: selected_item
+      to: macro_item
+     remap2: 
+      from: selected_idx
+      to: selected_idx
+     remap3:
+      from: context_idx
+      to: context_idx
+     remap4:
+      from: context_idx_out
+      to: macro_idx
+   node12:
+    name: MENU_SEQUENCE
+    class: SequenceMenuState
+    remapping:
+     remap1:
+      from: sequence_item
+      to: sequence_item
+     remap2: 
+      from: sequence_idx
+      to: sequence_idx
+     remap3:
+      from: selected_item
+      to: selected_item
+     remap4:
+      from: selected_idx
+      to: context_idx
+     remap5:
+      from: sequence
+      to: sequence
+     remap6:
+      from: new_sequence
+      to: new_sequence
+   node13:
+    name: SELECTION_MENU_SEQUENCE
+    class: SelectionMenuState
+    remapping:
+     remap1:
+      from: selected_item
+      to: macro_item
+     remap2: 
+      from: selected_idx
+      to: selected_idx
+     remap3:
+      from: context_idx
+      to: context_idx
+     remap4:
+      from: context_idx_out
+      to: macro_idx
+  transitions:
+   transition1:
+    from: INIT
+    to: CONFIG
+    event: config_available
+   transition2:
+    from: INIT
+    to: WAIT_CONFIG
+    event: config_missing
+   transition3:
+    from: INIT
+    to: EXIT
+    event: preempted  
+   transition4:
+    from: CONFIG
+    to: WAIT_CONFIG
+    event: invalid  
+   transition5:
+    from: CONFIG
+    to: EXIT
+    event: preempted 
+   transition6:
+    from: CONFIG
+    to: WAIT_USER
+    event: success 
+   transition7:
+    from: WAIT_CONFIG
+    to: CONFIG
+    event: config_available  
+   transition8:
+    from: WAIT_CONFIG
+    to: EXIT
+    event: preempted
+   transition9:
+    from: WAIT_USER
+    to: CONFIG
+    event: reconf_requested
+   transition10:
+    from: WAIT_USER
+    to: MAIN_MENU
+    event: user_detected
+   transition11:
+    from: WAIT_USER
+    to: EXIT
+    event: preempted
+   transition12:
+    from: MAIN_MENU
+    to: WAIT_USER
+    event: user_missed
+   transition13:
+    from: MAIN_MENU
+    to: MENU_PLAY
+    event: play
+   transition14:
+    from: MAIN_MENU
+    to: MENU_RECORD
+    event: record
+   transition15:
+    from: MAIN_MENU
+    to: MENU_MACRO
+    event: macro
+   transition16:
+    from: MAIN_MENU
+    to: MENU_SEQUENCE
+    event: sequence
+   transition17:
+    from: MAIN_MENU
+    to: MAIN_MENU
+    event: selection
+   transition18:
+    from: MAIN_MENU
+    to: EXIT
+    event: preempted
+   transition19:
+    from: MENU_PLAY
+    to: WAIT_USER
+    event: user_missed
+   transition20:
+    from: MENU_PLAY
+    to: PLAY
+    event: selection
+   transition60:
+    from: MENU_PLAY
+    to: MAIN_MENU
+    event: back
+   transition21:
+    from: MENU_PLAY
+    to: REMOVE_MENU_PLAY
+    event: remove
+   transition61:
+    from: MENU_PLAY
+    to: EXIT
+    event: preempted
+   transition22:
+    from: REMOVE_MENU_PLAY
+    to: WAIT_USER
+    event: user_missed
+   transition23:
+    from: REMOVE_MENU_PLAY
+    to: MENU_PLAY
+    event: selection
+   transition24:
+    from: REMOVE_MENU_PLAY
+    to: MENU_PLAY
+    event: back
+   transition25:
+    from: REMOVE_MENU_PLAY
+    to: EXIT
+    event: preempted
+   transition26:
+    from: MENU_RECORD
+    to: WAIT_USER
+    event: user_missed
+   transition27:
+    from: MENU_RECORD
+    to: RECORD
+    event: selection
+   transition28:
+    from: MENU_RECORD
+    to: REMOVE_MENU_RECORD
+    event: remove
+   transition29:
+    from: MENU_RECORD
+    to: MAIN_MENU
+    event: back
+   transition30:
+    from: MENU_RECORD
+    to: EXIT
+    event: preempted
+   transition31:
+    from: REMOVE_MENU_RECORD
+    to: WAIT_USER
+    event: user_missed
+   transition32:
+    from: REMOVE_MENU_RECORD
+    to: MENU_RECORD
+    event: selection
+   transition33:
+    from: REMOVE_MENU_RECORD
+    to: MENU_RECORD
+    event: back
+   transition34:
+    from: REMOVE_MENU_RECORD
+    to: EXIT
+    event: preempted
+   transition35:
+    from: MENU_MACRO
+    to: WAIT_USER
+    event: user_missed
+   transition36:
+    from: MENU_MACRO
+    to: SELECTION_MENU_MACRO
+    event: selection
+   transition37:
+    from: MENU_MACRO
+    to: MACRO
+    event: start
+   transition38:
+    from: MENU_MACRO
+    to: MAIN_MENU
+    event: back
+   transition39:
+    from: MENU_MACRO
+    to: EXIT
+    event: preempted
+   transition40:
+    from: SELECTION_MENU_MACRO
+    to: WAIT_USER
+    event: user_missed
+   transition41:
+    from: SELECTION_MENU_MACRO
+    to: MENU_MACRO
+    event: selection
+   transition42:
+    from: SELECTION_MENU_MACRO
+    to: MENU_MACRO
+    event: back
+   transition43:
+    from: SELECTION_MENU_MACRO
+    to: EXIT
+    event: preempted
+   transition44:
+    from: MENU_SEQUENCE
+    to: WAIT_USER
+    event: user_missed
+   transition45:
+    from: MENU_SEQUENCE
+    to: SELECTION_MENU_SEQUENCE
+    event: selection
+   transition46:
+    from: MENU_SEQUENCE
+    to: SEQUENCE
+    event: play
+   transition47:
+    from: MENU_SEQUENCE
+    to: MAIN_MENU
+    event: back
+   transition48:
+    from: MENU_SEQUENCE
+    to: EXIT
+    event: preempted
+   transition49:
+    from: SELECTION_MENU_SEQUENCE
+    to: WAIT_USER
+    event: user_missed
+   transition50:
+    from: SELECTION_MENU_SEQUENCE
+    to: MENU_SEQUENCE
+    event: selection
+   transition51:
+    from: SELECTION_MENU_SEQUENCE
+    to: MENU_SEQUENCE
+    event: back
+   transition52:
+    from: SELECTION_MENU_SEQUENCE
+    to: EXIT
+    event: preempted
+ Machine2: 
+  name: PLAY
+  parent : FSM
+  outcomes: 
+   out1: user_missed
+   out2: done
+   out3: preempted
+  initial_state: PLAYPLAY
+  input_keys:
+   input1: filename
+  output_keys:
+  remapping:
+   remap1:
+    from: filename
+    to: filename
+  nodes:
+   node1:
+    name: PLAYPLAY
+    class: PlayState
+    remapping: 
+   node2:
+    name: PLAYPAUSE
+    class: PauseState
+    remapping: 
+  transitions:
+   transition1:
+    from: PLAYPLAY
+    to: user_missed
+    event: user_missed
+   transition2:
+    from: PLAYPLAY
+    to: done
+    event: done
+   transition3:
+    from: PLAYPLAY
+    to: done
+    event: stop
+   transition4:
+    from: PLAYPLAY
+    to: PLAYPAUSE
+    event: pause
+   transition5:
+    from: PLAYPLAY
+    to: preempted
+    event: preempted
+   transition6:
+    from: PLAYPAUSE
+    to: user_missed
+    event: user_missed
+   transition7:
+    from: PLAYPAUSE
+    to: done
+    event: done
+   transition8:
+    from: PLAYPAUSE
+    to: done
+    event: stop
+   transition9:
+    from: PLAYPAUSE
+    to: PLAYPLAY
+    event: resume
+   transition10:
+    from: PLAYPAUSE
+    to: preempted
+    event: preempted
+ Machine3: 
+  name: MACRO
+  parent : FSM
+  outcomes: 
+   out1: user_missed
+   out2: done
+   out3: preempted
+  initial_state: MACROWAIT
+  input_keys:
+   input1: filenames
+  output_keys:
+  remapping:
+   remap1:
+    from: filename
+    to: filename
+  nodes:
+   node1:
+    name: MACROWAIT
+    class: MacroState
+    remapping: 
+     remap1:
+      from: filename
+      to: filename
+     remap2:
+      from: filenames
+      to: filenames
+   node2:
+    name: MACROPLAY
+    class: PlayState
+    remapping: 
+     remap1:
+      from: filename
+      to: filename
+   node3:
+    name: MACROPAUSE
+    class: PauseState
+    remapping: 
+  transitions:
+   transition1:
+    from: MACROWAIT
+    to: user_missed
+    event: user_missed
+   transition2:
+    from: MACROWAIT
+    to: done
+    event: done
+   transition3:
+    from: MACROWAIT
+    to: MACROPLAY
+    event: play
+   transition4:
+    from: MACROWAIT
+    to: preempted
+    event: preempted
+   transition5:
+    from: MACROPLAY
+    to: user_missed
+    event: user_missed
+   transition6:
+    from: MACROPLAY
+    to: MACROWAIT
+    event: done
+   transition7:
+    from: MACROPLAY
+    to: MACROWAIT
+    event: stop
+   transition8:
+    from: MACROPLAY
+    to: MACROPAUSE
+    event: pause
+   transition9:
+    from: MACROPLAY
+    to: preempted
+    event: preempted
+   transition10:
+    from: MACROPAUSE
+    to: user_missed
+    event: user_missed
+   transition11:
+    from: MACROPAUSE
+    to: MACROWAIT
+    event: done
+   transition12:
+    from: MACROPAUSE
+    to: MACROWAIT
+    event: stop
+   transition13:
+    from: MACROPAUSE
+    to: MACROPLAY
+    event: resume
+   transition14:
+    from: MACROPAUSE
+    to: preempted
+    event: preempted
+ Machine4: 
+  name: RECORD
+  parent : FSM
+  outcomes:
+   out1: user_missed
+   out2: done
+   out3: preempted
+  initial_state: RECORDREC
+  input_keys:
+   input1: filename
+  output_keys:
+  remapping:
+   remap1:
+    from: filename
+    to: filename
+  nodes:
+   node1:
+    name: RECORDREC
+    class: RecordState
+    remapping: 
+  transitions:
+   transition1:
+    from: RECORDREC
+    to: user_missed
+    event: user_missed
+   transition2:
+    from: RECORDREC
+    to: done
+    event: done
+   transition3:
+    from: RECORDREC
+    to: preempted
+    event: preempted
+ Machine5: 
+  name: SEQUENCE
+  parent : FSM
+  outcomes: 
+   out1: user_missed
+   out2: done
+   out3: preempted
+  initial_state: SEQUENCENEXT
+  input_keys:
+   input1: sequence
+   input2: new_sequence
+  output_keys:
+  remapping:
+  nodes:
+   node1:
+    name: SEQUENCENEXT
+    class: SequenceState
+    remapping: 
+     remap1:
+      from: sequence
+      to: sequence
+     remap2:
+      from: new_sequence
+      to: new_sequence
+     remap3:
+      from: filename
+      to: filename
+   node2:
+    name: SEQUENCEPLAY
+    class: PlayState
+    remapping: 
+     remap1:
+      from: filename
+      to: filename
+   node3:
+    name: SEQUENCEPAUSE
+    class: PauseState
+    remapping: 
+  transitions:
+   transition1:
+    from: SEQUENCENEXT
+    to: user_missed
+    event: user_missed
+   transition2:
+    from: SEQUENCENEXT
+    to: done
+    event: done
+   transition3:
+    from: SEQUENCENEXT
+    to: SEQUENCEPLAY
+    event: play
+   transition4:
+    from: SEQUENCENEXT
+    to: preempted
+    event: preempted
+   transition5:
+    from: SEQUENCEPLAY
+    to: user_missed
+    event: user_missed
+   transition6:
+    from: SEQUENCEPLAY
+    to: SEQUENCENEXT
+    event: done
+   transition7:
+    from: SEQUENCEPLAY
+    to: done
+    event: stop
+   transition8:
+    from: SEQUENCEPLAY
+    to: SEQUENCEPAUSE
+    event: pause
+   transition9:
+    from: SEQUENCEPLAY
+    to: preempted
+    event: preempted
+   transition10:
+    from: SEQUENCEPAUSE
+    to: user_missed
+    event: user_missed
+   transition11:
+    from: SEQUENCEPAUSE
+    to: done
+    event: done
+   transition12:
+    from: SEQUENCEPAUSE
+    to: done
+    event: stop
+   transition13:
+    from: SEQUENCEPAUSE
+    to: SEQUENCEPLAY
+    event: resume
+   transition14:
+    from: SEQUENCEPAUSE
+    to: preempted
+    event: preempted
+Inter-FSM-Transitions:
+ Transition1:
+  from: PLAY
+  to: WAIT_USER
+  event: user_missed
+ Transition2:
+  from: PLAY
+  to: MENU_PLAY
+  event: done
+ Transition3:
+  from: PLAY
+  to: EXIT
+  event: preempted
+ Transition4:
+  from: MACRO
+  to: WAIT_USER
+  event: user_missed
+ Transition5:
+  from: MACRO
+  to: MENU_MACRO
+  event: done
+ Transition6:
+  from: MACRO
+  to: EXIT
+  event: preempted
+ Transition7:
+  from: RECORD
+  to: WAIT_USER
+  event: user_missed
+ Transition8:
+  from: RECORD
+  to: MENU_RECORD
+  event: done
+ Transition9:
+  from: RECORD
+  to: EXIT
+  event: preempted
+ Transition10:
+  from: SEQUENCE
+  to: WAIT_USER
+  event: user_missed
+ Transition11:
+  from: SEQUENCE
+  to: MENU_SEQUENCE
+  event: done
+ Transition12:
+  from: SEQUENCE
+  to: EXIT
+  event: preempted
