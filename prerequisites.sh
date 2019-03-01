@@ -22,22 +22,22 @@ rosdep update
 
 sudo update-java-alternatives --set java-11-openjdk-amd64
 
-echo "
+echo '
 function bashrc(){
     source ~/.bashrc
 }
 
 source /opt/ros/melodic/setup.bash
 export ROS_LANG_DISABLE=genlisp:gennodejs:geneus
-export ANDROID_HOME=\$HOME/android-sdk
-export LC_NUMERIC='en_US.UTF-8'
-export PATH=\$PATH:\$ANDROID_HOME/tools/bin
-export PATH=\$PATH:\$ANDROID_HOME/platform-tools
+export ANDROID_HOME=$HOME/android-sdk
+export LC_NUMERIC="en_US.UTF-8"
+export PATH=$PATH:$ANDROID_HOME/tools/bin
+export PATH=$PATH:$ANDROID_HOME/platform-tools
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
-export JAVA_OPTS='-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee'
+export JAVA_OPTS="-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee"
 export ROS_IP="$(hostname -I | tr -d " ")"
 export ROS_HOSTNAME="$(hostname -I | tr -d " ")"
-" >> ~/.bashrc
+' >> ~/.bashrc
 source ~/.bashrc
 
 yes | sdkmanager --licenses
