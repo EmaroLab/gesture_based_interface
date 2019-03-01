@@ -24,7 +24,7 @@
 	</node>
 
 	<node name="pcl_background_segmentation" pkg ="kinect_pcl_tools" type="pcl_background_segmentation" output="screen">
-		<param name="granularity" value="12"/>
+		<param name="granularity" value="5"/>
 		<param name="delta" value="0.12"/>
 	</node>
 	
