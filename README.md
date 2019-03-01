@@ -1,5 +1,21 @@
 # Gesture-based interface for Baxter Robot
 
+## Objective of the Project
+The aim of the project is to develop a **Gesture Based Interface**(GBI) for the Baxter robot, especially for industrial usages.
+The interface is designed to control robots in a very easy and intuitive way, by wearing a **smartwatch** in charge of recognizing a set of gestures. In order to improve the management of the Baxter and enforce the overall security, we introduced Bluetooth **beacons** and a **Kinect** camera.
+
+When an operator approaches the Baxter, it's possible for him to perform several operations by navigating through a **GUI** displayed on the monitor placed on the robot's head. These functionalities include record, play, create sequences, perform playbacks etc..
+
+The overall architecture is based on **ROS**.
+Our project aims at total scalability, so each module can be improved or replaced replaceable without any changes on the others. 
+
+The project exploits different Off-The-Shelf software systems, as well as innovative ideas in order to perform efficient communication with Android devices and Qt5 interfaces.
+
+## The System’s Architecture
+```
+figure
+```
+
 ## Authors
 | Name | E-mail |
 |------|--------|
@@ -94,5 +110,5 @@ roslaunch kinect_pcl_tools configuration.launch
 ## Input Launcher
 To launch all the input nodes 
 ```
-roslaunch baxter_gbi_safety_monitor kinect_to_fsm.launch
+roslaunch baxter_gbi_safety_monitor input_to_fsm.launch
 ```

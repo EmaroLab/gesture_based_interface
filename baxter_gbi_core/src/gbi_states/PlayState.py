@@ -6,12 +6,13 @@ import rospy
 class PlayState(PlaybackState):
     def __init__(self, trigger_event):
         input_keys = ['filename', 'resume']
+        output_keys = ['resume']
 
         PlaybackState.__init__(self,
                                outcomes=["pause"],
                                trigger_event=trigger_event,
                                status='play',
-                               output_keys=[],
+                               output_keys=output_keys,
                                input_keys=input_keys)
         self.progress = 0
 
@@ -44,8 +45,10 @@ class PlayState(PlaybackState):
 
     def new_instance(self, userdata):
         try:
-            if userdata.resume:
-                return False
+            new = not userdata.resume
+            userdata.resume = False
+            print "New play "
+            print new
         except KeyError:
             return True
 

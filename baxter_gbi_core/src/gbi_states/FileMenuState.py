@@ -6,6 +6,9 @@ from MenuState import MenuState
 from baxter_gbi_pbr_srvs.srv import ListFiles
 import rospy
 
+import os
+debug = os.environ.get('BGI_DEBUG')
+
 ##  PlayMenuState
 #   inerithed form MenuState
 class FileMenuState(MenuState):
@@ -20,7 +23,8 @@ class FileMenuState(MenuState):
                            input_keys=input_keys,
                            fixed_options=fixed_options)
 
-        rospy.wait_for_service('files')
+        if not debug:
+            rospy.wait_for_service('files')
         self.list = rospy.ServiceProxy('files', ListFiles)
 
     ## method update_variable_options

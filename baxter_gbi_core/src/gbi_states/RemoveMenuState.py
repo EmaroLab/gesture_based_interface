@@ -6,6 +6,8 @@ from FileMenuState import FileMenuState
 from baxter_gbi_pbr_srvs.srv import DeleteFile
 import rospy
 
+import os
+debug = os.environ.get('BGI_DEBUG')
 
 #   RemoveMenuState
 #   inherited form MenuState
@@ -21,7 +23,8 @@ class RemoveMenuState(FileMenuState):
                                'Select the recording to delete',
                                input_keys=[],
                                fixed_options=['back'])
-        rospy.wait_for_service('delete_file')
+        if not debug:
+            rospy.wait_for_service('delete_file')
         self.delete = rospy.ServiceProxy('delete_file', DeleteFile)
 
     #  method update_variable_options
