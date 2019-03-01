@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.7
 
 ## @package core
-#. This package is the core application of the 
+# . This package is the core application of the
 #  state machine
 
 import rospy
@@ -20,7 +20,8 @@ from parser import *
 import cv2
 from cv_bridge import CvBridge, CvBridgeError
 
-##  class FSMThread 
+
+##  class FSMThread
 #   inherited form threaing.Thread
 
 class ImageConverter(object):
@@ -32,12 +33,13 @@ class ImageConverter(object):
         rosimage = bridge.cv2_to_imgmsg(image, encoding="bgr8")
         return rosimage
 
+
 class FSMThread(threading.Thread):
     ## the constructor
     def __init__(self):
         threading.Thread.__init__(self)
-        
-        smach.set_loggers(smach.loginfo,smach.logwarn,self.logdebug,smach.logerr)
+
+        smach.set_loggers(smach.loginfo, smach.logwarn, self.logdebug, smach.logerr)
         self.subscr = rospy.Subscriber("/beacons/presence", std_msgs.msg.Header, self.presence_cb, callback_args=[self])
         ## attribute to manage the graph in graphviz
         self.imageFile = "state_machine"
@@ -46,129 +48,114 @@ class FSMThread(threading.Thread):
         self.imageFile3 = "macro_machine"
         self.imageFile4 = "sequence_machine"
 
+        self.image_publisher = rospy.Publisher('/fsm/image', RosImage, queue_size=1)
+
         self.f = Digraph('finite_state_machine', filename='state_machine.gv', format='png')
-        self.f.attr('graph', dpi="180")
-        self.f.attr(rankdir='TB', size="10",splines=None)
-        self.f.attr('node', shape='ellipse',style='filled', fontsize='25', heigth='1.5', width='1.7')
-        self.f.format="png"
+        # self.f.attr('graph', dpi="180")
+        self.f.attr(rankdir='TB', size="12")
+        self.f.attr('node', shape='circle', style='filled', fontsize='25', heigth='1.2', width='1.6', color='lightblue')
+        self.f.attr('edge', style='bold', fontsize='0', arrowsize='1.5')
 
-        self.f1 = Digraph('play_state', filename='play_state.gv')
-        self.f1.attr(rankdir='TD', size="7",splines=None)
-        self.f1.attr('node', shape='circle',style='filled')
-        self.f1.format="pdf"
+        self.f1 = Digraph('play_state', filename='play_state.gv', format='png')
+        self.f1.attr('node', shape='circle', style='filled', fontsize='25', heigth='1.2', width='1.6', color='lightblue')
+        self.f1.attr('edge', style='bold', fontsize='0', arrowsize='1.5')
 
-        self.f2 = Digraph('record_state', filename='record_state.gv')
-        self.f2.attr(rankdir='TD', size="7",splines=None)
-        self.f2.attr('node', shape='circle',style='filled')
-        self.f2.format="pdf"
+        self.f2 = Digraph('record_state', filename='record_state.gv', format='png')
+        self.f2.attr('node', shape='circle', style='filled', fontsize='25', heigth='1.2', width='1.6', color='lightblue')
+        self.f2.attr('edge', style='bold', fontsize='0', arrowsize='1.5')
 
-        self.f3 = Digraph('macro_state', filename='macro_state.gv')
-        self.f3.attr(rankdir='TD', size="7",splines=None)
-        self.f3.attr('node', shape='circle',style='filled')
-        self.f3.format="pdf"
+        self.f3 = Digraph('macro_state', filename='macro_state.gv', format='png')
+        self.f3.attr('node', shape='circle', style='filled', fontsize='25', heigth='1.2', width='1.6', color='lightblue')
+        self.f3.attr('edge', style='bold', fontsize='0', arrowsize='1.5')
 
-        self.f4 = Digraph('sequence_state', filename='sequence_state.gv')
-        self.f4.attr(rankdir='TD', size="7",splines=None)
-        self.f4.attr('node', shape='circle',style='filled')
-        self.f4.format="pdf"
-        ## sm instance of the container StateMachine with outome=EXIT
+        self.f4 = Digraph('sequence_state', filename='sequence_state.gv', format='png')
+        self.f4.attr('node', shape='circle', style='filled', fontsize='25', heigth='1.2', width='1.6', color='lightblue')
+        self.f4.attr('edge', style='bold', fontsize='0', arrowsize='1.5')
+
         self.event = FsmEvent()
 
         parser = Parser(gbi_states, self.event)
         self.sm, machines = parser.parse()
+        self.sm.register_transition_cb(self.transition_cb)
+        self.sub_play = machines['PLAY']
+        self.sub_record = machines['RECORD']
+        self.sub_macro = machines['MACRO']
+        self.sub_sequence = machines['SEQUENCE']
 
-        for key, machine in machines.iteritems():
-            if key == 'FSM':
-                machine.register_transition_cb(self.transition_cb)
-            elif key == 'PLAY':
-                machine.register_transition_cb(self.transition_cb1)
-                self.sub_play = machine
-            elif key == 'RECORD':
-                machine.register_transition_cb(self.transition_cb2)
-                self.sub_record = machine
-            elif key == 'MACRO':
-                machine.register_transition_cb(self.transition_cb3)
-                self.sub_macro = machine
-            elif key == 'SEQUENCE':
-                machine.register_transition_cb(self.transition_cb4)
-                self.sub_sequence = machine
+        self.sub_play.register_transition_cb(self.transition_cb1)
+        self.sub_record.register_transition_cb(self.transition_cb2)
+        self.sub_macro.register_transition_cb(self.transition_cb3)
+        self.sub_sequence.register_transition_cb(self.transition_cb4)
+        self.sub_play.register_start_cb(self.transition_cb1)
+        self.sub_record.register_start_cb(self.transition_cb2)
+        self.sub_macro.register_start_cb(self.transition_cb3)
+        self.sub_sequence.register_start_cb(self.transition_cb4)
 
-    def logdebug(self,msg):
+    def logdebug(self, msg):
         pass
 
-    ## method register_transition_cb
-    #  overide of contaneir.register_transition_cb
-    #  @param transition_cb function associating to the transition 
-    def register_transition_cb(self, transition_cb): 
-        self._transition_cbs.append(transition_cb)
-
     def rendering(self, filename, active_states, f):
-        f.node_attr.update(color="0.000 1.000 1.000")
-        f.node(active_states[0],color="0.201 0.753 1.000")
-        f.render(filename=filename,directory=None,view=None,cleanup=True,format='png')
-        f.node(active_states[0],color="0.000 1.000 1.000")
-        image = ImageTk.PhotoImage(Image.open(filename+".png"))
+        print filename
+        if active_states:
+            f.node(active_states[0], color="red", shape='doublecircle', style='filled')
+        f.render(filename=filename, directory=None, view=False, cleanup=True, format='png')
+        if active_states:
+            f.node(active_states[0], color="lightblue", shape='circle', style='filled')
+        image = ImageTk.PhotoImage(Image.open(filename + ".png"))
         w = image.width()
         h = image.height()
-        self.widget.geometry("%dx%d+%d+%d" % (w, h, 0, 0))
         self.panel.configure(image=image)
+        self.panel.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.YES)
         self.display = image
+        self.widget.geometry("%dx%d+%d+%d" % (w, h, 0, 0))
         self.widget.update()
-   
+        image_message = ImageConverter.to_ros(filename+'.png')
+        self.image_publisher.publish(image_message)
+
+
     ## method register_transition_cb
     #  @param userdata data of used from the active state
     #  @param active_states list of the active states after the transition
     #  @param *cb_args additional arguments
-    def transition_cb(self,userdata,active_states,*cb_args):
-        self.rendering(self.imageFile,active_states,self.f)
+    def transition_cb(self, userdata, active_states, *cb_args):
+        self.rendering(self.imageFile, active_states, self.f)
 
-    def transition_cb1(self,userdata,active_states,*cb_args):
-        self.rendering(self.imageFile1,active_states,self.f1)
+    def transition_cb1(self, userdata, active_states, *cb_args):
+        self.rendering(self.imageFile1, active_states, self.f1)
 
-    def transition_cb2(self,userdata,active_states,*cb_args):
-        self.rendering(self.imageFile2,active_states,self.f2)
+    def transition_cb2(self, userdata, active_states, *cb_args):
+        self.rendering(self.imageFile2, active_states, self.f2)
 
-    def transition_cb3(self,userdata,active_states,*cb_args):
-        self.rendering(self.imageFile3,active_states,self.f3)
+    def transition_cb3(self, userdata, active_states, *cb_args):
+        self.rendering(self.imageFile3, active_states, self.f3)
 
-    def transition_cb4(self,userdata,active_states,*cb_args):
-        self.rendering(self.imageFile4,active_states,self.f4)
+    def transition_cb4(self, userdata, active_states, *cb_args):
+        self.rendering(self.imageFile4, active_states, self.f4)
 
     ## method presence_cb
     #  @param msg message of the topic
     #  @param params list of parameters
     def presence_cb(self, msg, params):
         self.event.signal('user_detected')
-        #rospy.loginfo("Action %d triggered by the %s:\n%s\n", params["code"], params["topic"], msg)
 
     ## method config_cb
     #  @param req rquest from service
     def config_cb(self, req):
         self.event.signal('config')
-        #FIXME wait for state machine transition outcome
-        return TriggerResponse(success = True, message = "ciao")
+        # FIXME wait for state machine transition outcome
+        return TriggerResponse(success=True, message="ciao")
 
     ## method run
     def run(self):
         ## equal to rendering but with tk.label and panle.pack to generate the label and the background space
-        fn = self.f.render(filename='state_machine',directory=None, view=False, cleanup=False, format='png')
-        self.widget=tk.Tk()
-        self.widget.title('State_Machine')
-        image = ImageTk.PhotoImage(Image.open("state_machine.png"))
-        w = image.width()
-        h = image.height()
-        self.panel = tk.Label(self.widget, image=image) 
-        self.display = image
-        self.panel.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.YES)
-        self.widget.geometry("%dx%d+%d+%d" % (w, h, 0, 0))
 
-        
-        self.widget.update()
+        self.widget = tk.Tk()
+        self.panel = tk.Label(self.widget)
+        self.widget.title('State_Machine')
+        self.rendering(self.imageFile, ['INIT'], self.f)
         rospy.Service('/fsm_config', Trigger, self.config_cb)
-        
         self.sm.execute()
 
-        
     ## method stop
     def stop(self):
         self.sm.request_preempt()
@@ -178,38 +165,35 @@ class FSMThread(threading.Thread):
     ## method graph_gen
     #  graph generation
     def graph_gen(self):
-        tr_edge=self.sm.get_internal_edges()
-        tr_edge1=self.sub_play.get_internal_edges()
-        tr_edge2=self.sub_record.get_internal_edges()
-        tr_edge3=self.sub_macro.get_internal_edges()
-        tr_edge4=self.sub_sequence.get_internal_edges()
-        
+        tr_edge = self.sm.get_internal_edges()
+        tr_edge1 = self.sub_play.get_internal_edges()
+        tr_edge2 = self.sub_record.get_internal_edges()
+        tr_edge3 = self.sub_macro.get_internal_edges()
+        tr_edge4 = self.sub_sequence.get_internal_edges()
+
         self.f.node(self.sm.get_initial_states()[0])
-        for i in range(0,len(tr_edge)):
-            self.f.edge(tr_edge[i][1],tr_edge[i][2],label=tr_edge[i][0])
-        for i in range(0,len(tr_edge1)):
-            self.f1.edge(tr_edge1[i][1],tr_edge1[i][2],label=tr_edge1[i][0])
-        for i in range(0,len(tr_edge2)):
-            self.f2.edge(tr_edge2[i][1],tr_edge2[i][2],label=tr_edge2[i][0])
-        for i in range(0,len(tr_edge3)):
-            self.f3.edge(tr_edge3[i][1],tr_edge3[i][2],label=tr_edge3[i][0])
-        for i in range(0,len(tr_edge4)):
-            self.f4.edge(tr_edge4[i][1],tr_edge4[i][2],label=tr_edge4[i][0])
-   
+        for i in range(0, len(tr_edge)):
+            self.f.edge(tr_edge[i][1], tr_edge[i][2], label=tr_edge[i][0])
+        for i in range(0, len(tr_edge1)):
+            self.f1.edge(tr_edge1[i][1], tr_edge1[i][2], label=tr_edge1[i][0])
+        for i in range(0, len(tr_edge2)):
+            self.f2.edge(tr_edge2[i][1], tr_edge2[i][2], label=tr_edge2[i][0])
+        for i in range(0, len(tr_edge3)):
+            self.f3.edge(tr_edge3[i][1], tr_edge3[i][2], label=tr_edge3[i][0])
+        for i in range(0, len(tr_edge4)):
+            self.f4.edge(tr_edge4[i][1], tr_edge4[i][2], label=tr_edge4[i][0])
+
+
 ## function config_server
 #  ros node
+t = None
 def config_server():
     rospy.init_node('config_server')
     t = FSMThread()
     t.graph_gen()
     t.start()
-    image_publisher = rospy.Publisher('/fsm/image', RosImage, queue_size=1)
-    rate = rospy.Rate(1)
     rospy.on_shutdown(t.stop)
-    while not rospy.is_shutdown():
-        image_message = ImageConverter.to_ros('state_machine.png')
-        image_publisher.publish(image_message)
-        rate.sleep()
+    rospy.spin()
 
 if __name__ == "__main__":
     config_server()

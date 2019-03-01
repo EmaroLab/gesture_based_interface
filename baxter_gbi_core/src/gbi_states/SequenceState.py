@@ -29,7 +29,7 @@ class SequenceState(ActionState):
         try:
             new = userdata.new_sequence
             userdata.new_sequence = False
-            print "New sequence "
+            print "New sequence: ",
             print new
             return new
         except KeyError:

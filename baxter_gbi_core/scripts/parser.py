@@ -79,11 +79,7 @@ class Parser:
 
 	@staticmethod
 	def from_dict_to_list(dict):
-		ret_list = []
-		if not dict: return None
-		for key, value in dict.iteritems():
-			ret_list.append(value)
-		return ret_list
+		return [value for key, value in dict.iteritems()] if dict else []
 
 	@staticmethod
 	def from_dict_dict_to_list(dict):
@@ -141,18 +137,19 @@ class Parser:
 			return self.sm, all_machines
 
 	def init_fsm(self, root):
-		fsm = smach.StateMachine(outcomes=Parser.from_dict_to_list(root.outcomes))
+		fsm = smach.StateMachine(outcomes=Parser.from_dict_to_list(root.outcomes),
+								 input_keys=Parser.from_dict_to_list(root.input_keys))
 		fsm.set_initial_state([str(root.initial_state)])
 
 		fsm_childs = {}
 		with fsm:
 			for state in root.states:
-				print(state.name)
-				print(state.class_type)
+				#print(state.name)
+				#print(state.class_type)
 				smach.StateMachine.add(state.name, getattr(self.classes, state.class_type)(self.event), 
 										Parser.verbose(root.transitions_from_node(state.name)),
 										Parser.from_dict_dict_to_list(state.remapping))
-				print(Parser.from_dict_dict_to_list(state.remapping))
+				#print(Parser.from_dict_dict_to_list(state.remapping))
 			
 			if root.childs:
 				for machine in root.childs:
@@ -167,6 +164,6 @@ class Parser:
 if __name__ == "__main__":
 	event = FsmEvent()
 	parser = Parser(gbi_states, event)
-	print(dir(gbi_states))
+	#print(dir(gbi_states))
 	parser.parse()
 

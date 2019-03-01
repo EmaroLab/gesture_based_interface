@@ -47,8 +47,9 @@ class PlayState(PlaybackState):
         try:
             new = not userdata.resume
             userdata.resume = False
-            print "New play "
+            print "New play: ",
             print new
+            return new
         except KeyError:
             return True
 
