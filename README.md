@@ -12,9 +12,10 @@ Our project aims at total scalability, so each module can be improved or replace
 The project exploits different Off-The-Shelf software systems, as well as innovative ideas in order to perform efficient communication with Android devices and Qt5 interfaces.
 
 ## The System’s Architecture
-```
-figure
-```
+
+<p align="center"> 
+<img src="General_Architecture.png">
+</p>
 
 ## Authors
 | Name | E-mail |
