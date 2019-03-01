@@ -112,5 +112,7 @@ cd ~/.bgi_dep_src/Sensor/Platform/Linux/CreateRedist
 cd ../Redist/Sensor-Bin-Linux-*
 sudo ./install.sh 
 
+
+sudo rm -f /usr/lib/libXnVNite.so
 cd ~/.bgi_dep_src/NITE-Bin-Dev-Linux-v1.5.2.23/x64
 sudo ./install.sh
