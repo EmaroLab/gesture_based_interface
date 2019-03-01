@@ -1,6 +1,6 @@
 <launch>
-	<arg name="model" default="$(find baxter_description)/urdf/baxter.urdf"/>
-	<param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
+	<arg name="model" default="$(find baxter_description)/urdf/baxter.urdf.xacro"/>
+	<param name="robot_description" command="$(find xacro)/xacro $(arg model)" />
 
 	<node name="kinect_broadcaster" pkg="kinect_transforms" type="kinect_broadcaster" output="screen">
 		<param name="x_kinect" value="0.30"/>
@@ -24,7 +24,7 @@
 	</node>
 
 	<node name="pcl_background_segmentation" pkg ="kinect_pcl_tools" type="pcl_background_segmentation" output="screen">
-		<param name="granularity" value="12"/>
+		<param name="granularity" value="5"/>
 		<param name="delta" value="0.12"/>
 	</node>
 	
