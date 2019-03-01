@@ -8,11 +8,13 @@ find_package(catkin REQUIRED COMPONENTS
   roslib
   std_msgs
   std_srvs
+  sensor_msgs
   baxter_gbi_input_msgs
   baxter_gbi_pbr_msgs
   baxter_gbi_pbr_srvs
   actionlib_msgs
   actionlib
+  cv_bridge
 )
 
 catkin_python_setup()
