@@ -1,6 +1,5 @@
 #include <ros/ros.h>
 #include "std_msgs/Header.h"
-#include "std_msgs/Float64.h"
 #include <nav_msgs/Odometry.h>
 #include <tf/transform_datatypes.h>
 #include <cmath>
@@ -43,11 +42,8 @@ class KinectActivate{
      *  sets a flag to true if beacons take over the presence of a human in the area 
      * @param[in]	input	presence of a human in the area (provided by beacon)
      */
-    void beaconCB(const std_msgs::Float64 &input){
-		// check presence
-		if(input.data == 1.0){
-			beacon_presence = true;
-		}
+    void beaconCB(const std_msgs::Header &input){
+		beacon_presence = true;
     }
     /**
      * Callback function using odometry messages of the head:

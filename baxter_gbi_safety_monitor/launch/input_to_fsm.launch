@@ -1,6 +1,6 @@
 <launch>
-	<arg name="model" default="$(find baxter_description)/urdf/baxter.urdf"/>
-	<param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
+	<arg name="model" default="$(find baxter_description)/urdf/baxter.urdf.xacro"/>
+	<param name="robot_description" command="$(find xacro)/xacro $(arg model)" />
 
 	<node name="kinect_broadcaster" pkg="kinect_transforms" type="kinect_broadcaster" output="screen">
 		<param name="x_kinect" value="0.30"/>
