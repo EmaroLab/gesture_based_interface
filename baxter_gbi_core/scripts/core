@@ -48,8 +48,8 @@ class FSMThread(threading.Thread):
 
         self.f = Digraph('finite_state_machine', filename='state_machine.gv', format='png')
         self.f.attr('graph', dpi="180")
-        self.f.attr(rankdir='TD', size="7",splines=None)
-        self.f.attr('node', shape='circle',style='filled')
+        self.f.attr(rankdir='TB', size="10",splines=None)
+        self.f.attr('node', shape='ellipse',style='filled', fontsize='25', heigth='1.5', width='1.7')
         self.f.format="png"
 
         self.f1 = Digraph('play_state', filename='play_state.gv')
