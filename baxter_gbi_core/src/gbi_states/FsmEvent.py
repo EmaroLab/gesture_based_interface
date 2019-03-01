@@ -2,20 +2,19 @@
 ## @package BlockingState
 ## This package describes the general blocking state 
 
-import rospy
 import threading
 
-##  FsmEvent
-#   inerithed form smach.State
+## FsmEvent
+# inherited form smach.State
 class FsmEvent:
     ## constructor
     def __init__(self):
         self.trigger = threading.Event()
         self.event_id = None
-        
 
     ## method wait
-    #  method to wait an event
+    #
+    # method to wait for an event
     def wait(self):
         self.trigger.clear()
         self.trigger.wait()
@@ -24,7 +23,7 @@ class FsmEvent:
     ## method signal
     #  @param event_id event received
     #
-    #  set the trigger 
+    #  sets the trigger
     def signal(self, event_id):
         self.event_id = event_id
         #rospy.loginfo("Received event " + self.event_id)

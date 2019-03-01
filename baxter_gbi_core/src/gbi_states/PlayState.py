@@ -1,8 +1,12 @@
 # -*- coding: latin-1 -*-
+## @package PlayState
+## This package describes the general structure of the play state
+
 from PlaybackState import PlaybackState
 import rospy
 
-
+## PlayState
+# inherited from PlaybackState
 class PlayState(PlaybackState):
     def __init__(self, trigger_event):
         input_keys = ['filename', 'resume']
@@ -16,16 +20,28 @@ class PlayState(PlaybackState):
                                input_keys=input_keys)
         self.progress = 0
 
+    ## method cb_done
+    # @param status
+    # @param result
+    #
+    # called when the playback is finished
     def cb_done(self, status, result):
         PlaybackState.end = True
         if not PlaybackState.killing:
             self.signal("finished")
 
+    ## method cb_feedback
+    # @param result
+    #
+    # gives info about the state of the play
     def cb_feedback(self, result):
         self.progress = result.percent_complete
         if self.is_running():
             self.publish_state()
 
+    ## method pause
+    #
+    # pauses the reproduction of the action
     def pause(self):
         try:
             self.pause_resume(1)
@@ -34,15 +50,28 @@ class PlayState(PlaybackState):
             print "Service call failed: %s"%e
             return None
 
+    ## method action_6
+    # @param userdata
+    #
+    # override of BlockingState.action_6
+    # where action_6 is assumed to be "pause"
     def action_6(self, userdata):
         return self.pause()
 
+    ## method set_status
+    #
+    # returns the percentage of completion of
+    # the playback
     def set_status(self):
         if self.progress >= 0:
             return "%d%% completed" % self.progress
         else:
             return "reaching initial position... "
 
+    ## method new_instance
+    # @param userdata
+    #
+    # new instance of play
     def new_instance(self, userdata):
         try:
             new = not userdata.resume
@@ -52,6 +81,10 @@ class PlayState(PlaybackState):
         except KeyError:
             return True
 
+    ## method play
+    # @param filename
+    #
+    # plays the corresponding file
     def play(self, filename):
         PlaybackState.end = False
         PlaybackState.killing = False
@@ -61,6 +94,10 @@ class PlayState(PlaybackState):
         self.goal.msg.scale_vel = 100
         self.playback.send_goal(self.goal, self.cb_done, None, self.cb_feedback)
 
+    ## method execute
+    # @param userdata
+    #
+    # executes the action
     def execute(self, userdata):
         if self.new_instance(userdata):
             self.play(userdata.filename)

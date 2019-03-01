@@ -4,12 +4,11 @@
 #  of the macro menu state
 from MenuState import MenuState
 
-
 ##  MacroMenuState
-#   inerithed form BlockingState
+#   inherited form BlockingState
 class MacroMenuState(MenuState):
-    ## the constructor
-    #  @param trigger_event istance of the class FsmEvent
+    ## constructor
+    #  @param trigger_event instance of the class FsmEvent
     def __init__(self, trigger_event):
 
         fixed_options = ['back', 'start']
@@ -25,11 +24,10 @@ class MacroMenuState(MenuState):
         self.macro_slots = ["Empty", "Empty", "Empty", "Empty"]
 
     ## method update_variable_options
-    #  @param userdata 
+    # @param userdata
     #  
-    #  override of MenuState.update_variable_options
-    #  update the variable options of the menu
-
+    # override of MenuState.update_variable_options
+    # update the variable options of the menu
     def update_variable_options(self, userdata):
         try:
             self.macro_slots[userdata.macro_idx] = userdata.macro_item

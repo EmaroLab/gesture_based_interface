@@ -4,11 +4,11 @@
 
 from FileMenuState import FileMenuState
 
-#   PlayMenuState
-#   inerithed form MenuState
+## PlayMenuState
+# inherited form FileMenuState
 class PlayMenuState(FileMenuState):
-    #  constructor
-    #  @param trigger_event istance of FsmEvent class
+    # constructor
+    # @param trigger_event instance of FsmEvent class
     def __init__(self, trigger_event):
         outcomes = ['back',
                     'remove']

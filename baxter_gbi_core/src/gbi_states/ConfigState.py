@@ -6,12 +6,12 @@ import rospy
 import smach
 import baxter_gbi_input_msgs.msg as bgi_io
 
-##  ConfigState
-#   outcomes: (invalid,success,'preempted')
+## ConfigState
+# outcomes: (invalid,success,'preempted')
 class ConfigState(smach.State):
     ## constructor
-    #  @param msg_type 
-    #  @param callback
+    # @param msg_type
+    # @param callback
     def __init__(self, trigger_event):
         outcomes = ['invalid',
                     'success',
@@ -27,7 +27,9 @@ class ConfigState(smach.State):
         self._trigger_event.signal('action_' + str(params["code"]))
 
     ## method execute
-    #  @param userdata
+    # @param userdata
+    #
+    # executes the configuration state
     def execute(self, userdata):
         if self.preempt_requested():
             return 'preempted'
