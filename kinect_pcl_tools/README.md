@@ -9,8 +9,7 @@
 | Federico Tomat | tomatfede@gmail.com |
 
 ## Package Content
-
-This package contains the nodes to manage and filter the pointclouds acquired by the Kinect.
+This package contains the nodes to manage and filter the Point Clouds acquired by the Kinect.
 
 ## Requirements
 * Linux Ubuntu 18.04
