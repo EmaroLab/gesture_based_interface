@@ -2,17 +2,14 @@
 
 ## Objective of the Project
 The aim of the project is to develop a **Gesture Based Interface**(GBI) for the Baxter robot, especially for industrial usages.
-The interface is designed to control robots in a very easy and intuitive way, by wearing a **smartwatch** in charge of recognizing a set of gestures. In order to improve the management of the Baxter and enforce the overall security, we introduced Bluetooth **beacons** and a **Kinect** camera.
-
-When an operator approaches the Baxter, it's possible for him to perform several operations by navigating through a **GUI** displayed on the monitor placed on the robot's head. These functionalities include record, play, create sequences, perform playbacks etc..
-
-The overall architecture is based on **ROS**.
-Our project aims at total scalability, so each module can be improved or replaced replaceable without any changes on the others. 
-
+The interface is designed to control robots in a very easy and intuitive way, by wearing a smartwatch in charge of recognizing a set of gestures.
+In order to improve the management of the Baxter and enforce the overall security, we introduced **Bluetooth beacons** and a **Kinect** camera.
+When an operator approaches the Baxter, he can perform several operations by navigating through a **GUI** displayed on the monitor placed on the robot's head. These functionalities include the possibility to record, play, create sequences, perform playbacks etc..
+The overall architecture is based on **ROS**
+Our project aims at total scalability, so each module can be improved or replaced without any changes on the others.
 The project exploits different Off-The-Shelf software systems, as well as innovative ideas in order to perform efficient communication with Android devices and Qt5 interfaces.
 
-## The System’s Architecture
-
+## System Architecture
 <p align="center"> 
 <img src="General_Architecture.png">
 </p>
@@ -33,7 +30,7 @@ The project exploits different Off-The-Shelf software systems, as well as innova
 | Giulia Zaino | giuliazaino46@gmail.com |
 
 ## Download instructions
-Copy/paste this single line in a Ubuntu terminal. 
+Copy/paste this single line in an Ubuntu terminal. 
 
 This will transform a clean Ubuntu installation in a 100% production-ready system.
 ```
@@ -59,23 +56,23 @@ We advise to use `./build.sh` or `./clean_build.sh` in place of `catkin_make`.
 Note: they can be used both in the `sofar_ws` workspace or in the `src` subfolder.
 
 ## How to run the simulator
-Enter in the workspace
+Enter the workspace folder
 ```
 cd ~/sofar_ws
 ```
 
-Execute the file passing as parameter "sim". In this way you can use the simulator in your machine.
-If instead you want to work on the real robot you have to pass the serial number of the Baxter.
+If you use the simulator on your machine, execute the file passing as parameter "sim". 
+Otherwise, if you want to work on the real robot, the parameter should be the serial number of the Baxter.
 ```
 ./baxter.sh sim
 ```
 
-Launch all the nodes used for the simulation.
+Launch all the nodes used for the simulation
 ```
 roslaunch baxter_gazebo baxter_world.launch
 ```
 
-Launch the nodes used for managing the movements and the files.
+Launch the nodes used to manage the movements and the files
 ```
 rosrun BaxterGBI_pbr pbr_server_baxter.py
 rosrun BaxterGBI_pbr pbr_server_filesys.py
@@ -83,19 +80,18 @@ rosrun BaxterGBI_pbr joint_recorder_node.py
 rosrun BaxterGBI_pbr mirror_server.py
 ```
 
-
-Then you can test it using the following client nodes:
+You can now test it using the following client nodes:
 ```
 rosrun BaxterGBI_pbr pbr_client_TEST.py mode arg1 arg2 ...
 
 rosrun BaxterGBI_pbr mirror_client.py
 ```
 
-Where, based on mode you can ask for a specific server (and you have to pass specific parameters).
+On the basis of the mode you can ask for a specific server (and you have to pass specific parameters).
 
 
 ## Kinect launcher
-Launch nodes for the Kinect
+Launch the nodes for the Kinect:
 ```
 roslaunch openni_launch openni.launch device_id:=<device id>
 ```
