@@ -47,7 +47,6 @@ class FSMThread(threading.Thread):
         self.image_publisher = rospy.Publisher('/fsm/image', RosImage, queue_size=1)
         parser = Parser(gbi_states, self.event)
         self.sm, self.mm = parser.parse()
-        #self.mm["FSM"] = self.sm
         self.graph = []
         id = 0
         for name, machine in self.mm.iteritems():
@@ -63,10 +62,8 @@ class FSMThread(threading.Thread):
             self.graph[id].node(machine.get_initial_states()[0])
             for i in range(0, len(edges)):
                 self.graph[id].edge(edges[i][1], edges[i][2], label=edges[i][0])
-            tmp = self.graph[id]
-            print(self.graph[id])
-            machine.register_start_cb(lambda a, b: self.rendering(imagefile, b, tmp))
-            machine.register_transition_cb(lambda a, b: self.rendering(imagefile, b, tmp))
+            machine.register_start_cb(lambda a, b, graph=self.graph, id=id : self.rendering(imagefile, b, graph[id]))
+            machine.register_transition_cb(lambda a, b, graph=self.graph, id=id: self.rendering(imagefile, b, graph[id]))
             id += 1
 
 
