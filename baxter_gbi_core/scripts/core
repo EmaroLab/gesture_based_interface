@@ -42,54 +42,33 @@ class FSMThread(threading.Thread):
         smach.set_loggers(smach.loginfo, smach.logwarn, self.logdebug, smach.logerr)
         self.subscr = rospy.Subscriber("/beacons/presence", std_msgs.msg.Header, self.presence_cb, callback_args=[self])
         ## attribute to manage the graph in graphviz
-        self.imageFile = "state_machine"
-        self.imageFile1 = "play_state"
-        self.imageFile2 = "record_machine"
-        self.imageFile3 = "macro_machine"
-        self.imageFile4 = "sequence_machine"
-
-        self.image_publisher = rospy.Publisher('/fsm/image', RosImage, queue_size=1)
-
-        self.f = Digraph('finite_state_machine', filename='state_machine.gv', format='png')
-        # self.f.attr('graph', dpi="180")
-        self.f.attr(rankdir='TB', size="12")
-        self.f.attr('node', shape='circle', style='filled', fontsize='25', heigth='1.2', width='1.6', color='lightblue')
-        self.f.attr('edge', style='bold', fontsize='0', arrowsize='1.5')
-
-        self.f1 = Digraph('play_state', filename='play_state.gv', format='png')
-        self.f1.attr('node', shape='circle', style='filled', fontsize='25', heigth='1.2', width='1.6', color='lightblue')
-        self.f1.attr('edge', style='bold', fontsize='0', arrowsize='1.5')
-
-        self.f2 = Digraph('record_state', filename='record_state.gv', format='png')
-        self.f2.attr('node', shape='circle', style='filled', fontsize='25', heigth='1.2', width='1.6', color='lightblue')
-        self.f2.attr('edge', style='bold', fontsize='0', arrowsize='1.5')
-
-        self.f3 = Digraph('macro_state', filename='macro_state.gv', format='png')
-        self.f3.attr('node', shape='circle', style='filled', fontsize='25', heigth='1.2', width='1.6', color='lightblue')
-        self.f3.attr('edge', style='bold', fontsize='0', arrowsize='1.5')
-
-        self.f4 = Digraph('sequence_state', filename='sequence_state.gv', format='png')
-        self.f4.attr('node', shape='circle', style='filled', fontsize='25', heigth='1.2', width='1.6', color='lightblue')
-        self.f4.attr('edge', style='bold', fontsize='0', arrowsize='1.5')
 
         self.event = FsmEvent()
-
+        self.image_publisher = rospy.Publisher('/fsm/image', RosImage, queue_size=1)
         parser = Parser(gbi_states, self.event)
-        self.sm, machines = parser.parse()
-        self.sm.register_transition_cb(self.transition_cb)
-        self.sub_play = machines['PLAY']
-        self.sub_record = machines['RECORD']
-        self.sub_macro = machines['MACRO']
-        self.sub_sequence = machines['SEQUENCE']
+        self.sm, self.mm = parser.parse()
+        #self.mm["FSM"] = self.sm
+        self.graph = []
+        id = 0
+        for name, machine in self.mm.iteritems():
+            imagefile = str(id)
+            print name
+            edges = machine.get_internal_edges()
+            self.graph.append( Digraph(name, filename=name+'.gv', format='png'))
+            print(self.graph)
+            self.graph[id].attr(rankdir='TB', size="12")
+            self.graph[id].attr('node', shape='circle', style='filled', fontsize='25', heigth='1.2', width='1.6',
+                        color='lightblue')
+            self.graph[id].attr('edge', style='bold', fontsize='0', arrowsize='1.5')
+            self.graph[id].node(machine.get_initial_states()[0])
+            for i in range(0, len(edges)):
+                self.graph[id].edge(edges[i][1], edges[i][2], label=edges[i][0])
+            tmp = self.graph[id]
+            print(self.graph[id])
+            machine.register_start_cb(lambda a, b: self.rendering(imagefile, b, tmp))
+            machine.register_transition_cb(lambda a, b: self.rendering(imagefile, b, tmp))
+            id += 1
 
-        self.sub_play.register_transition_cb(self.transition_cb1)
-        self.sub_record.register_transition_cb(self.transition_cb2)
-        self.sub_macro.register_transition_cb(self.transition_cb3)
-        self.sub_sequence.register_transition_cb(self.transition_cb4)
-        self.sub_play.register_start_cb(self.transition_cb1)
-        self.sub_record.register_start_cb(self.transition_cb2)
-        self.sub_macro.register_start_cb(self.transition_cb3)
-        self.sub_sequence.register_start_cb(self.transition_cb4)
 
     def logdebug(self, msg):
         pass
@@ -112,26 +91,6 @@ class FSMThread(threading.Thread):
         image_message = ImageConverter.to_ros(filename+'.png')
         self.image_publisher.publish(image_message)
 
-
-    ## method register_transition_cb
-    #  @param userdata data of used from the active state
-    #  @param active_states list of the active states after the transition
-    #  @param *cb_args additional arguments
-    def transition_cb(self, userdata, active_states, *cb_args):
-        self.rendering(self.imageFile, active_states, self.f)
-
-    def transition_cb1(self, userdata, active_states, *cb_args):
-        self.rendering(self.imageFile1, active_states, self.f1)
-
-    def transition_cb2(self, userdata, active_states, *cb_args):
-        self.rendering(self.imageFile2, active_states, self.f2)
-
-    def transition_cb3(self, userdata, active_states, *cb_args):
-        self.rendering(self.imageFile3, active_states, self.f3)
-
-    def transition_cb4(self, userdata, active_states, *cb_args):
-        self.rendering(self.imageFile4, active_states, self.f4)
-
     ## method presence_cb
     #  @param msg message of the topic
     #  @param params list of parameters
@@ -152,7 +111,6 @@ class FSMThread(threading.Thread):
         self.widget = tk.Tk()
         self.panel = tk.Label(self.widget)
         self.widget.title('State_Machine')
-        self.rendering(self.imageFile, ['INIT'], self.f)
         rospy.Service('/fsm_config', Trigger, self.config_cb)
         self.sm.execute()
 
@@ -162,27 +120,6 @@ class FSMThread(threading.Thread):
         while self.sm.is_running():
             pass
 
-    ## method graph_gen
-    #  graph generation
-    def graph_gen(self):
-        tr_edge = self.sm.get_internal_edges()
-        tr_edge1 = self.sub_play.get_internal_edges()
-        tr_edge2 = self.sub_record.get_internal_edges()
-        tr_edge3 = self.sub_macro.get_internal_edges()
-        tr_edge4 = self.sub_sequence.get_internal_edges()
-
-        self.f.node(self.sm.get_initial_states()[0])
-        for i in range(0, len(tr_edge)):
-            self.f.edge(tr_edge[i][1], tr_edge[i][2], label=tr_edge[i][0])
-        for i in range(0, len(tr_edge1)):
-            self.f1.edge(tr_edge1[i][1], tr_edge1[i][2], label=tr_edge1[i][0])
-        for i in range(0, len(tr_edge2)):
-            self.f2.edge(tr_edge2[i][1], tr_edge2[i][2], label=tr_edge2[i][0])
-        for i in range(0, len(tr_edge3)):
-            self.f3.edge(tr_edge3[i][1], tr_edge3[i][2], label=tr_edge3[i][0])
-        for i in range(0, len(tr_edge4)):
-            self.f4.edge(tr_edge4[i][1], tr_edge4[i][2], label=tr_edge4[i][0])
-
 
 ## function config_server
 #  ros node
@@ -190,7 +127,6 @@ t = None
 def config_server():
     rospy.init_node('config_server')
     t = FSMThread()
-    t.graph_gen()
     t.start()
     rospy.on_shutdown(t.stop)
     rospy.spin()
