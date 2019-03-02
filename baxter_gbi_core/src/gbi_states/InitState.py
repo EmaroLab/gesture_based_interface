@@ -5,8 +5,8 @@
 import rospy
 import smach
 
-##  InitState
-#   outcomes: (config_available,config_missing,'preempted')
+## InitState
+#  outcomes: (config_available,config_missing,'preempted')
 class InitState(smach.State):
     ## constructor
     def __init__(self, trigger_event = None):
@@ -19,7 +19,7 @@ class InitState(smach.State):
 
     ##  method execute
     #   @param self object pointer
-    #   @param userdata data which come from the prevoius state
+    #   @param userdata data which comes from the prevoius state
     def execute(self, userdata):
         if self.preempt_requested():
             return 'preempted'

@@ -1,8 +1,14 @@
 # -*- coding: latin-1 -*-
+## @package PauseState
+## This package describes the general structure of the pause state
+
 from PlaybackState import PlaybackState
 
-
+## PauseState
+# inherited form PlaybackState
 class PauseState(PlaybackState):
+    ## constructor
+    # @param trigger event event which triggers the state
     def __init__(self, trigger_event):
         PlaybackState.__init__(self,
                              outcomes=['resume'],
@@ -11,6 +17,9 @@ class PauseState(PlaybackState):
                              output_keys=['resume'],
                              input_keys=[])
 
+    ## method resume
+    #
+    # resumes the playback of the action
     def resume(self):
         try:
             self.pause_resume(0)
@@ -19,10 +28,18 @@ class PauseState(PlaybackState):
             print "Service call failed: %s" % e
             return None
 
+    ## method action_6
+    # @param userdata
+    #
+    # override of BlockingState.action_6
+    # where action_6 is assumed to be "resume"
     def action_6(self, userdata):
         userdata.resume = True
         return self.resume()
 
+    ## method set_status
+    #
+    # sets the status
     def set_status(self):
         return "paused"
 

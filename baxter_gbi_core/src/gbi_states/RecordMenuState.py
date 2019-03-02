@@ -5,11 +5,11 @@
 from FileMenuState import FileMenuState
 import datetime
 
-##  RecordMenuState
-#   inerithed form MenuState
+## RecordMenuState
+# inherited form MenuState
 class RecordMenuState(FileMenuState):
     ## constructor
-    #  @param trigger_event istance of FsmEvent class
+    #  @param trigger_event instance of FsmEvent class
     def __init__(self, trigger_event):
         outcomes = ['back',
                     'remove']
@@ -21,11 +21,11 @@ class RecordMenuState(FileMenuState):
                                fixed_options=['back', 'remove', 'new'])
 
     ## method on_fixed_selection
-    #  @param userdata 
-    #  @param index
-    #  @param item
+    # @param userdata
+    # @param index
+    # @param item
     #  
-    #  override of MenuState.on_fixed_selection
+    # override of MenuState.on_fixed_selection
     def on_fixed_selection(self, index, item, userdata):
         if item == 'new':
             userdata.selected_idx = -1

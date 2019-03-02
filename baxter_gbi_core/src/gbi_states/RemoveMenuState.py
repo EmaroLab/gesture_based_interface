@@ -9,14 +9,13 @@ import rospy
 import os
 debug = os.environ.get('BGI_DEBUG')
 
-#   RemoveMenuState
-#   inherited form MenuState
+## RemoveMenuState
+#  inherited form FileMenuState
 class RemoveMenuState(FileMenuState):
     #  constructor
-    #  @param trigger_event istance of FsmEvent class
+    #  @param trigger_event instance of FsmEvent class
     def __init__(self, trigger_event):
         outcomes = ['back']
-
         FileMenuState.__init__(self,
                                outcomes,
                                trigger_event,
