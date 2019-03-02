@@ -17,6 +17,4 @@
 * Estimote Beacons
 
 ## Package Content
-Android Wearable application to detect if the wearer is in the area of the beacons.
-This application utilizes ROSJava to publish presence messages on different topics, 
-one for each beacon.
+Android Wearable application which utilizes ROSJava to publish presence messages on different topics, one for each beacon, whenever the wearer is inside the area of a beacon.
