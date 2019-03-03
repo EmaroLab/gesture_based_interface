@@ -14,10 +14,10 @@
  * @file
  */
  
-int granularity = 1;
+/** Angle step between two consecutive records */	int granularity = 1;
 
-float angle = -30.0;
-int go = 0;
+/** Current tilt angle of the Kinect */			float angle = -30.0;
+/** Flag for acquiring environments */			int go = 0;
 
 /** @brief Class to record environments
  * 
@@ -63,11 +63,11 @@ class PclRecord{
 	}
 
 	protected:		
-		std::stringstream save_path;
-		const char *homedir;
-		int print_angle;
-		ros::NodeHandle nh;
-        ros::Subscriber pcl_sub; /**< Subscriber to /camera/depth/points */
+		std::stringstream save_path;  /**< Name of the file to store in the folder /.kinect_environments */
+		const char *homedir; /**< Path from the home directory (value of the HOME environment variable) */
+		int print_angle; /**< Angle of the Kinect */
+		ros::NodeHandle nh; /**< Node Handle */
+		ros::Subscriber pcl_sub; /**< Subscriber to /camera/depth/points */
 
 };
 
