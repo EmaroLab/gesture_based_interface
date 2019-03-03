@@ -24,7 +24,7 @@ The project exploits different Off-The-Shelf software systems, as well as innova
 | Lucrezia Grassi | lucre.grassi@gmail.com |
 | Marta Lagomarsino | marta.lago@hotmail.it |
 | Marco Lapolla | marco.lapolla5@gmail.com |
-| Antonio Marino | marinoantonio96@gmail.com |
+| Antonio Marino | marinoantonio.96@gmail.com |
 | Patrick Roncagliolo | roncapat@gmail.com |
 | Federico Tomat | tomatfede@gmail.com |
 | Giulia Zaino | giuliazaino46@gmail.com |
