@@ -5,7 +5,7 @@
 |------|--------|
 | Lucrezia Grassi | lucre.grassi@gmail.com |
 | Alessandro Grattarola | alessandro.grt@gmail.com |
-| Antonio Marino | marinoantonio96@gmail.com |
+| Antonio Marino | marinoantonio.96@gmail.com |
 | Federico Tomat | tomatfede@gmail.com |
 
 ## Requirements

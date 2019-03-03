@@ -5,6 +5,7 @@
 | Name | E-mail |
 |------|--------|
 | Lucrezia Grassi | lucre.grassi@gmail.com |
+| Patrick Roncagliolo | roncapat@gmail.com |
 
 ## Package content
 The node contained in this package publishes a presence message if the smartwatch wearer

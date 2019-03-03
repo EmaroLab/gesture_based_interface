@@ -3,7 +3,7 @@
 ## Authors
 | Name | E-mail |
 |------|--------|
-| Antonio Marino | marinoantonio96@gmail.com |
+| Antonio Marino | marinoantonio.96@gmail.com |
 | Patrick Roncagliolo | roncapat@gmail.com |
 | Federico Tomat | tomatfede@gmail.com |
 
