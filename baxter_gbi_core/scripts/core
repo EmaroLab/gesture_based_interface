@@ -20,9 +20,8 @@ from parser import *
 import cv2
 from cv_bridge import CvBridge, CvBridgeError
 
-
 ##  class FSMThread
-#   inherited form threaing.Thread
+#   
 
 class ImageConverter(object):
     @staticmethod
@@ -33,6 +32,8 @@ class ImageConverter(object):
         rosimage = bridge.cv2_to_imgmsg(image, encoding="bgr8")
         return rosimage
 
+##  class FSMThread
+#   inherited form threaing.Thread
 
 class FSMThread(threading.Thread):
     ## the constructor
@@ -95,7 +96,7 @@ class FSMThread(threading.Thread):
         self.event.signal('user_detected')
 
     ## method config_cb
-    #  @param req rquest from service
+    #  @param req request from service
     def config_cb(self, req):
         self.event.signal('config')
         # FIXME wait for state machine transition outcome
