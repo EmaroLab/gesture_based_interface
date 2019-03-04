@@ -30,12 +30,11 @@ from std_msgs.msg import Header
 # @param pos: position of the the hand.
 # @param data.pose.pose.orientation: orientation of the the hand.
 global msg_to_skip, msgs_read
-msg_to_skip = 40
+msg_to_skip = 23
 msgs_read = 0
 
 
 def kinect_data_callback(data):
-    
     global rate, pub, filename
     global msg_to_skip, msgs_read
 
@@ -44,9 +43,9 @@ def kinect_data_callback(data):
      
         #TODO -> Parameter to change
         pos = Point()
-        pos.x = -pos.z*3
-        pos.y = pos.x*1.5
-        pos.z = -pos.y*2
+        pos.x = -data.pose.pose.position.z*2.35
+        pos.y = data.pose.pose.position.x*1.3
+        pos.z = -data.pose.pose.position.y*1.85
         
         msg.position = pos
         
@@ -67,6 +66,7 @@ def kinect_data_callback(data):
     msgs_read += 1
 
 
+import os
 ## Node which subscribes to the Kinect's topic (of the hand) and publish on "mirror_end_effector"
 def mirror_filter_data():
     
@@ -76,9 +76,9 @@ def mirror_filter_data():
     limb = sys.argv[1]
     
     global pub, filename
-    filename = open("baxter_"+limb+"_data.csv","w+")
+    filename = open("hand_"+limb+"_data.txt","w+")
     
-    pub = rospy.Publisher("mirror_end_effector_"+limb, mirror_end_effector, queue_size=2)    
+    pub = rospy.Publisher("mirror_end_effector_"+limb, mirror_end_effector, queue_size=1)    
     rospy.Subscriber("/shadow/kinect_"+limb+"_hand", Odometry, kinect_data_callback)
     
 

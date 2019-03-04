@@ -35,7 +35,7 @@ def callback_recording(data):
     
     rospy.loginfo("Recorder Callback Called!!")
     rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.mode)
-    global recorder, state, rate, go_to_start_pos, extension
+    global recorder, state, rate, go_to_start_pos
     if data.mode == "stop":
         if state == 1:
            #Stop the recording
@@ -50,7 +50,7 @@ def callback_recording(data):
            rospy.loginfo("Start")
            #Start recording
            rate = rospy.Rate(data.record_rate)
-           recorder = JointRecorder(data.filename+extension,"w+", 0)
+           recorder = JointRecorder(data.filename,"w+", 0)
            state = 1
            return 0
     rospy.logwarn("Invalid mode!")
@@ -88,8 +88,8 @@ def callback_modify_playback(data):
         if state == 0:
             rospy.loginfo("Start")
                    
-            f1 = data.old_filename+extension
-            f2 = data.new_filename+extension
+            f1 = data.old_filename
+            f2 = data.new_filename
             
             to_rename = False
             
