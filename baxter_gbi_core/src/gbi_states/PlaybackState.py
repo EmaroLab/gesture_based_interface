@@ -1,8 +1,7 @@
 # -*- coding: latin-1 -*-
 ## @package ActionState
-#  This package defines the essential structure for all the action states
+# This package defines the essential structure for all the action states
 
-import rospy
 from ActionState import ActionState
 import rospy
 import actionlib
@@ -12,10 +11,10 @@ from baxter_gbi_pbr_srvs.srv import *
 import os
 debug = os.environ.get('BGI_DEBUG')
 
-##  ActionState
-
+## PlaybackState
+#  inherited form ActionState
 class PlaybackState(ActionState):
-    ## the constructor
+    ## constructor
     # @param outcomes possible outcomes of the state
     # @param trigger_event object of the class FsmEvent
     # @param action executable action
@@ -40,13 +39,22 @@ class PlaybackState(ActionState):
         if not debug:
             self.playback.wait_for_server()
 
+    ## method action_5
+    # @param userdata
+    #
+    # override of BlockingState.action_5
+    # where action_5 is assumed to be "exit"
     def action_5(self, userdata):
         PlaybackState.killing = True
         self.playback.cancel_all_goals()
         while not PlaybackState.end:
             pass
         return 'stop'
-    
+
+    ## method user_left
+    # @param userdata
+    #
+    # called when the user leaves
     def user_left(self, userdata):
         PlaybackState.killing = True
         self.playback.cancel_all_goals()

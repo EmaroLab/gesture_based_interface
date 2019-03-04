@@ -8,7 +8,7 @@ sudo apt -y upgrade
 
 sudo apt install -y ros-melodic-desktop-full freenect freeglut3* git-core cmake pkg-config build-essential libxmu-dev libxi-dev libudev* g++ python openjdk-11-jdk graphviz doxygen ros-melodic-rgbd-launch ros-melodic-openni-* ros-melodic-pcl-* ros-melodic-perception ros-melodic-perception-pcl ros-melodic-tf ros-melodic-roslib ros-melodic-orocos-kdl python-rosinstall python-rosinstall-generator python-wstool build-essential tlp ros-melodic-effort-controllers qt4-default python-scipy openjdk-11-jre openjdk-11-jdk gazebo9 ros-melodic-shape-msgs ros-melodic-pluginlib ros-melodic-class-loader ros-melodic-cv-bridge ros-melodic-cmake-modules ros-melodic-eigen-conversions ros-melodic-roslint
 
-sudo pip install graphviz scipy tensorflow keras mttkinter
+sudo pip install graphviz scipy tensorflow keras mttkinter Pillow
 
 cd
 wget https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
@@ -22,22 +22,22 @@ rosdep update
 
 sudo update-java-alternatives --set java-11-openjdk-amd64
 
-echo "
+echo '
 function bashrc(){
     source ~/.bashrc
 }
 
 source /opt/ros/melodic/setup.bash
 export ROS_LANG_DISABLE=genlisp:gennodejs:geneus
-export ANDROID_HOME=\$HOME/android-sdk
-export LC_NUMERIC='en_US.UTF-8'
-export PATH=\$PATH:\$ANDROID_HOME/tools/bin
-export PATH=\$PATH:\$ANDROID_HOME/platform-tools
+export ANDROID_HOME=$HOME/android-sdk
+export LC_NUMERIC="en_US.UTF-8"
+export PATH=$PATH:$ANDROID_HOME/tools/bin
+export PATH=$PATH:$ANDROID_HOME/platform-tools
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
-export JAVA_OPTS='-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee'
+export JAVA_OPTS="-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee"
 export ROS_IP="$(hostname -I | tr -d " ")"
 export ROS_HOSTNAME="$(hostname -I | tr -d " ")"
-" >> ~/.bashrc
+' >> ~/.bashrc
 source ~/.bashrc
 
 yes | sdkmanager --licenses

@@ -55,38 +55,41 @@ float TF_Broadcaster::degrees(void){
     
 /**
  * Main function: 
- * a TF broadcaster is created in order to add the world frame to the tree. The world frame is in correspondence of the control board and it has the same orientation of the Kinect.
+ * a TF broadcaster is created in order to add to the tree of frames:
+ * 	- The world frame: in correspondence of the control board and with the same orientation of the Kinect;
+ * 	- two frames for images in rviz (robot LCD and FSM schema).
  */
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "kinect_broadcaster");
+	ros::init(argc, argv, "kinect_broadcaster");
 	ros::NodeHandle n("~");
-	
+
 	// position of the Kinect with respect to the control board
 	n.param<double>("x_kinect", x_kinect, 0.3);
 	n.param<double>("y_kinect", y_kinect, 0.3);
 	n.param<double>("z_kinect", z_kinect, 0.3);
-	
+
 	// current tilt angle of the Kinect in radians
-    float rad_angle;
-    
+	float rad_angle;
+
 	TF_Broadcaster tf_broadcaster;
-	
+
 	ros::Rate r(10000);
 	tf::TransformBroadcaster broadcaster;
-	
-    tf::Transform image_frame;
-    image_frame.setOrigin(tf::Vector3(0.20, 0.0, 0.90));
+
+	// Add two frames for images in rviz (robot LCD and FSM schema)
+	tf::Transform image_frame;
+	image_frame.setOrigin(tf::Vector3(0.20, 0.0, 0.90));
 	tf::Quaternion image_rotation;
 	image_rotation.setRPY(-1.57, 0, 1.57);
 	image_frame.setRotation(image_rotation);
-	
-    tf::Transform image_frame_fsm;
-    image_frame_fsm.setOrigin(tf::Vector3(0.20, 0.90, 1.40));
+
+	tf::Transform image_frame_fsm;
+	image_frame_fsm.setOrigin(tf::Vector3(0.20, 0.90, 1.40));
 	image_frame_fsm.setRotation(image_rotation);
-    
-    tf::Transform change_frame;
-    change_frame.setOrigin(tf::Vector3(x_kinect, y_kinect, z_kinect));
+
+	tf::Transform change_frame;
+	change_frame.setOrigin(tf::Vector3(x_kinect, y_kinect, z_kinect));
 
 	tf::Quaternion frame_rotation;
     

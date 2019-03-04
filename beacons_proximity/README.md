@@ -5,7 +5,7 @@
 |------|--------|
 | Lucrezia Grassi | lucre.grassi@gmail.com |
 | Alessandro Grattarola | alessandro.grt@gmail.com |
-| Antonio Marino | marinoantonio96@gmail.com |
+| Antonio Marino | marinoantonio.96@gmail.com |
 | Federico Tomat | tomatfede@gmail.com |
 
 ## Requirements
@@ -17,6 +17,4 @@
 * Estimote Beacons
 
 ## Package Content
-Android Wearable application to detect if the wearer is in the area of the beacons.
-This application utilizes ROSJava to publish presence messages on different topics, 
-one for each beacon.
+Android Wearable application which utilizes ROSJava to publish presence messages on different topics, one for each beacon, whenever the wearer is inside the area of a beacon.

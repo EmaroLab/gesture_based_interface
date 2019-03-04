@@ -9,8 +9,7 @@
 | Federico Tomat | tomatfede@gmail.com |
 
 ## Package Content
-
-This node sends both activate and secure signals when the condition from Kinect and Beacons are matched.
+This node sends both activate and secure signals when the conditions from Kinect and Beacons are matched at once.
 
 ## Requirements
 * Linux Ubuntu 18.04

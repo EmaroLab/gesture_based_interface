@@ -1,11 +1,14 @@
 # -*- coding: latin-1 -*-
-import rospy
-import time
+## @package ExpiringState
+# The package defines the structure of the expiring state
+
 from threading import Timer
 from BlockingState import BlockingState
 
+## ExpiringState
+# inherited from BlockingState
 class ExpiringState(BlockingState):
-    ## the constructor
+    ## constructor
     # @param outcomes possible outcomes of the state
     # @param trigger_event object of the class FsmEvent
     # @param action executable action
@@ -21,12 +24,17 @@ class ExpiringState(BlockingState):
         self.timeout = 1
         self.t = None
 
+    ## method user_left
+    # @param userdata
+    #
+    # callback of the trigger "user_left"
     def user_left(self, userdata):
         return 'user_missed'
 
     ## method user_dected
-    #  overide of BlockingState.user_detected
-    #  @param userdata data in input to the state
+    # @param userdata data in input to the state
+    #
+    # override of BlockingState.user_detected
     def user_detected(self, userdata):
         if self.t:
             self.t.cancel()
@@ -34,9 +42,16 @@ class ExpiringState(BlockingState):
         self.t.start()
         return None
 
+    ## method timeout_cb
+    #
+    # timeout when the user leaves
     def timeout_cb(self):
         self.signal('user_left')
 
+    ## method execute
+    # @param userdata
+    #
+    # starts the timer and executes
     def execute(self, userdata):
         self.t = Timer(self.timeout, self.timeout_cb)
         self.t.start()
