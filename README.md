@@ -39,7 +39,7 @@ bash <(wget -qO- https://gist.githubusercontent.com/roncapat/92b6d76c29e5ad35e06
 
 NB: when the repository will go public, this will also work:
 ```
-bash <(wget -qO- https://raw.githubusercontent.com/EmaroLab/gesture_based_interface/master/prerequisites.sh)
+bash <(wget -qO- https://raw.githubusercontent.com/EmaroLab/gesture_based_interface/master/web_installer.sh)
 ```
 
 ## Development tools
