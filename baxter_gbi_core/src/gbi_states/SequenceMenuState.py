@@ -23,10 +23,10 @@ class SequenceMenuState(MenuState):
         self.sequence = ["Add"]
 
     ## method update_variable_options
-    # @param userdata
-    #
     # override of MenuState.update_variable_options
     # update the variable options of the menu
+    #
+    # @param userdata
     def update_variable_options(self, userdata):
         try:
             idx = userdata.sequence_idx

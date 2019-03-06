@@ -25,17 +25,17 @@ class ActionState(ExpiringState):
         self.status = status
 
     ## method action_5
-    # @param userdata
-    #
     # override of BlockingState.action_5
     # where action_5 is assumed to be "done"
+    #
+    # @param userdata
     def action_5(self, userdata):
         return 'done'
 
     ## method done
-    # @param userdata
-    #
     # action terminated
+    #
+    # @param userdata
     def done(self, userdata):
         return 'done'
 

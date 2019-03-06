@@ -24,10 +24,10 @@ class MacroMenuState(MenuState):
         self.macro_slots = ["Empty", "Empty", "Empty", "Empty"]
 
     ## method update_variable_options
-    # @param userdata
-    #  
     # override of MenuState.update_variable_options
     # update the variable options of the menu
+    #  
+    # @param userdata
     def update_variable_options(self, userdata):
         try:
             self.macro_slots[userdata.macro_idx] = userdata.macro_item

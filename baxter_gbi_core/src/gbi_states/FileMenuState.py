@@ -33,10 +33,10 @@ class FileMenuState(MenuState):
         self.list = rospy.ServiceProxy('files', ListFiles)
 
     ## method update_variable_options
-    # @param userdata
-    #
     # override of MenuState.update_variable_options
     # update the variable options of the menu
+    #
+    # @param userdata
     def update_variable_options(self, userdata):
         # call a service to ask and receive the data
         # or parameter server or message

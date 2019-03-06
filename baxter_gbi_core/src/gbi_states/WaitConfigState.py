@@ -15,9 +15,9 @@ class WaitConfigState(BlockingState):
         self.type = 'config_wait'
 
     ## method config
-    # @param userdata
-    #
     # callback of the trigger of a configuration event
+    #
+    # @param userdata
     def config(self, userdata):
         return 'config_available'
 

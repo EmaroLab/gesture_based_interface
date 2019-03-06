@@ -21,11 +21,11 @@ class RecordMenuState(FileMenuState):
                                fixed_options=['back', 'remove', 'new'])
 
     ## method on_fixed_selection
+    # override of MenuState.on_fixed_selection
+    #  
     # @param userdata
     # @param index
     # @param item
-    #  
-    # override of MenuState.on_fixed_selection
     def on_fixed_selection(self, index, item, userdata):
         if item == 'new':
             userdata.selected_idx = -1

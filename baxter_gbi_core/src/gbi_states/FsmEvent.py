@@ -21,9 +21,9 @@ class FsmEvent:
         return self.event_id
     
     ## method signal
-    #  @param event_id event received
-    #
     #  sets the trigger
+    #
+    #  @param event_id event received
     def signal(self, event_id):
         self.event_id = event_id
         #rospy.loginfo("Received event " + self.event_id)

@@ -25,16 +25,16 @@ class ExpiringState(BlockingState):
         self.t = None
 
     ## method user_left
-    # @param userdata
-    #
     # callback of the trigger "user_left"
+    #
+    # @param userdata
     def user_left(self, userdata):
         return 'user_missed'
 
     ## method user_dected
-    # @param userdata data in input to the state
-    #
     # override of BlockingState.user_detected
+    #
+    # @param userdata data in input to the state
     def user_detected(self, userdata):
         if self.t:
             self.t.cancel()
@@ -49,9 +49,9 @@ class ExpiringState(BlockingState):
         self.signal('user_left')
 
     ## method execute
-    # @param userdata
-    #
     # starts the timer and executes
+    #
+    # @param userdata
     def execute(self, userdata):
         self.t = Timer(self.timeout, self.timeout_cb)
         self.t.start()

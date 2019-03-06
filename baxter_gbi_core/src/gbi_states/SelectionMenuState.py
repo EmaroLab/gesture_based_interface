@@ -20,20 +20,20 @@ class SelectionMenuState(FileMenuState):
                                fixed_options=['back', 'clean'])
 
     # method update_variable_options
-    # @param userdata
-    #
     # override of MenuState.update_variable_options
     # update the variable options of the menu
+    #
+    # @param userdata
     def execute(self, userdata):
         userdata.context_idx_out = userdata.context_idx
         return FileMenuState.execute(self, userdata)
 
     # method on_fixed_selection
+    # override of MenuState.on_fixed_selection
+    #  
     # @param userdata
     # @param index
     # @param item
-    #  
-    # override of MenuState.on_fixed_selection
     def on_fixed_selection(self, index, item, userdata):
         if item == 'clean':
             userdata.selected_item = 'Empty'

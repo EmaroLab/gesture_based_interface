@@ -27,9 +27,9 @@ class ConfigState(smach.State):
         self._trigger_event.signal('action_' + str(params["code"]))
 
     ## method execute
-    # @param userdata
-    #
     # executes the configuration state
+    #
+    # @param userdata
     def execute(self, userdata):
         if self.preempt_requested():
             return 'preempted'

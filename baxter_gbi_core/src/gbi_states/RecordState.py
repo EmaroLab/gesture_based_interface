@@ -35,47 +35,47 @@ class RecordState(ActionState):
         self.right_grip = True
 
     ## method user_left
-    # @param userdata
-    #
     # called when the user leaves
+    #
+    # @param userdata
     def user_left(self, userdata):
         return None
 
     ## method action_6
-    # @param userdata
-    #
     # override of BlockingState.action_6
     # where action_6 is assumed to be "stop record"
+    #
+    # @param userdata
     def action_6(self, userdata):
         self.record_stop()
         return 'done'
 
     ## method action_1
-    # @param userdata
-    #
     # override of BlockingState.action_1
     # where action_1 is assumed to be
     # "close right gripper"
+    #
+    # @param userdata
     def action_1(self, userdata):
         self.right_grip = not self.right_grip
         self.gripper("right", 100 if self.right_grip else 0)
         return None
 
     ## method action_2
-    # @param userdata
-    #
     # override of BlockingState.action_2
     # where action_2 is assumed to be
     # "close left gripper"
+    #
+    # @param userdata
     def action_2(self, userdata):
         self.left_grip = not self.left_grip
         self.gripper("left", 100 if self.left_grip else 0)
         return None
 
     ## method execute
-    # @param userdata
-    #
     # starts recording
+    #
+    # @param userdata
     def execute(self, userdata):
         self.record_start(userdata.filename, 100)
         return ActionState.execute(self, userdata)

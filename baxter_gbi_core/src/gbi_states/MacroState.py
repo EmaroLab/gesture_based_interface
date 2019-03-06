@@ -24,11 +24,11 @@ class MacroState(ActionState):
         return "waiting for action request"
 
     ## method play_file
-    # @param userdata
-    # @param index
-    #
     # plays the file corresponding to the one
     # at the index passed as parameter
+    #
+    # @param userdata
+    # @param index
     @staticmethod
     def play_file(userdata, index):
         if userdata.filenames[index] != "Empty":
@@ -37,44 +37,44 @@ class MacroState(ActionState):
         return None
 
     ## method action_1
-    # @param userdata
-    #
     # override of BlockingState.action_1
     # where action_1 is assumed to be
     # "play the first macro"
+    #
+    # @param userdata
     def action_1(self, userdata):
         return self.play_file(userdata, 0)
 
     ## method action_
-    # @param userdata
-    #
     # override of BlockingState.action_2
     # where action_2 is assumed to be
     # "play the second macro"
+    #
+    # @param userdata
     def action_2(self, userdata):
         return self.play_file(userdata, 1)
 
     ## method action_3
-    # @param userdata
-    #
     # override of BlockingState.action_3
     # where action_3 is assumed to be
     # "play the third macro"
+    #
+    # @param userdata
     def action_3(self, userdata):
         return self.play_file(userdata, 2)
 
     ## method action_4
-    # @param userdata
-    #
     # override of BlockingState.action_4
     # where action_4 is assumed to be
     # "play the fourth macro"
+    #
+    # @param userdata
     def action_4(self, userdata):
         return self.play_file(userdata, 3)
 
     ## method user_left
-    # @param userdata
-    #
     # called when the user leaves
+    #
+    # @param userdata
     def user_left(self, userdata):
         return 'user_missed'
