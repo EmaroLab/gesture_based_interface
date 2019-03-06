@@ -5,48 +5,40 @@ import argparse
 import rospy
 import sys
 
-from baxter_gbi_pbr import JointRecorder
-
 from baxter_interface import CHECK_VERSION
-from baxter_gbi_pbr_msgs.msg import record_status, mirror_end_effector
-from baxter_gbi_pbr_srvs.srv import CalibrateMirror, EnableMirroring
+from baxter_gbi_pbr_msgs.msg import mirror_end_effector
+from baxter_gbi_pbr_srvs.srv import EnableMirroring
 
 from geometry_msgs.msg import Point, Quaternion
 
-import tf
 
-from math import sin
-
-## Fake Client -> Placeholder for the real user. Just to test.
-
+## Node used to do the offline mirroring. Takes the files with the hand movements and publishes in the mirror_end_effector topic.
 
 
 #Mirror client -> publish data on a topic
 def main():
 
     rospy.loginfo("Initializing node... ")
-    rospy.init_node('mirror_client', anonymous=True)
-    pub = rospy.Publisher('mirror_end_effector_left', mirror_end_effector, queue_size=2)
+    rospy.init_node('mirror_client_txt_left', anonymous=True)
     
-    init_pos = [0.163716,0.421201,-0.440442]
-    init_orient = [0.54,-0.84,-0.005,0.003]
+    pub = rospy.Publisher('mirror_end_effector_left', mirror_end_effector, queue_size=20)
     
     rospy.wait_for_service('enable_mirroring_left')
+    enableMirroring = None
     try:
         enableMirroring = rospy.ServiceProxy('enable_mirroring_left', EnableMirroring)
         response = enableMirroring(1)
         if response.isError == 0:
             print("Started!")
         else:
-            print("Error starting mirroring")
+            print("Error starting mirroring (left)")
             return
     except rospy.ServiceException, e:
         print("Service call failed: %s"%e)
     
     
     
-    rate = rospy.Rate(10)
-    i = 0
+    rate = rospy.Rate(1)
     
     def clean_shutdown():
         rospy.loginfo("\nExiting...")
@@ -58,36 +50,42 @@ def main():
                 print("Mirroring has been stopped!")
             else:
                 print("Error stopping mirroring")
-                return
+                
         except rospy.ServiceException, e:
             print("Service call failed: %s"%e)
     
     rospy.on_shutdown(clean_shutdown)
 
-    
-    while not rospy.is_shutdown():
-        pos = Point()
-        pos.x = init_pos[0]+sin(i)
-        pos.y = init_pos[1]
-        pos.z = init_pos[2]+sin(i)
+    path = "/home/alessio/Scrivania/Mirroring_Test/Record"+sys.argv[1]+"/"
 
+    HandLeft = open(path+"hand_left_data.csv","r")
+
+    if HandLeft is None:
+        print("Problem opening file")
+    
+    hand_left = HandLeft.readlines()
+
+    l = 0
+    
+    while l < len(hand_left): 
+        #Left
+        data = mirror_end_effector()
+        left_pos = hand_left[l].split(',')
+        pos = Point()
+        pos.x = float(left_pos[0])
+        pos.y = float(left_pos[1])
+        pos.z = float(left_pos[2])
 
         orient = Quaternion()
-
-        i += 0.2
-        #quaternion = tf.transformations.quaternion_from_euler(3.129668, -0.000121, -2.002885)
-        #type(pose) = geometry_msgs.msg.Pose
-        #orient.x = quaternion[0]
-        #orient.y = quaternion[1]
-        #orient.z = quaternion[2]
-        #orient.w = quaternion[3]
-        
-        #print(str(orient))
-        data = mirror_end_effector()
         data.position = pos
         data.quaternion = orient
         pub.publish(data)
+  
+        l += 1
         rate.sleep()
+    
+    print("Finished to publish data, CTRL+C when baxter has finished")
+    rospy.spin()
         
 if __name__ == '__main__':
     main()

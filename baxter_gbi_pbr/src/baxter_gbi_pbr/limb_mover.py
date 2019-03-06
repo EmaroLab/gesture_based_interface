@@ -61,7 +61,7 @@ class NewLimbMover:
         # rospy.loginfo("ptarget: %s", self.target_pos)
         jt_bounds = [(-1.7 ,1.7),(-2.14, 1.04),(-3.05, 3.05),(-0.05, 2.61),(-3.05, 3.05),(-1.57, 2.09)]
         # jt_bounds = np.array([(-1.7 ,1.7),(-2.14, 1.04),(-3.05, 3.05),(-0.05, 2.61),(-3.05, 3.05),(-1.57, 2.09)])
-        solver_options = {"maxiter":5000,"disp":False}
+        solver_options = {"maxiter":200,"disp":False}
         result = optimize.minimize(self.calc_error, self.curr_jts[:-1], jac=self.calc_jac, bounds=jt_bounds, options=solver_options)
         jts = result.x
         jts = np.hstack((jts, 0))

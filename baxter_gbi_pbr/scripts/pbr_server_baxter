@@ -65,7 +65,6 @@ def playback_handler(req):
         playbacking = False
         
         service1.set_succeeded()
-	print("s")        
 	return 0
     else:
         rospy.logerr("The file doesn't exist!!")
@@ -91,7 +90,7 @@ def record_start_handler(req):
         pause_state = 0
         
         msg = modify_playback()
-        msg.old_filename = file_playback+extension
+        msg.old_filename = file_playback
         msg.new_filename = folder_path+req.filename+extension
         msg.mode = "start"
         msg.line_number = line_executed
@@ -253,7 +252,6 @@ def go_to_start_position(req):
     lines[2] = lines[2].rstrip().split(',')
     lines[3] = [float(x) for x in lines[3].rstrip().split(',')]
 
-    rospy.logwarn("ajd ")
     left_arm.move_to_joint_positions(dict(zip(lines[0],lines[1])))
     right_arm.move_to_joint_positions(dict(zip(lines[2],lines[3])))
     
