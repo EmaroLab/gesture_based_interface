@@ -44,14 +44,16 @@ public class SendingWearActivity extends RosWearActivity implements SensorEventL
 
     if (mySensor.getType() == Sensor.TYPE_GYROSCOPE) {
       System.arraycopy(sensorEvent.values, 0, pub.vel, 0, 3);
-      String gyroData = pub.vel[0] + "   " + pub.vel[1] + "   " + pub.vel[2];
-      dataGyro.setText(gyroData);
+      // uncomment to see gyroscope data on the watch
+      //String gyroData = pub.vel[0] + "   " + pub.vel[1] + "   " + pub.vel[2];
+      //dataGyro.setText(gyroData);
     }
 
     if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
       System.arraycopy(sensorEvent.values, 0, pub.acc, 0, 3);
-      String accData = pub.acc[0] + "   " + pub.acc[1] + "   " + pub.acc[2];
-      dataAcc.setText(accData);
+      // uncomment to see accelerometer data on the watch
+      //String accData = pub.acc[0] + "   " + pub.acc[1] + "   " + pub.acc[2];
+      //dataAcc.setText(accData);
     }
   }
 

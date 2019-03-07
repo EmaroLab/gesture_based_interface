@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">BeaconsProximity</string>
-    <string name="proximity_activity">BeaconsProximity</string>
+    <string name="app_name">Beacons Proximity</string>
+    <string name="proximity_activity">Beacons Proximity</string>
     <string name="pink_beacon">Pink Beacon info</string>
     <string name="yellow_beacon">Yellow Beacon info</string>
     <string name="violet_beacon">Violet Beacon info</string>
