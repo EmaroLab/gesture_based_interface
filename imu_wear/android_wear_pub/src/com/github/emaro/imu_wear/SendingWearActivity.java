@@ -10,18 +10,18 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import org.ros.android.RosActivity;
+import org.ros.android.RosWearActivity;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
 
-public class SendingActivity extends RosActivity implements SensorEventListener {
+public class SendingWearActivity extends RosWearActivity implements SensorEventListener {
 
   private ImuPublisher pub = new ImuPublisher("imu_data");
   private TextView dataGyro;
   private TextView dataAcc;
   private SensorManager senSensorManager;
 
-  public SendingActivity() {
+  public SendingWearActivity() {
     super("IMU Wear", "IMU Wear");
   }
 
