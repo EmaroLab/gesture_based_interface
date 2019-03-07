@@ -6,5 +6,5 @@ catkin_make -DCATKIN_WHITELIST_PACKAGES="imu_wear;beacons_proximity_sub" -j1 | t
 yes | sdkmanager --licenses
 catkin_make -DCATKIN_WHITELIST_PACKAGES=""  | tee -a last_build.log
 source devel/setup.bash
-cp -f src/imu_wear/android_wear_pub/build/apk/debug/android_wear_pub-debug.apk imu_wear-debug.apk
-cp -f src/beacons_proximity/android_wear_pub/build/apk/debug/android_wear_pub-debug.apk beacons_proximity-debug.apk
+cp -f src/imu_wear/android_wear_pub/build/outputs/apk/debug/android_wear_pub-debug.apk imu_wear-debug.apk
+cp -f src/beacons_proximity/android_wear_pub/build/outputs/apk/debug/android_wear_pub-debug.apk beacons_proximity-debug.apk
