@@ -1,46 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.wear.widget.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/dark_grey"
     android:padding="@dimen/box_inset_layout_padding"
-    tools:context="com.emarolab.carfi.imustream.SendingActivity"
+    tools:context=".SendingActivity"
     tools:deviceIds="wear">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/inner_frame_layout_padding"
-        app:boxedEdges="all">
+    <TextView
+        android:id="@+id/acc_text"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
+        android:text="@string/acc_data" />
 
-        <TextView
-            android:id="@+id/text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="80dp"
-            android:text="@string/velocity" />
+    <TextView
+        android:id="@+id/accelerometer"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/acc_text"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content"
+        android:text="@string/data_streamed" />
 
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="100dp"
-            android:onClick="stopStreaming"
-            android:text="@string/stop_button" />
+    <TextView
+        android:id="@+id/gyro_text"
+        android:layout_below="@id/accelerometer"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/gyro_data" />
 
-        <TextView
-            android:id="@+id/deviceName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/device_name"
-            android:textAlignment="center" />
+    <TextView
+        android:id="@+id/gyroscope"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/gyro_text"
+        android:layout_centerHorizontal="true"
+        android:text="@string/data_streamed" />
 
-    </FrameLayout>
-</android.support.wear.widget.BoxInsetLayout>
+    <Button
+        android:id="@+id/stopButton"
+        android:layout_width="wrap_content"
+        android:layout_below="@id/gyroscope"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:onClick="stopStreaming"
+        android:text="@string/stop_button" />
+
+</RelativeLayout>
 

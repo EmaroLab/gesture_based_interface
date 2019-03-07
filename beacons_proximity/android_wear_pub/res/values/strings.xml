@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">android_wear_pub</string>
+    <string name="app_name">BeaconsProximity</string>
     <string name="proximity_activity">BeaconsProximity</string>
     <string name="pink_beacon">Pink Beacon info</string>
     <string name="yellow_beacon">Yellow Beacon info</string>
