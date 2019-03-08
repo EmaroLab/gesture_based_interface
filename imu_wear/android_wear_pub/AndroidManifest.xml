@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.github.emaro.imu_wear" xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.github.emaro.imu_wear">
 
     <uses-sdk tools:overrideLibrary="org.ros.android.android_core_components" />
+
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
@@ -9,16 +12,17 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <uses-feature android:name="android.hardware.type.watch" />
 
     <application
-        tools:replace="android:icon"
         android:allowBackup="true"
         android:icon="@mipmap/imu_wear"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault"
-        tools:ignore="GoogleAppIndexingWarning">
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:replace="android:icon">
         <uses-library
             android:name="com.google.android.wearable"
             android:required="true" />
@@ -28,24 +32,15 @@
             android:value="true" />
 
         <activity
-            android:name="com.github.emaro.imu_wear.MainActivity"
+            android:name="com.github.emaro.imu_wear.SendingWearActivity"
             android:label="@string/app_name">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity
-            android:name="com.github.emaro.imu_wear.SendingActivity"
-            android:parentActivityName="com.github.emaro.imu_wear.MainActivity">
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.github.emaro.imu_wear.MainActivity" />
-        </activity>
-
-        <service android:name="org.ros.android.NodeMainExecutorService" >
+        <service android:name="org.ros.android.NodeMainExecutorService">
             <intent-filter>
                 <action android:name="org.ros.android.NodeMainExecutorService" />
             </intent-filter>

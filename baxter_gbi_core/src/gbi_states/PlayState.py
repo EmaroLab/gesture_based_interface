@@ -21,19 +21,19 @@ class PlayState(PlaybackState):
         self.progress = 0
 
     ## method cb_done
+    # called when the playback is finished
+    #
     # @param status
     # @param result
-    #
-    # called when the playback is finished
     def cb_done(self, status, result):
         PlaybackState.end = True
         if not PlaybackState.killing:
             self.signal("finished")
 
     ## method cb_feedback
-    # @param result
-    #
     # gives info about the state of the play
+    #
+    # @param result
     def cb_feedback(self, result):
         self.progress = result.percent_complete
         if self.is_running():
@@ -51,10 +51,10 @@ class PlayState(PlaybackState):
             return None
 
     ## method action_6
-    # @param userdata
-    #
     # override of BlockingState.action_6
     # where action_6 is assumed to be "pause"
+    #
+    # @param userdata
     def action_6(self, userdata):
         return self.pause()
 
@@ -69,9 +69,9 @@ class PlayState(PlaybackState):
             return "reaching initial position... "
 
     ## method new_instance
-    # @param userdata
-    #
     # new instance of play
+    #
+    # @param userdata
     def new_instance(self, userdata):
         try:
             new = not userdata.resume
@@ -83,9 +83,9 @@ class PlayState(PlaybackState):
             return True
 
     ## method play
-    # @param filename
-    #
     # plays the corresponding file
+    #
+    # @param filename
     def play(self, filename):
         PlaybackState.end = False
         PlaybackState.killing = False
@@ -96,9 +96,9 @@ class PlayState(PlaybackState):
         self.playback.send_goal(self.goal, self.cb_done, None, self.cb_feedback)
 
     ## method execute
-    # @param userdata
-    #
     # executes the action
+    #
+    # @param userdata
     def execute(self, userdata):
         if self.new_instance(userdata):
             self.play(userdata.filename)

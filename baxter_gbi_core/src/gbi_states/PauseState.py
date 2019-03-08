@@ -29,10 +29,10 @@ class PauseState(PlaybackState):
             return None
 
     ## method action_6
-    # @param userdata
-    #
     # override of BlockingState.action_6
     # where action_6 is assumed to be "resume"
+    #
+    # @param userdata
     def action_6(self, userdata):
         userdata.resume = True
         return self.resume()

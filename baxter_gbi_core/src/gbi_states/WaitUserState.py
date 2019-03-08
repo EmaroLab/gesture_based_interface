@@ -18,17 +18,17 @@ class WaitUserState(BlockingState):
         self.type = 'wait_user'
 
     ## method config
-    # @param userdata
-    #
     # callback of the trigger of a
     # configuration event
+    #
+    # @param userdata
     def config(self, userdata):
         return 'reconf_requested'
 
     ## method user_detected
-    # @param userdata
-    #
     # callback of the trigger for user presence
+    #
+    # @param userdata
     def user_detected(self, userdata):
         return 'user_detected'
 

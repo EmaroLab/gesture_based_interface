@@ -40,10 +40,10 @@ class PlaybackState(ActionState):
             self.playback.wait_for_server()
 
     ## method action_5
-    # @param userdata
-    #
     # override of BlockingState.action_5
     # where action_5 is assumed to be "exit"
+    #
+    # @param userdata
     def action_5(self, userdata):
         PlaybackState.killing = True
         self.playback.cancel_all_goals()
@@ -52,9 +52,9 @@ class PlaybackState(ActionState):
         return 'stop'
 
     ## method user_left
-    # @param userdata
-    #
     # called when the user leaves
+    #
+    # @param userdata
     def user_left(self, userdata):
         PlaybackState.killing = True
         self.playback.cancel_all_goals()

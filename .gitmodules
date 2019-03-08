@@ -27,7 +27,7 @@
 	url = https://github.com/EmaroLab/openni_tracker.git
 [submodule "android_core"]
 	path = _dependencies/android/android_core
-	url = https://github.com/roncapat/android_core
+	url = https://github.com/EmaroLab/android_core
 [submodule "genjava"]
 	path = _dependencies/android/genjava
 	url = https://github.com/rosjava/genjava

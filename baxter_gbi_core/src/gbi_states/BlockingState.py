@@ -31,57 +31,57 @@ class BlockingState(smach.State):
         self.running = False
 
     ## method action_1
-    # @param userdata
-    #  
     # call back of the trigger "action_1"
+    # 
+    # @param userdata
     def action_1(self, userdata):
         ## to override
         return None
 
     ## method action_2
-    # @param userdata
-    #  
     # call back of the trigger "action_2"
+    #  
+    # @param userdata
     def action_2(self, userdata):
         ## to override
         return None
 
     ## method action_3
-    # @param userdata
-    #  
     # callback of the trigger "action_3"
+    #  
+    # @param userdata
     def action_3(self, userdata):
         ## to override
         return None
 
     ## method action_4
-    # @param userdata
-    #  
     # callback of the trigger "action_4"
+    #  
+    # @param userdata
     def action_4(self, userdata):
         ## to override
         return None
 
     ## method action_5
-    # @param userdata
-    #  
     # call back of the trigger "action_5"
+    #  
+    # @param userdata
     def action_5(self, userdata):
         ## to override
         return None
 
     ## method action_6
-    # @param userdata
-    #  
     # call back of the trigger "action_6"
+    #  
+    # @param userdata
     def action_6(self, userdata):
         ## to override
         return None
 
     ## method user_detected
-    # @param userdata
-    #  
     # callback of the trigger "user_detected"
+    #  
+    # @param userdata
     def user_detected(self, userdata):
         ## to override
         return None
@@ -95,9 +95,9 @@ class BlockingState(smach.State):
         return None
 
     ## method config
-    # @param userdata
-    #  
     # call back of the trigger "config"
+    #  
+    # @param userdata
     def config(self, userdata):
         # to override 
         return None
@@ -108,17 +108,17 @@ class BlockingState(smach.State):
         return None
 
     ## method publish_state
-    # @param userdata
-    #  
     # publish message
+    #  
+    # @param userdata
     def publish_state(self):
         # to override
         raise NotImplemented
 
     ## method execute
-    # @param userdata
-    #  
     # executable code of the blocking state
+    #  
+    # @param userdata
     def execute(self, userdata):
         self.running = True
         while True:
@@ -165,9 +165,9 @@ class BlockingState(smach.State):
         self._trigger_event.signal('preempt')
 
     ## method signal
-    # @param event id id of the event
-    #
     # signals the event with the corresponding id
+    #
+    # @param event id id of the event
     def signal(self, event_id):
         self._trigger_event.signal(event_id)
 

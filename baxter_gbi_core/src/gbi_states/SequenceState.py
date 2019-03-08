@@ -23,20 +23,20 @@ class SequenceState(ActionState):
         self.sequence = []
 
     ## method play_file
-    # @param userdata
-    # @param index
-    #
     # plays the file at the index passed
     # as parameter
+    #
+    # @param userdata
+    # @param index
     @staticmethod
     def play_file(userdata, index):
         userdata.filename = userdata.sequence[index]
         return "play"
 
     ## method new_sequence
-    # @param userdata
-    #
     # creates a new sequence
+    #
+    # @param userdata
     def new_sequence(self, userdata):
         try:
             new = userdata.new_sequence
@@ -48,9 +48,9 @@ class SequenceState(ActionState):
             return False
 
     ## method execute
-    # @param userdata
-    #
     # executes the sequence
+    #
+    # @param userdata
     def execute(self, userdata):
         if self.new_sequence(userdata):
             self.index = -1

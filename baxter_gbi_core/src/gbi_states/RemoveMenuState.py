@@ -27,11 +27,11 @@ class RemoveMenuState(FileMenuState):
         self.delete = rospy.ServiceProxy('delete_file', DeleteFile)
 
     #  method update_variable_options
+    #  override of MenuState.on_variable_selection
+    #  
     #  @param index
     #  @param item
     #  @param userdata 
-    #  
-    #  override of MenuState.on_variable_selection
     def on_variable_selection(self, index, item, userdata):
         self.delete(item)
         del self.variable_options[index]

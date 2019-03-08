@@ -221,9 +221,3 @@ class Parser:
 
       return fsm, fsm_children
 
-if __name__ == "__main__":
-   event = FsmEvent()
-   parser = Parser(gbi_states, event)
-   #print(dir(gbi_states))
-   parser.parse()
-

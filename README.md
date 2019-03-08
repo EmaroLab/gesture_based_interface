@@ -51,7 +51,9 @@ bash <(wget -qO- https://raw.githubusercontent.com/EmaroLab/gesture_based_interf
 | build.sh         | workspace, src | Incremental build                                                |
 | baxter.sh        | workspace      | Enter the Baxter virtual environment                             | 
 
-We advise to use `./build.sh` or `./clean_build.sh` in place of `catkin_make`. 
+We advise to use `./build.sh` or `./clean_build.sh` in place of `catkin_make`.
+
+Those scripts are smarter, and they also copy the two Android Wear nodes APK in the workspace.
 
 Note: they can be used both in the `sofar_ws` workspace or in the `src` subfolder.
 

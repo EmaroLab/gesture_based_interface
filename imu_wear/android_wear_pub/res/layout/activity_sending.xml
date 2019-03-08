@@ -1,46 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.wear.widget.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/dark_grey"
-    android:padding="@dimen/box_inset_layout_padding"
-    tools:context="com.emarolab.carfi.imustream.SendingActivity"
+    tools:context=".SendingWearActivity"
     tools:deviceIds="wear">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/inner_frame_layout_padding"
-        app:boxedEdges="all">
+    <TextView
+        android:id="@+id/acc_text"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
+        android:text="" />
+    <!--insert string acc_data if you want to display Accelerometer:-->
 
-        <TextView
-            android:id="@+id/text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="80dp"
-            android:text="@string/velocity" />
+    <TextView
+        android:id="@+id/accelerometer"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/acc_text"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content"
+        android:text="" />
+    <!--insert @string/data_string if you want to display a placeholder for accelerometer data-->
 
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="100dp"
-            android:onClick="stopStreaming"
-            android:text="@string/stop_button" />
+    <TextView
+        android:id="@+id/sending_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/accelerometer"
+        android:layout_centerHorizontal="true"
+        android:text="@string/sending_data" />
 
-        <TextView
-            android:id="@+id/deviceName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/device_name"
-            android:textAlignment="center" />
 
-    </FrameLayout>
-</android.support.wear.widget.BoxInsetLayout>
+    <TextView
+        android:id="@+id/gyro_text"
+        android:layout_below="@id/accelerometer"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="" />
+    <!--insert @string/gyro_data if you want to display Gyroscope:-->
+
+    <TextView
+        android:id="@+id/gyroscope"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/gyro_text"
+        android:layout_centerHorizontal="true"
+        android:text="" />
+    <!--insert @string/data_string if you want to display a placeholder for gyroscope data-->
+
+    <Button
+        android:id="@+id/stopButton"
+        android:layout_width="wrap_content"
+        android:layout_below="@id/gyroscope"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/red"
+        android:onClick="stopStreaming"
+        android:text="@string/stop_button" />
+
+</RelativeLayout>
 

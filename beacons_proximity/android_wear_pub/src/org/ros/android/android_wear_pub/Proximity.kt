@@ -10,14 +10,13 @@ import com.estimote.proximity_sdk.api.ProximityObserver
 import com.estimote.proximity_sdk.api.ProximityObserverBuilder
 import com.estimote.proximity_sdk.api.ProximityZoneBuilder
 import kotlinx.android.synthetic.main.activity_proximity.*
-import org.ros.android.RosActivity
+import org.ros.android.RosWearActivity
 import org.ros.node.NodeConfiguration
 import org.ros.node.NodeMainExecutor
 
 import java.net.URI
 
-class Proximity(): RosActivity("ProximityPub", "ProximityPub",
-            URI.create("http://192.168.43.143:11311")) {
+class Proximity(): RosWearActivity("ProximityPub", "ProximityPub") {
 
     private var talkerPink: Speaker? = null
     private var talkerYellow: Speaker? = null

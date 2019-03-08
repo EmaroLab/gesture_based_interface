@@ -29,10 +29,10 @@ class MenuState(ExpiringState):
         self.selection = 0
 
     ## method action_1
-    # @param userdata
-    #  
     # override of BlockingState.action_1 where
     # action_1 is assumed to be "go up in menu"
+    #  
+    # @param userdata
     def action_1(self, userdata):
         max_selection = len(self.variable_options) + len(self.fixed_options)
         if self.selection < max_selection - 1:
@@ -40,20 +40,20 @@ class MenuState(ExpiringState):
         return None
 
     ## method action_2
-    # @param userdata
-    #  
     # override of BlockingState.action_2 where
     # action_2 is assume to be "go down in menu"
+    #  
+    # @param userdata
     def action_2(self, userdata):
         if self.selection > 0:
             self.selection -= 1
         return None
 
     ## method action_3
-    # @param userdata
-    #  
     # override of BlockingState.action_3
     # assuming that the action_3 is the selection
+    #  
+    # @param userdata
     def action_3(self, userdata):
         if self.selection < len(self.variable_options):
             item = self.variable_options[self.selection]
@@ -63,9 +63,9 @@ class MenuState(ExpiringState):
             return self.on_fixed_selection(self.selection - len(self.variable_options), item, userdata)
 
     ## method execute
-    # @param userdata
-    #  
     # override of BlockingState.execute
+    #  
+    # @param userdata
     def execute(self, userdata):
         self.selection=0
         self.variable_options = self.update_variable_options(userdata)
@@ -85,28 +85,28 @@ class MenuState(ExpiringState):
         self.pub.publish(self.msg)
 
     ## method update_variable_options
-    # @param userdata
-    #  
     # prototype of update_variable_options
+    #  
+    # @param userdata
     def update_variable_options(self, userdata):
         return []
 
     ## method update_variable_options
+    # fills the field userdata.selection with item
+    #  
     # @param userdata
     # @param index
     # @param item
-    #  
-    # fills the field userdata.selection with item
     def on_variable_selection(self, index, item, userdata):
         userdata.selected_idx = index
         userdata.selected_item = item
         return 'selection'
 
     ## method on_fixed_selection
+    # returns item
+    #  
     # @param userdata
     # @param index
     # @param item
-    #  
-    # returns item
     def on_fixed_selection(self, index, item, userdata):
         return item

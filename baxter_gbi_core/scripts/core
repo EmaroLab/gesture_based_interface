@@ -55,7 +55,6 @@ class FSMThread(threading.Thread):
             print name
             edges = machine.get_internal_edges()
             self.graph.append( Digraph(name, filename=name+'.gv', format='png'))
-            print(self.graph)
             self.graph[id].attr(rankdir='TB', size="12")
             self.graph[id].attr('node', shape='circle', style='filled', fontsize='25', heigth='1.2', width='1.6',
                         color='lightblue')
@@ -71,6 +70,12 @@ class FSMThread(threading.Thread):
     def logdebug(self, msg):
         pass
 
+    ## method rendering
+    #  this method renders the state-machine in the widget Tkinter
+    # 
+    # @param filename the graph rendering result in .png
+    # @param active_states machine states active after the transition
+    # @param f state machine graph  
     def rendering(self, filename, active_states, f):
         print filename
         if active_states:
@@ -99,13 +104,10 @@ class FSMThread(threading.Thread):
     #  @param req request from service
     def config_cb(self, req):
         self.event.signal('config')
-        # FIXME wait for state machine transition outcome
-        return TriggerResponse(success=True, message="ciao")
+        return TriggerResponse(True, "OK")
 
     ## method run
     def run(self):
-        ## equal to rendering but with tk.label and panle.pack to generate the label and the background space
-
         self.widget = tk.Tk()
         self.panel = tk.Label(self.widget)
         self.widget.title('State_Machine')
