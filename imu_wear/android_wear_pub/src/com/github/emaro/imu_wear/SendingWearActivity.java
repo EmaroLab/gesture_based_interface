@@ -1,5 +1,6 @@
 package com.github.emaro.imu_wear;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -16,7 +17,9 @@ import org.ros.node.NodeMainExecutor;
 
 public class SendingWearActivity extends RosWearActivity implements SensorEventListener {
 
-  private ImuPublisher pub = new ImuPublisher("imu_data");
+  BluetoothAdapter myDevice = BluetoothAdapter.getDefaultAdapter();
+  String deviceName = myDevice.getName().replaceAll(" ", "_");
+  private ImuPublisher pub = new ImuPublisher(deviceName+"/imu_data");
   private TextView dataGyro;
   private TextView dataAcc;
   private SensorManager senSensorManager;
