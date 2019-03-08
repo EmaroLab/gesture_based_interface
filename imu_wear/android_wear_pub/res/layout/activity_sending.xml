@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/dark_grey"
-    android:padding="@dimen/box_inset_layout_padding"
     tools:context=".SendingWearActivity"
     tools:deviceIds="wear">
 
@@ -16,7 +14,8 @@
         android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
         android:layout_height="wrap_content"
-        android:text="@string/acc_data" />
+        android:text="" />
+    <!--insert string acc_data if you want to display Accelerometer:-->
 
     <TextView
         android:id="@+id/accelerometer"
@@ -25,7 +24,17 @@
         android:layout_width="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_height="wrap_content"
-        android:text="@string/data_streamed" />
+        android:text="" />
+    <!--insert @string/data_string if you want to display a placeholder for accelerometer data-->
+
+    <TextView
+        android:id="@+id/sending_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/accelerometer"
+        android:layout_centerHorizontal="true"
+        android:text="@string/sending_data" />
+
 
     <TextView
         android:id="@+id/gyro_text"
@@ -34,7 +43,8 @@
         android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/gyro_data" />
+        android:text="" />
+    <!--insert @string/gyro_data if you want to display Gyroscope:-->
 
     <TextView
         android:id="@+id/gyroscope"
@@ -43,7 +53,8 @@
         android:layout_marginTop="10dp"
         android:layout_below="@id/gyro_text"
         android:layout_centerHorizontal="true"
-        android:text="@string/data_streamed" />
+        android:text="" />
+    <!--insert @string/data_string if you want to display a placeholder for gyroscope data-->
 
     <Button
         android:id="@+id/stopButton"
@@ -51,7 +62,8 @@
         android:layout_below="@id/gyroscope"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/red"
         android:onClick="stopStreaming"
         android:text="@string/stop_button" />
 
