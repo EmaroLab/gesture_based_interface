@@ -65,7 +65,7 @@ class Proximity : RosWearActivity("ProximityPub", "ProximityPub") {
 
         val pinkBeacon = ProximityZoneBuilder()
                 .forTag("pink")
-                .inNearRange()
+                .inFarRange()
                 .onEnter{
                     Log.d("Debug.. ", "Currently near the pink beacon")
                     pink.text = "Currently near pink beacon"
@@ -80,7 +80,7 @@ class Proximity : RosWearActivity("ProximityPub", "ProximityPub") {
 
         val yellowBeacon = ProximityZoneBuilder()
                 .forTag("yellow")
-                .inNearRange()
+                .inFarRange()
                 .onEnter{
                     Log.d("Debug.. ", "Currently near the yellow beacon")
                     yellow.text = "Currently near yellow beacon"
@@ -95,7 +95,7 @@ class Proximity : RosWearActivity("ProximityPub", "ProximityPub") {
 
         val violetBeacon = ProximityZoneBuilder()
                 .forTag("purple")
-                .inNearRange()
+                .inFarRange()
                 .onEnter{
                     Log.d("Debug.. ", "Currently near the violet beacon")
                     violet.text = "Currently near violet beacon"

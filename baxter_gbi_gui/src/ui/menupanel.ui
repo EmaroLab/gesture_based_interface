@@ -31,7 +31,7 @@
 }
 
 QPushButton{
-		font: 17pt Comic Sans MS;
+		font: 30pt Comic Sans MS;
 		background-color:#FFFEFE;
 		height: 50px;
 		border-radius:10px;
@@ -45,7 +45,6 @@ QPushButton:hover{
 }
 
 QPushButton#selection{
-		font: 17pt Comic Sans MS;
 		background-color:#FF483E;
 		border: 2px solid #FF483E;
 		border-radius: 10px;
@@ -72,7 +71,7 @@ QPushButton#selection{
      <item>
       <widget class="QLabel" name="menuTitle">
        <property name="styleSheet">
-        <string notr="true">font: 22pt &quot;ComicSansMS&quot;;
+        <string notr="true">font: 40pt &quot;ComicSansMS&quot;;
 font-style:bold;
 </string>
        </property>
@@ -116,7 +115,7 @@ font-style:bold;
         <x>0</x>
         <y>0</y>
         <width>1006</width>
-        <height>507</height>
+        <height>485</height>
        </rect>
       </property>
       <property name="styleSheet">

@@ -91,7 +91,7 @@ protected:
  * - acquire and save all backgrounds, associated to different angles of the Kinect
  * @param[in]  delta	sensitivity of the segmentation
  */
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     ros::init(argc, argv, "pcl_background_segmentation");
     ros::NodeHandle n("~");
