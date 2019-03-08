@@ -5,9 +5,8 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 28
 
-
     defaultConfig {
-        applicationId "com.example.android_wear_pub"
+        applicationId "com.github.emaro.beacons_proximity"
         minSdkVersion 23
         targetSdkVersion 28
         versionCode 1
@@ -22,15 +21,22 @@ android {
 }
 
 dependencies {
+    compileOnly 'com.google.android.wearable:wearable:2.4.0'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':android_core_components')
     implementation 'com.google.android.gms:play-services-wearable:16.0.1'
+    implementation "com.google.android.support:wearable:2.4.0"
     implementation 'com.android.support:percent:28.0.0'
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     implementation 'com.android.support:wear:28.0.0'
-    compileOnly 'com.google.android.wearable:wearable:2.4.0'
+    implementation "com.android.support:appcompat-v7:28.0.0"
+    implementation "org.ros.rosjava_core:rosjava:0.3.6"
+    implementation 'org.ros.rosjava_core:rosjava_geometry:0.3.6'
+    implementation "org.ros.rosjava_messages:diagnostic_msgs:1.12.6"
+    implementation "org.ros.rosjava_messages:sensor_msgs:1.12.6"
+    implementation 'org.ros.rosjava_messages:visualization_msgs:1.12.6'
     implementation 'com.estimote:proximity-sdk:1.0.3'
     implementation 'com.estimote:mustard:0.2.1'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:1.2.71"
 }
