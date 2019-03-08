@@ -2,18 +2,21 @@
 <package>
     <name>imu_wear</name>
     <version>0.4.0</version>
+
+    <maintainer email="roncapat@gmail.com">Patrick Roncagliolo</maintainer>
+    <author email="roncapat@gmail.com">Patrick Roncagliolo</author>
+    <author email="roncapat@gmail.com">Antonio Marino</author>
+    <author email="alessandro.carfi@dibris.unige.it">Alessandro Carfi</author>
+
     <description>
-        Android support packages for rosjava.
+        Android Wear app for IMU data streaming.
     </description>
-    <url type="website">http://ros.org/wiki/android_core</url>
-    <url type="repository">https://github.com/rosjava/android_core</url>
-    <url type="bugtracker">https://github.com/rosjava/android_core/issues</url>
-    <maintainer email="d.stonier@gmail.com">Daniel Stonier</maintainer>
-    <maintainer email="damonkohler@google.com">Damon Kohler</maintainer>
-    <author email="damonkohler@google.com">Damon Kohler</author>
-    <license>Apache 2.0</license>
+
+    <license>GPLv3</license>
 
     <buildtool_depend>catkin</buildtool_depend>
     <build_depend>rosjava_build_tools</build_depend>
+    <build_depend>rosjava_messages</build_depend>
     <build_depend>rosjava_core</build_depend>
+    <build_depend>android_core</build_depend>
 </package>

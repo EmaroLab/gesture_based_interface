@@ -117,7 +117,7 @@ Machines:
     remapping:
      remap1:
       from: selected_item
-      to: macro_item
+      to: sequence_item
      remap2: 
       from: selected_idx
       to: selected_idx
@@ -126,7 +126,7 @@ Machines:
       to: context_idx
      remap4:
       from: context_idx_out
-      to: macro_idx
+      to: sequence_idx
   transitions:
    transition1:
     from: INIT

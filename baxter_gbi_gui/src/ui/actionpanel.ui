@@ -57,12 +57,21 @@
        <height>16777215</height>
       </size>
      </property>
+     <property name="font">
+      <font>
+       <family>Ubuntu</family>
+       <pointsize>32</pointsize>
+       <weight>75</weight>
+       <italic>true</italic>
+       <bold>true</bold>
+      </font>
+     </property>
      <property name="autoFillBackground">
       <bool>false</bool>
      </property>
      <property name="styleSheet">
       <string notr="true">#message{
-	font: 57 italic bold 15pt &quot;Ubuntu&quot;;
+	font: 57 italic bold 32pt &quot;Ubuntu&quot;;
 	padding:5px;
 }</string>
      </property>
