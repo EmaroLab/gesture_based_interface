@@ -104,6 +104,7 @@ class FSMThread(threading.Thread):
     #  @param req request from service
     def config_cb(self, req):
         self.event.signal('config')
+        return TriggerResponse(True, "OK")
 
     ## method run
     def run(self):
