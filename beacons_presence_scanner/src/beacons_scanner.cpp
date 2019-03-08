@@ -9,11 +9,11 @@
  * @file
  */
 
-void callBack1(const std_msgs::Empty msg);
-void callBack2(const std_msgs::Empty msg);
-void callBack3(const std_msgs::Empty msg);
+void callBack1(const std_msgs::String msg);
+void callBack2(const std_msgs::String msg);
+void callBack3(const std_msgs::String msg);
 
-void (*p[3])(const std_msgs::Empty msg); /** < array of pointers to the callbacks */
+void (*p[3])(const std_msgs::String msg); /** < array of pointers to the callbacks */
 bool presences[3] = {false, false, false}; /** < array of bool where true = presence while false = absence */
 
 /** Main
@@ -50,7 +50,7 @@ int main(int argc, char **argv){
 		}
 		
     ros::Publisher pub = nh.advertise<std_msgs::Header>("/beacons/presence", 1); 
-    ros::Rate loop_rate(100);
+    ros::Rate loop_rate(10);
 		
 		std_msgs::Header msg;
 		int count = 0;
@@ -83,7 +83,7 @@ int main(int argc, char **argv){
  * presence of the user
  * @param[in]	msg	empty message sent by the first beacon
  */
-void callBack1(const std_msgs::Empty msg){
+void callBack1(const std_msgs::String msg){
 	ROS_INFO("I heard /beacons/1");
 	presences[0] = true;
 }
@@ -93,7 +93,7 @@ void callBack1(const std_msgs::Empty msg){
  * presence of the user
  * @param[in]	msg	message sent by the second beacon
  */
-void callBack2(const std_msgs::Empty msg){
+void callBack2(const std_msgs::String msg){
 	ROS_INFO("I heard /beacons/2");
 	presences[1] = true;
 }
@@ -103,7 +103,7 @@ void callBack2(const std_msgs::Empty msg){
  * presence of the user
  * @param[in]	msg	message sent by the third beacon
  */
-void callBack3(const std_msgs::Empty msg){
+void callBack3(const std_msgs::String msg){
   ROS_INFO("I heard /beacons/3");
 	presences[2] = true;
 }

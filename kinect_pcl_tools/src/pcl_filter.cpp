@@ -314,7 +314,7 @@ protected:
 	* set_filter: to enable/disable filters
 	* set_filter_param: to set a parameter of one filter
  */
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     ros::init(argc, argv, "pcl_filter");
 	ros::NodeHandle n("~");
