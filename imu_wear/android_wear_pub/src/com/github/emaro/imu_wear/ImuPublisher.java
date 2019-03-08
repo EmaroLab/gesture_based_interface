@@ -49,7 +49,7 @@ public class ImuPublisher extends AbstractNodeMain {
 
         publisher.publish(msg);
 
-        Thread.sleep(100L);
+        Thread.sleep(20L);
       }
     });
   }
