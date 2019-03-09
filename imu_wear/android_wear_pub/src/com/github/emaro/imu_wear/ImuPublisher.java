@@ -15,6 +15,7 @@ public class ImuPublisher extends AbstractNodeMain {
   public float[] vel = new float[3];
 
   public long android_time = 0;
+  public int frequency = 50;
 
   private String topic_name;
   private Publisher<sensor_msgs.Imu> publisher;
@@ -55,7 +56,7 @@ public class ImuPublisher extends AbstractNodeMain {
 
         publisher.publish(msg);
 
-        Thread.sleep(20L);
+        Thread.sleep(1000/frequency);
       }
     });
   }

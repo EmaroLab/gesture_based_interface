@@ -9,6 +9,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import org.ros.android.RosWearActivity;
@@ -20,11 +21,8 @@ public class SendingWearActivity extends RosWearActivity implements SensorEventL
   BluetoothAdapter myDevice = BluetoothAdapter.getDefaultAdapter();
   String deviceName = myDevice.getName().replaceAll(" ", "_");
   private ImuPublisher pub = new ImuPublisher(deviceName+"/imu_data");
-  private TextView dataGyro;
-  private TextView dataAcc;
+  private EditText frequency;
   private SensorManager senSensorManager;
-
-  private long previous_time = 0;
 
   public SendingWearActivity() {
     super("IMU Wear", "IMU Wear");
@@ -36,8 +34,7 @@ public class SendingWearActivity extends RosWearActivity implements SensorEventL
     setContentView(R.layout.activity_sending);
 
     setAmbientEnabled();
-    dataGyro = findViewById(R.id.gyroscope);
-    dataAcc = findViewById(R.id.accelerometer);
+    frequency = findViewById(R.id.frequency);;
   }
 
   /**
@@ -50,18 +47,16 @@ public class SendingWearActivity extends RosWearActivity implements SensorEventL
     if (mySensor.getType() == Sensor.TYPE_GYROSCOPE) {
       System.arraycopy(sensorEvent.values, 0, pub.vel, 0, 3);
       pub.android_time = sensorEvent.timestamp;
-      // uncomment to see gyroscope data on the watch
-      //String gyroData = pub.vel[0] + "   " + pub.vel[1] + "   " + pub.vel[2];
-      //dataGyro.setText(gyroData);
+
+      String frequency_string = frequency.getText().toString();
+      if (!frequency_string.isEmpty()) {
+        pub.frequency = Integer.parseInt(frequency_string);
+      }
     }
 
     if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
       System.arraycopy(sensorEvent.values, 0, pub.acc, 0, 3);
       pub.android_time = sensorEvent.timestamp;
-
-      // uncomment to see accelerometer data on the watch
-      //String accData = pub.acc[0] + "   " + pub.acc[1] + "   " + pub.acc[2];
-      //dataAcc.setText(accData);
     }
   }
 
