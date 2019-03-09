@@ -8,6 +8,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -34,7 +36,21 @@ public class SendingWearActivity extends RosWearActivity implements SensorEventL
     setContentView(R.layout.activity_sending);
 
     setAmbientEnabled();
-    frequency = findViewById(R.id.frequency);;
+    frequency = findViewById(R.id.frequency);
+    frequency.addTextChangedListener(new TextWatcher() {
+      /**
+       * Function triggered when the frequency EditText is modified
+       */
+      @Override
+      public void afterTextChanged(Editable s) {
+        String frequency_string = s.toString();
+        if (!frequency_string.isEmpty()) {
+          if (Integer.parseInt(frequency_string) != 0){
+            pub.frequency = Integer.parseInt(frequency_string);
+          }
+        }
+      }
+    });
   }
 
   /**
@@ -47,11 +63,6 @@ public class SendingWearActivity extends RosWearActivity implements SensorEventL
     if (mySensor.getType() == Sensor.TYPE_GYROSCOPE) {
       System.arraycopy(sensorEvent.values, 0, pub.vel, 0, 3);
       pub.android_time = sensorEvent.timestamp;
-
-      String frequency_string = frequency.getText().toString();
-      if (!frequency_string.isEmpty()) {
-        pub.frequency = Integer.parseInt(frequency_string);
-      }
     }
 
     if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
