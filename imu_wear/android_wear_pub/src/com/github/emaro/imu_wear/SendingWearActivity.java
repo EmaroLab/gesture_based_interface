@@ -24,6 +24,8 @@ public class SendingWearActivity extends RosWearActivity implements SensorEventL
   private TextView dataAcc;
   private SensorManager senSensorManager;
 
+  private long previous_time = 0;
+
   public SendingWearActivity() {
     super("IMU Wear", "IMU Wear");
   }
@@ -47,6 +49,7 @@ public class SendingWearActivity extends RosWearActivity implements SensorEventL
 
     if (mySensor.getType() == Sensor.TYPE_GYROSCOPE) {
       System.arraycopy(sensorEvent.values, 0, pub.vel, 0, 3);
+      pub.android_time = sensorEvent.timestamp;
       // uncomment to see gyroscope data on the watch
       //String gyroData = pub.vel[0] + "   " + pub.vel[1] + "   " + pub.vel[2];
       //dataGyro.setText(gyroData);
@@ -54,6 +57,8 @@ public class SendingWearActivity extends RosWearActivity implements SensorEventL
 
     if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
       System.arraycopy(sensorEvent.values, 0, pub.acc, 0, 3);
+      pub.android_time = sensorEvent.timestamp;
+
       // uncomment to see accelerometer data on the watch
       //String accData = pub.acc[0] + "   " + pub.acc[1] + "   " + pub.acc[2];
       //dataAcc.setText(accData);
