@@ -16,28 +16,45 @@
         android:layout_centerHorizontal="true"
         android:text="@string/sending_data" />
 
-
     <Button
         android:id="@+id/stopButton"
         android:layout_width="wrap_content"
-        android:layout_below="@id/frequency"
+        android:layout_below="@id/lin"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:layout_marginTop="10dp"
         android:backgroundTint="@color/red"
         android:onClick="stopStreaming"
         android:text="@string/stop_button" />
 
-    <EditText
-        android:id="@+id/frequency"
+    <LinearLayout
+        android:id="@+id/lin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/sending_data"
         android:layout_centerHorizontal="true"
-        android:ems="2"
-        android:inputType="number"
-        android:text="50"
-        android:textAlignment="center" />
+        android:layout_centerVertical="true"
+        android:layout_below="@id/sending_data">
+
+        <EditText
+            android:id="@+id/frequency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/sending_data"
+            android:ems="2"
+            android:inputType="number"
+            android:text="50"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/Hz"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@id/frequency"
+            android:text="@string/hz" />
+
+    </LinearLayout>
+
 
 </RelativeLayout>
 
