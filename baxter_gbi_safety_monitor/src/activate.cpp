@@ -103,13 +103,13 @@ void KinectActivate::reset(){
  *  Metod to check security
  */
 bool KinectActivate::isSecure(void){ 
-	return beacon_presence && attention;
+	return secure;
 }
 /**
  *  Metod to check attention
  */
 bool KinectActivate::hasAttention(void){ 
-	return secure;
+	return beacon_presence && attention;
 }
 
 /**
@@ -120,23 +120,23 @@ bool KinectActivate::hasAttention(void){
  */
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "kinect_activate");
+	ros::init(argc, argv, "kinect_activate");
 	ros::NodeHandle nh("~");
-	
+
 	KinectActivate kinectActivate;
-	
+
 	nh.param<double>("security_distance", security_distance, 1.5);
 	nh.param<double>("threshold", threshold, 0.7);
-	
-	ros::Rate r(10);
-	
-    ros::Publisher presence_pub;  
-    ros::Publisher security_pub;   
 
-    ros::NodeHandle n;
+	ros::Rate r(10);
+
+	ros::Publisher presence_pub;  
+	ros::Publisher security_pub;   
+
+	ros::NodeHandle n;
 	presence_pub = n.advertise<std_msgs::Header>("/presence", 1);
 	security_pub = n.advertise<std_msgs::Header>("/secure", 1);
-	
+
 	// Messages to publish
 	std_msgs::Header presence_msg;
 	std_msgs::Header security_msg;
