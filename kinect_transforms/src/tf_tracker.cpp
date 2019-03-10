@@ -21,42 +21,43 @@ ros::Publisher baxter_pub;   /**< Publisher to /odometry/baxter/<passed frame> *
     
 ros::ServiceClient client_reset;  /**< Client to reset filters */
 /**
- * Main function: 
- * 
+ * Main function
+ * publishes the odometry of the joint, passed as parameter, with respect to the Kinect on /odometry/kinect/<frame> and 
+ * with respect to the Baxter on /odometry/baxter/<frame> topic
  */
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "tf_tracker", ros::init_options::AnonymousName);
+	ros::init(argc, argv, "tf_tracker", ros::init_options::AnonymousName);
 	ros::NodeHandle n("~");    
 	static tf::TransformBroadcaster br;
 	tf::TransformListener listener;
-	
+
 	std::string frame;
 	n.param<std::string>("frame", frame, "kinect_head");
-	
+
 	std::stringstream kinect_path;
 	kinect_path << "/odometry/kinect/" << frame;
 	std::stringstream baxter_path;
 	baxter_path << "/odometry/baxter/" << frame;
-	
+
 	ros::NodeHandle nh;  
 	// Initilize Publishers for the odometry wrt Kinect
 	kinect_pub = nh.advertise<nav_msgs::Odometry>(kinect_path.str(), 5);
-	
+
 	// Initilize Publishers for the odometry wrt Baxter
 	baxter_pub = nh.advertise<nav_msgs::Odometry>(baxter_path.str(), 5);
-	
-    // Initialize Client to reset kinect
-    client_reset = nh.serviceClient<std_srvs::Empty>("reset_kinect_filters");  
-    
+
+	// Initialize Client to reset kinect
+	client_reset = nh.serviceClient<std_srvs::Empty>("reset_kinect_filters");  
+
 	tf::StampedTransform t_camera_to_frame;
 	tf::StampedTransform t_world_to_camera;
-	
+
 	tf::Transform transform_kinect;
 	tf::Transform transform_baxter;
-	
+
 	ros::Rate r(50);
-	
+
 	bool tracking = false;
 
 	while(ros::ok()){
