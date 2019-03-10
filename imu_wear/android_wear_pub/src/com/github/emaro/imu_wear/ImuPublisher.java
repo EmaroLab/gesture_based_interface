@@ -14,6 +14,9 @@ public class ImuPublisher extends AbstractNodeMain {
   public float[] acc = new float[3];
   public float[] vel = new float[3];
 
+  public long android_time = 0;
+  public int frequency = 50;
+
   private String topic_name;
   private Publisher<sensor_msgs.Imu> publisher;
   private sensor_msgs.Imu msg;
@@ -30,7 +33,7 @@ public class ImuPublisher extends AbstractNodeMain {
     return GraphName.of("IMU/imu_data");
   }
 
-  public void onStart(ConnectedNode connectedNode) {
+  public void onStart(final ConnectedNode connectedNode) {
     publisher = connectedNode.newPublisher(this.topic_name, sensor_msgs.Imu._TYPE);
     msg = publisher.newMessage();
 
@@ -39,6 +42,10 @@ public class ImuPublisher extends AbstractNodeMain {
       }
 
       protected void loop() throws InterruptedException {
+        msg.getHeader().getStamp().nsecs = connectedNode.getCurrentTime().nsecs;
+        msg.getHeader().getStamp().secs = connectedNode.getCurrentTime().secs;
+        msg.getHeader().setFrameId(android_time+"");
+
         msg.getLinearAcceleration().setX(acc[0]);
         msg.getLinearAcceleration().setY(acc[1]);
         msg.getLinearAcceleration().setZ(acc[2]);
@@ -49,7 +56,7 @@ public class ImuPublisher extends AbstractNodeMain {
 
         publisher.publish(msg);
 
-        Thread.sleep(100L);
+        Thread.sleep(1000/frequency);
       }
     });
   }

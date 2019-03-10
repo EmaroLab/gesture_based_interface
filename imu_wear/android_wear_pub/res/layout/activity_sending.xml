@@ -9,63 +9,52 @@
     tools:deviceIds="wear">
 
     <TextView
-        android:id="@+id/acc_text"
-        android:layout_width="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true"
-        android:layout_height="wrap_content"
-        android:text="" />
-    <!--insert string acc_data if you want to display Accelerometer:-->
-
-    <TextView
-        android:id="@+id/accelerometer"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/acc_text"
-        android:layout_width="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_height="wrap_content"
-        android:text="" />
-    <!--insert @string/data_string if you want to display a placeholder for accelerometer data-->
-
-    <TextView
         android:id="@+id/sending_data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/accelerometer"
+        android:layout_marginTop="50dp"
         android:layout_centerHorizontal="true"
         android:text="@string/sending_data" />
-
-
-    <TextView
-        android:id="@+id/gyro_text"
-        android:layout_below="@id/accelerometer"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="" />
-    <!--insert @string/gyro_data if you want to display Gyroscope:-->
-
-    <TextView
-        android:id="@+id/gyroscope"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_below="@id/gyro_text"
-        android:layout_centerHorizontal="true"
-        android:text="" />
-    <!--insert @string/data_string if you want to display a placeholder for gyroscope data-->
 
     <Button
         android:id="@+id/stopButton"
         android:layout_width="wrap_content"
-        android:layout_below="@id/gyroscope"
+        android:layout_below="@id/lin"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:layout_marginTop="10dp"
         android:backgroundTint="@color/red"
         android:onClick="stopStreaming"
         android:text="@string/stop_button" />
+
+    <LinearLayout
+        android:id="@+id/lin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_below="@id/sending_data">
+
+        <EditText
+            android:id="@+id/frequency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/sending_data"
+            android:ems="2"
+            android:inputType="number"
+            android:text="50"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/Hz"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@id/frequency"
+            android:text="@string/hz" />
+
+    </LinearLayout>
+
 
 </RelativeLayout>
 

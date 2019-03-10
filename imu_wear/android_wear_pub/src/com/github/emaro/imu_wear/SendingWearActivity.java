@@ -1,5 +1,6 @@
 package com.github.emaro.imu_wear;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -7,7 +8,10 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import org.ros.android.RosWearActivity;
@@ -16,9 +20,10 @@ import org.ros.node.NodeMainExecutor;
 
 public class SendingWearActivity extends RosWearActivity implements SensorEventListener {
 
-  private ImuPublisher pub = new ImuPublisher("imu_data");
-  private TextView dataGyro;
-  private TextView dataAcc;
+  BluetoothAdapter myDevice = BluetoothAdapter.getDefaultAdapter();
+  String deviceName = myDevice.getName().replaceAll(" ", "_");
+  private ImuPublisher pub = new ImuPublisher(deviceName+"/imu_data");
+  private EditText frequency;
   private SensorManager senSensorManager;
 
   public SendingWearActivity() {
@@ -31,8 +36,26 @@ public class SendingWearActivity extends RosWearActivity implements SensorEventL
     setContentView(R.layout.activity_sending);
 
     setAmbientEnabled();
-    dataGyro = findViewById(R.id.gyroscope);
-    dataAcc = findViewById(R.id.accelerometer);
+    frequency = findViewById(R.id.frequency);
+    frequency.addTextChangedListener(new TextWatcher() {
+      @Override
+      public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+      @Override
+      public void onTextChanged(CharSequence s, int start, int before, int count) {}
+      /**
+       * Function triggered when the frequency EditText is modified
+       */
+      @Override
+      public void afterTextChanged(Editable s) {
+        String frequency_string = s.toString();
+        if (!frequency_string.isEmpty()) {
+          if (Integer.parseInt(frequency_string) != 0){
+            pub.frequency = Integer.parseInt(frequency_string);
+          }
+        }
+      }
+    });
   }
 
   /**
@@ -44,16 +67,12 @@ public class SendingWearActivity extends RosWearActivity implements SensorEventL
 
     if (mySensor.getType() == Sensor.TYPE_GYROSCOPE) {
       System.arraycopy(sensorEvent.values, 0, pub.vel, 0, 3);
-      // uncomment to see gyroscope data on the watch
-      //String gyroData = pub.vel[0] + "   " + pub.vel[1] + "   " + pub.vel[2];
-      //dataGyro.setText(gyroData);
+      pub.android_time = sensorEvent.timestamp;
     }
 
     if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
       System.arraycopy(sensorEvent.values, 0, pub.acc, 0, 3);
-      // uncomment to see accelerometer data on the watch
-      //String accData = pub.acc[0] + "   " + pub.acc[1] + "   " + pub.acc[2];
-      //dataAcc.setText(accData);
+      pub.android_time = sensorEvent.timestamp;
     }
   }
 
