@@ -60,10 +60,11 @@ roslaunch baxter_gazebo baxter_world.launch
 
 Launch the nodes used for managing the movements and the files.
 ```
-rosrun BaxterGBI_pbr pbr_server_baxter.py
-rosrun BaxterGBI_pbr pbr_server_filesys.py
-rosrun BaxterGBI_pbr joint_recorder_node.py
-rosrun BaxterGBI_pbr mirror_server.py
+rosrun baxter_gbi_pbr pbr_server_baxter
+rosrun baxter_gbi_pbr pbr_server_filesys
+rosrun baxter_gbi_pbr joint_recorder_node
+rosrun baxter_gbi_pbr mirror_filter_data limb
+rosrun baxter_gbi_pbr mirror_server limb
 ```
 
 
