@@ -85,9 +85,9 @@ rosrun baxter_gbi_pbr mirror_server limb
 
 You can now test it using the following client nodes:
 ```
-rosrun BaxterGBI_pbr pbr_client_TEST mode arg1 arg2 ...
+rosrun baxter_gbi_pbr pbr_client_test mode arg1 arg2 ...
 
-rosrun BaxterGBI_pbr mirror_client
+rosrun baxter_gbi_pbr mirror_client
 ```
 
 On the basis of the mode you can ask for a specific server (and you have to pass specific parameters).
