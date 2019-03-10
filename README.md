@@ -34,7 +34,7 @@ Copy/paste this single line in an Ubuntu terminal.
 
 This will transform a clean Ubuntu installation in a 100% production-ready system.
 ```
-bash <(wget -qO- https://gist.githubusercontent.com/roncapat/92b6d76c29e5ad35e0647bc6c8c5630f/raw/3e4438901b470a8968e598fdc028d0c4a489da5a/web_installer.sh)
+bash <(wget -qO- https://gist.githubusercontent.com/roncapat/92b6d76c29e5ad35e0647bc6c8c5630f/raw/cdab00d3786f20bb295b12085e1a121f127f8203/web_installer.sh)
 ```
 
 NB: when the repository will go public, this will also work:
