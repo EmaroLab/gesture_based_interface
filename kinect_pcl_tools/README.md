@@ -20,3 +20,8 @@ This package contains the nodes to manage and filter the Point Clouds acquired b
 * pcl_record
 * pcl_background_segmentation
 * pcl_filter
+
+## Architecture
+<p align="center"> 
+<img src="https://github.com/EmaroLab/gesture_based_interface/blob/master/input_architecture.png">
+</p>
