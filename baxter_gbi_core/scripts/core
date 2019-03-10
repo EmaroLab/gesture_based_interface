@@ -41,7 +41,7 @@ class FSMThread(threading.Thread):
         threading.Thread.__init__(self)
 
         smach.set_loggers(smach.loginfo, smach.logwarn, self.logdebug, smach.logerr)
-        self.subscr = rospy.Subscriber("/beacons/presence", std_msgs.msg.Header, self.presence_cb, callback_args=[self])
+        self.subscr = rospy.Subscriber("/presence", std_msgs.msg.Header, self.presence_cb, callback_args=[self])
         ## attribute to manage the graph in graphviz
 
         self.event = FsmEvent()
