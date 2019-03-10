@@ -76,17 +76,18 @@ roslaunch baxter_gazebo baxter_world.launch
 
 Launch the nodes used to manage the movements and the files
 ```
-rosrun BaxterGBI_pbr pbr_server_baxter.py
-rosrun BaxterGBI_pbr pbr_server_filesys.py
-rosrun BaxterGBI_pbr joint_recorder_node.py
-rosrun BaxterGBI_pbr mirror_server.py
+rosrun baxter_gbi_pbr pbr_server_baxter
+rosrun baxter_gbi_pbr pbr_server_filesys
+rosrun baxter_gbi_pbr joint_recorder_node
+rosrun baxter_gbi_pbr mirror_filter_data limb
+rosrun baxter_gbi_pbr mirror_server limb
 ```
 
 You can now test it using the following client nodes:
 ```
-rosrun BaxterGBI_pbr pbr_client_TEST.py mode arg1 arg2 ...
+rosrun BaxterGBI_pbr pbr_client_TEST mode arg1 arg2 ...
 
-rosrun BaxterGBI_pbr mirror_client.py
+rosrun BaxterGBI_pbr mirror_client
 ```
 
 On the basis of the mode you can ask for a specific server (and you have to pass specific parameters).
