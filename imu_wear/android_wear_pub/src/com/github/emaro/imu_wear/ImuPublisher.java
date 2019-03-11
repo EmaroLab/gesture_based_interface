@@ -44,8 +44,11 @@ public class ImuPublisher extends AbstractNodeMain {
 
       protected void loop() throws InterruptedException {
         if (sending) {
-          msg.getHeader().getStamp().nsecs = connectedNode.getCurrentTime().nsecs;
-          msg.getHeader().getStamp().secs = connectedNode.getCurrentTime().secs;
+          long ros_time_secs =  connectedNode.getCurrentTime().secs;
+          long ros_time_nsecs =  connectedNode.getCurrentTime().nsecs + (android_time - System.currentTimeMillis())*1000000L;
+
+          msg.getHeader().getStamp().nsecs = (int)ros_time_nsecs;
+          msg.getHeader().getStamp().secs = (int)ros_time_secs;
           msg.getHeader().setFrameId(android_time + "");
 
           msg.getLinearAcceleration().setX(acc[0]);
