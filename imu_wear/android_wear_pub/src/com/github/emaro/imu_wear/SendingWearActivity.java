@@ -81,12 +81,12 @@ public class SendingWearActivity extends RosWearActivity implements SensorEventL
 
     if (mySensor.getType() == Sensor.TYPE_GYROSCOPE) {
       System.arraycopy(sensorEvent.values, 0, pub.vel, 0, 3);
-      pub.android_time = sensorEvent.timestamp;
+      pub.android_time = System.currentTimeMillis() + (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
     }
 
     if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
       System.arraycopy(sensorEvent.values, 0, pub.acc, 0, 3);
-      pub.android_time = sensorEvent.timestamp;
+      pub.android_time = System.currentTimeMillis() + (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
     }
   }
 
