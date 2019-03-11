@@ -10,6 +10,7 @@ import java.util.concurrent.Semaphore;
 
 public class ImuPublisher extends AbstractNodeMain {
 
+  public boolean sending = true;
   public Semaphore semaphore = new Semaphore(1);
   public float[] acc = new float[3];
   public float[] vel = new float[3];
@@ -42,21 +43,25 @@ public class ImuPublisher extends AbstractNodeMain {
       }
 
       protected void loop() throws InterruptedException {
-        msg.getHeader().getStamp().nsecs = connectedNode.getCurrentTime().nsecs;
-        msg.getHeader().getStamp().secs = connectedNode.getCurrentTime().secs;
-        msg.getHeader().setFrameId(android_time+"");
+        if (sending) {
+          msg.getHeader().getStamp().nsecs = connectedNode.getCurrentTime().nsecs;
+          msg.getHeader().getStamp().secs = connectedNode.getCurrentTime().secs;
+          msg.getHeader().setFrameId(android_time + "");
 
-        msg.getLinearAcceleration().setX(acc[0]);
-        msg.getLinearAcceleration().setY(acc[1]);
-        msg.getLinearAcceleration().setZ(acc[2]);
+          msg.getLinearAcceleration().setX(acc[0]);
+          msg.getLinearAcceleration().setY(acc[1]);
+          msg.getLinearAcceleration().setZ(acc[2]);
 
-        msg.getAngularVelocity().setX(vel[0]);
-        msg.getAngularVelocity().setY(vel[1]);
-        msg.getAngularVelocity().setZ(vel[2]);
+          msg.getAngularVelocity().setX(vel[0]);
+          msg.getAngularVelocity().setY(vel[1]);
+          msg.getAngularVelocity().setZ(vel[2]);
 
-        publisher.publish(msg);
+          publisher.publish(msg);
 
-        Thread.sleep(1000/frequency);
+          Thread.sleep(1000 / frequency);
+        }else {
+          Thread.sleep(500);
+        }
       }
     });
   }
