@@ -11,7 +11,7 @@ The project exploits different Off-The-Shelf software systems, as well as innova
 
 ## System Architecture
 <p align="center"> 
-<img src="General_Architecture.png">
+<img src="general_architecture.jpg">
 </p>
 
 ## Authors
