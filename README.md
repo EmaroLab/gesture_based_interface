@@ -112,3 +112,7 @@ To launch all the input nodes
 ```
 roslaunch baxter_gbi_safety_monitor input_to_fsm.launch
 ```
+## Input Architecture
+<p align="center"> 
+<img src="input_architecture.png">
+</p>
