@@ -52,7 +52,6 @@ class FSMThread(threading.Thread):
         id = 0
         for name, machine in self.mm.iteritems():
             imagefile = str(id)
-            print name
             edges = machine.get_internal_edges()
             self.graph.append( Digraph(name, filename=name+'.gv', format='png'))
             self.graph[id].attr(rankdir='TB', size="12")
@@ -77,7 +76,6 @@ class FSMThread(threading.Thread):
     # @param active_states machine states active after the transition
     # @param f state machine graph  
     def rendering(self, filename, active_states, f):
-        print filename
         if active_states:
             f.node(active_states[0], color="red", shape='doublecircle', style='filled')
         f.render(filename=filename, directory=None, view=False, cleanup=True, format='png')
