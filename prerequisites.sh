@@ -10,6 +10,7 @@ sudo apt install -y ros-melodic-desktop-full freenect freeglut3* git-core cmake 
 sudo pip install graphviz scipy tensorflow keras mttkinter Pillow
 
 cd
+rm -f sdk-tools-linux-4333796.zip
 wget https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
 rm -rf android-sdk
 mkdir android-sdk
@@ -22,11 +23,8 @@ rosdep update
 sudo update-java-alternatives --set java-11-openjdk-amd64
 
 echo '
-function bashrc(){
-    source ~/.bashrc
-}
-
 source /opt/ros/melodic/setup.bash
+source ~/sofar_ws/devel/setup.bash
 export ROS_LANG_DISABLE=genlisp:gennodejs:geneus
 export ANDROID_HOME=$HOME/android-sdk
 export LC_NUMERIC="en_US.UTF-8"
@@ -36,8 +34,17 @@ export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 export JAVA_OPTS="-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee"
 export ROS_IP="$(hostname -I | tr -d " ")"
 export ROS_HOSTNAME="$(hostname -I | tr -d " ")"
+' > ~/sofar_ws/.gbi_env
+
+echo '
+function bashrc(){
+    source ~/.bashrc
+}
+
+source ~/sofar_ws/.gbi_env
 ' >> ~/.bashrc
-source ~/.bashrc
+
+source ~/sofar_ws/.gbi_env
 
 yes | sdkmanager --licenses
  
