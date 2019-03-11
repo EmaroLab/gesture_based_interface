@@ -92,6 +92,10 @@ rosrun baxter_gbi_pbr mirror_client
 
 On the basis of the mode you can ask for a specific server (and you have to pass specific parameters).
 
+## PBR (Playback and Record) Architecture
+<p align="center"> 
+<img src="PBRarchitecture.png">
+</p>
 
 ## Kinect launcher
 Launch the nodes for the Kinect:
