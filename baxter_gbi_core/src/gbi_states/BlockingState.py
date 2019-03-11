@@ -29,6 +29,7 @@ class BlockingState(smach.State):
         ## message status
         self.msg = pub_status.status()
         self.running = False
+        self.status_update_inhibited = False
 
     ## method action_1
     # call back of the trigger "action_1"
@@ -122,7 +123,9 @@ class BlockingState(smach.State):
     def execute(self, userdata):
         self.running = True
         while True:
-            self.publish_state()
+            if not self.status_update_inhibited:
+                self.publish_state()
+                self.status_update_inhibited = False
 
             if self.preempt_requested():
                 return 'preempted'
@@ -174,3 +177,6 @@ class BlockingState(smach.State):
     ## method is_running
     def is_running(self):
         return self.running
+
+    def inhibit_update(self):
+        self.status_update_inhibited = True

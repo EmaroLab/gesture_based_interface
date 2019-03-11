@@ -40,6 +40,7 @@ class ExpiringState(BlockingState):
             self.t.cancel()
         self.t = Timer(self.timeout, self.timeout_cb)
         self.t.start()
+        self.inhibit_update()
         return None
 
     ## method timeout_cb
