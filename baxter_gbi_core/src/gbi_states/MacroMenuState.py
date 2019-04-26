@@ -21,7 +21,7 @@ class MacroMenuState(MenuState):
                            input_keys=['macro_idx', 'macro_item'],
                            output_keys=['macros'])
 
-        self.macro_slots = ["Empty", "Empty", "Empty", "Empty"]
+        self.macro_slots = ["Empty", "Empty", "Empty"]
 
     ## method update_variable_options
     # override of MenuState.update_variable_options

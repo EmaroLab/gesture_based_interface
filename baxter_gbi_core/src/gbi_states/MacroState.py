@@ -42,7 +42,7 @@ class MacroState(ActionState):
     # "play the first macro"
     #
     # @param userdata
-    def action_1(self, userdata):
+    def action_2(self, userdata):
         return self.play_file(userdata, 0)
 
     ## method action_
@@ -51,7 +51,7 @@ class MacroState(ActionState):
     # "play the second macro"
     #
     # @param userdata
-    def action_2(self, userdata):
+    def action_3(self, userdata):
         return self.play_file(userdata, 1)
 
     ## method action_3
@@ -60,7 +60,7 @@ class MacroState(ActionState):
     # "play the third macro"
     #
     # @param userdata
-    def action_3(self, userdata):
+    def action_4(self, userdata):
         return self.play_file(userdata, 2)
 
     ## method action_4
@@ -69,8 +69,8 @@ class MacroState(ActionState):
     # "play the fourth macro"
     #
     # @param userdata
-    def action_4(self, userdata):
-        return self.play_file(userdata, 3)
+    def action_1(self, userdata):
+        return 'done'
 
     ## method user_left
     # called when the user leaves

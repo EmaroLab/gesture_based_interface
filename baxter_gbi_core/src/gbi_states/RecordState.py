@@ -47,7 +47,7 @@ class RecordState(ActionState):
     # "close right gripper"
     #
     # @param userdata
-    def action_1(self, userdata):
+    def action_3(self, userdata):
         self.right_grip = not self.right_grip
         self.gripper("right", 100 if self.right_grip else 0)
         return None
@@ -58,14 +58,14 @@ class RecordState(ActionState):
     # "close left gripper"
     #
     # @param userdata
-    def action_2(self, userdata):
+    def action_4(self, userdata):
         self.left_grip = not self.left_grip
         self.gripper("left", 100 if self.left_grip else 0)
         return None
 
-    def action_5(self, userdata):
+    def action_1(self, userdata):
         self.record_stop()
-        return ActionState.action_5(self, userdata)
+        return 'done'
 
     ## method execute
     # starts recording

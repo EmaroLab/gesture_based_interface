@@ -601,7 +601,7 @@ Machines:
     event: done
    transition7:
     from: SEQUENCEPLAY
-    to: done
+    to: SEQUENCENEXT
     event: stop
    transition8:
     from: SEQUENCEPLAY
@@ -621,7 +621,7 @@ Machines:
     event: done
    transition12:
     from: SEQUENCEPAUSE
-    to: done
+    to: SEQUENCENEXT
     event: stop
    transition13:
     from: SEQUENCEPAUSE

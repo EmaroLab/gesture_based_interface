@@ -8,3 +8,4 @@ int8 m_selection
 
 string pbr_action
 string pbr_msg
+string[] action_options

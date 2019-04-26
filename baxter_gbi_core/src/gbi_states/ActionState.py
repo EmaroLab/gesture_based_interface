@@ -14,13 +14,15 @@ class ActionState(ExpiringState):
     # @param action executable action
     # @param output_keys set of the data in output
     # @param input_keys set of the data in input
-    def __init__(self, outcomes, trigger_event, status, output_keys=[], input_keys=[]):
+    def __init__(self, outcomes, trigger_event, status, output_keys=[], input_keys=[], fixed_options = []):
         ExpiringState.__init__(self,
                                outcomes = ['done'] + outcomes,
                                trigger_event=trigger_event,
                                output_keys=output_keys,
                                input_keys=input_keys)
+
         ## attribute of type action
+        self.fixed_options = ['stop'] + fixed_options
         self.type = 'action'
         self.status = status
 
@@ -29,8 +31,7 @@ class ActionState(ExpiringState):
     # where action_5 is assumed to be "done"
     #
     # @param userdata
-    def action_5(self, userdata):
-        print("A5")
+    def action_1(self, userdata):
         return 'done'
 
     ## method done
@@ -48,6 +49,7 @@ class ActionState(ExpiringState):
         self.msg.context_type = self.type
         self.msg.pbr_action = self.status
         self.msg.pbr_msg = self.set_status()
+        self.msg.action_options = self.fixed_options
         #rospy.loginfo(self.msg)
         self.pub.publish(self.msg)
 

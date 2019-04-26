@@ -17,7 +17,8 @@ class PlayState(PlaybackState):
                                trigger_event=trigger_event,
                                status='play',
                                output_keys=output_keys,
-                               input_keys=input_keys)
+                               input_keys=input_keys,
+                               fixed_options = ['pause'])
         self.progress = 0
 
     ## method cb_done
@@ -55,7 +56,7 @@ class PlayState(PlaybackState):
     # where action_6 is assumed to be "pause"
     #
     # @param userdata
-    def action_6(self, userdata):
+    def action_2(self, userdata):
         return self.pause()
 
     ## method set_status

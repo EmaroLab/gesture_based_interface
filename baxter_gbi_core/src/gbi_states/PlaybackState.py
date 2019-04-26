@@ -23,13 +23,14 @@ class PlaybackState(ActionState):
     end = False
     killing = False
 
-    def __init__(self, outcomes, trigger_event, status, output_keys=[], input_keys=[]):
+    def __init__(self, outcomes, trigger_event, status, output_keys=[], input_keys=[], fixed_options = []):
         ActionState.__init__(self,
                              outcomes=["stop"]+outcomes,
                              status=status,
                              trigger_event=trigger_event,
                              output_keys=output_keys,
-                             input_keys=input_keys)
+                             input_keys=input_keys,
+                             fixed_options = fixed_options)
 
         self.goal = playbackGoal()
         if not debug:
@@ -44,7 +45,7 @@ class PlaybackState(ActionState):
     # where action_5 is assumed to be "exit"
     #
     # @param userdata
-    def action_5(self, userdata):
+    def action_1(self, userdata):
         PlaybackState.killing = True
         self.playback.cancel_all_goals()
         while not PlaybackState.end:

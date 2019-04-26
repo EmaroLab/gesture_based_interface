@@ -15,7 +15,8 @@ class PauseState(PlaybackState):
                              trigger_event=trigger_event,
                              status='pause',
                              output_keys=['resume'],
-                             input_keys=[])
+                             input_keys=[],
+                             fixed_options = ['resume'])
 
     ## method resume
     #
@@ -33,7 +34,7 @@ class PauseState(PlaybackState):
     # where action_6 is assumed to be "resume"
     #
     # @param userdata
-    def action_6(self, userdata):
+    def action_2(self, userdata):
         userdata.resume = True
         return self.resume()
 
