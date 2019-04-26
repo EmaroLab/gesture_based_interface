@@ -30,6 +30,7 @@ class ActionState(ExpiringState):
     #
     # @param userdata
     def action_5(self, userdata):
+        print("A5")
         return 'done'
 
     ## method done
@@ -37,6 +38,7 @@ class ActionState(ExpiringState):
     #
     # @param userdata
     def done(self, userdata):
+        print("DONE")
         return 'done'
 
     ## method publish_state

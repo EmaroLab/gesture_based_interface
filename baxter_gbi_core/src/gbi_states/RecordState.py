@@ -41,15 +41,6 @@ class RecordState(ActionState):
     def user_left(self, userdata):
         return None
 
-    ## method action_6
-    # override of BlockingState.action_6
-    # where action_6 is assumed to be "stop record"
-    #
-    # @param userdata
-    def action_6(self, userdata):
-        self.record_stop()
-        return 'done'
-
     ## method action_1
     # override of BlockingState.action_1
     # where action_1 is assumed to be
@@ -71,6 +62,10 @@ class RecordState(ActionState):
         self.left_grip = not self.left_grip
         self.gripper("left", 100 if self.left_grip else 0)
         return None
+
+    def action_5(self, userdata):
+        self.record_stop()
+        return ActionState.action_5(self, userdata)
 
     ## method execute
     # starts recording
