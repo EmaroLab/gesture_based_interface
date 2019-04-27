@@ -9,7 +9,7 @@
     tools:deviceIds="wear">
 
     <TextView
-        android:id="@+id/sending_data"
+        android:id="@+id/status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
@@ -17,7 +17,7 @@
         android:text="@string/sending_data" />
 
     <Button
-        android:id="@+id/stopButton"
+        android:id="@+id/pauseButton"
         android:layout_width="wrap_content"
         android:layout_below="@id/lin"
         android:layout_height="wrap_content"
@@ -25,8 +25,37 @@
         android:layout_centerVertical="true"
         android:layout_marginTop="10dp"
         android:backgroundTint="@color/red"
-        android:onClick="stopStreaming"
-        android:text="@string/stop_button" />
+        android:onClick="pauseStreaming"
+        android:text="@string/pause" />
+
+
+
+    <LinearLayout
+        android:id="@+id/buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_below="@id/lin">
+
+        <Button
+            android:id="@+id/playButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/green"
+            android:onClick="resumeStreaming"
+            android:text="@string/play" />
+
+        <Button
+            android:id="@+id/stopButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/red"
+            android:onClick="stopStreaming"
+            android:text="@string/stop_button" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/lin"
@@ -34,23 +63,21 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_below="@id/sending_data">
+        android:layout_below="@id/status">
 
         <EditText
             android:id="@+id/frequency"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/sending_data"
             android:ems="2"
             android:inputType="number"
-            android:text="50"
+            android:text="@string/default_frequency"
             android:textAlignment="center" />
 
         <TextView
             android:id="@+id/Hz"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignRight="@id/frequency"
             android:text="@string/hz" />
 
     </LinearLayout>

@@ -4,6 +4,9 @@
     <string name="title_activity_sending">SendingActivity</string>
     <string name="sending_data">Sending data...</string>
     <string name="hz">Hz</string>
+    <string name="pause">Pause</string>
+    <string name="play">Play</string>
+    <string name="default_frequency">50</string>
     <string name="stop_button">Stop</string>
     <string name="acc_data">Accelerometer:</string>
     <string name="data_streamed">data streamed</string>

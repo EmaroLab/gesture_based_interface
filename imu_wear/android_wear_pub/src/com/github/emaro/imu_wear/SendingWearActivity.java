@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -24,6 +25,8 @@ public class SendingWearActivity extends RosWearActivity implements SensorEventL
   String deviceName = myDevice.getName().replaceAll(" ", "_");
   private ImuPublisher pub = new ImuPublisher(deviceName+"/imu_data");
   private EditText frequency;
+  private TextView status;
+  private Button pauseButton, stopButton, playButton;
   private SensorManager senSensorManager;
 
   public SendingWearActivity() {
@@ -56,6 +59,17 @@ public class SendingWearActivity extends RosWearActivity implements SensorEventL
         }
       }
     });
+
+    status = findViewById(R.id.status);
+
+    pauseButton = findViewById(R.id.pauseButton);
+    pauseButton.setVisibility(View.VISIBLE);
+
+    stopButton = findViewById(R.id.stopButton);
+    stopButton.setVisibility(View.GONE);
+
+    playButton = findViewById(R.id.playButton);
+    playButton.setVisibility(View.GONE);
   }
 
   /**
@@ -67,12 +81,12 @@ public class SendingWearActivity extends RosWearActivity implements SensorEventL
 
     if (mySensor.getType() == Sensor.TYPE_GYROSCOPE) {
       System.arraycopy(sensorEvent.values, 0, pub.vel, 0, 3);
-      pub.android_time = sensorEvent.timestamp;
+      pub.android_time = System.currentTimeMillis() + (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
     }
 
     if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
       System.arraycopy(sensorEvent.values, 0, pub.acc, 0, 3);
-      pub.android_time = sensorEvent.timestamp;
+      pub.android_time = System.currentTimeMillis() + (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
     }
   }
 
@@ -95,6 +109,24 @@ public class SendingWearActivity extends RosWearActivity implements SensorEventL
 
     Sensor senGyroscope = senSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
     senSensorManager.registerListener(this, senGyroscope, SensorManager.SENSOR_DELAY_FASTEST);
+  }
+
+  public void pauseStreaming(View view) {
+    pub.sending = false;
+    status.setText("Pause");
+
+    pauseButton.setVisibility(View.GONE);
+    stopButton.setVisibility(View.VISIBLE);
+    playButton.setVisibility(View.VISIBLE);
+  }
+
+  public void resumeStreaming(View view){
+    pub.sending = true;
+    status.setText(getString(R.string.sending_data));
+
+    pauseButton.setVisibility(View.VISIBLE);
+    stopButton.setVisibility(View.GONE);
+    playButton.setVisibility(View.GONE);
   }
 
   public void stopStreaming(View view) {
