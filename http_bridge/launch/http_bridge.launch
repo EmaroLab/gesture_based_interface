@@ -1,0 +1,10 @@
+<launch>
+  <arg name="bridge_port" value="2222"/>
+  <arg name="server_port" value="6549"/>
+  
+  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" > 
+     <arg name="port" value="$(arg bridge_port)"/>
+  </include>
+
+  <node name="server_http" pkg="http_bridge" type="server" required="true" output="screen" args="$(arg bridge_port) $(arg server_port)"/>
+</launch>

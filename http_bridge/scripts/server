@@ -1,0 +1,107 @@
+#!/usr/bin/env python
+
+import argparse
+import urlparse
+import rospy
+import sys, os
+
+import SimpleHTTPServer
+import SocketServer
+import socket
+
+global DEVICE_ID
+
+IP = "192.168.1.104"
+PORT = "9090"
+DEVICE_ID = 1
+
+#Mirror client -> publish data on a topic
+def main(port_bridge, port_server):
+    rospy.init_node('server_html', anonymous=True)
+    
+    web_dir = os.path.dirname(__file__)
+    os.chdir(web_dir)
+    
+    # ROS Bridge
+    SERVER_PORT = int(port_server)
+
+    # Server HTTP
+    PORT = str(port_bridge)
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(('10.255.255.255', 1))
+    IP = s.getsockname()[0]
+    s.close()
+    DEVICE_ID = 1
+
+    class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
+        """Custom handler to be tested"""
+        def do_GET(self):
+            global DEVICE_ID
+
+            print("executing do_GET")
+            if self.path == '/':
+                # print just to confirm that this method is being called
+
+                self.send_response(200)
+                self.send_header("Content-type", "text/html")
+                self.end_headers()
+
+                # Here's where all the complicated logic is done to generate HTML.
+                # For clarity here, replace with a simple stand-in:
+                html = '''
+        <!DOCTYPE html>
+        <html>
+        <head>
+        <meta charset="utf-8"/>
+        <title>Baxter GUI</title>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <script type="text/javascript" src="js/eventemitter2.min.js"></script>
+        <script type="text/javascript" src="js/roslib.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/mobile-detect@1.4.3/mobile-detect.min.js"></script>
+        <script>
+        var ros = new ROSLIB.Ros({
+                url : 'ws://'''+str(IP)+''':'''+str(PORT)+''' '});
+        var device_id = '''+str(DEVICE_ID)+''';
+        </script>
+        <script type="text/javascript" src="js/baxter_gbi_html_client.js"></script>
+        </head>
+
+        <body>
+        <h1 id="menu_title"></h1>
+
+        <div id="variable_options"></div>
+        <div id="pbr_msg"></div>
+        <div id="fixed_options"></div>
+        </body>
+        </html>
+                '''
+                self.wfile.write(html.encode())
+                DEVICE_ID = DEVICE_ID + 1
+            else:
+                return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self) 
+
+    handler = MyHandler
+    server = SocketServer.TCPServer(("", SERVER_PORT), handler, bind_and_activate=False)
+    server.allow_reuse_address = True
+    server.daemon_threads = True
+    server.server_bind()
+    server.server_activate()
+
+    def shutdown_hook():
+       server.server_close()
+
+    rospy.on_shutdown(shutdown_hook)
+
+    while not rospy.is_shutdown():
+        try:
+            server.handle_request()
+        except Exception as e:
+            pass
+    
+
+        
+if __name__ == '__main__':
+    if len(sys.argv) < 3:
+        print("usage: server.py port_bridge port_server")
+    else:
+        main(sys.argv[1], sys.argv[2])

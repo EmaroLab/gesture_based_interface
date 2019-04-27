@@ -1,0 +1,176 @@
+/* General style properties for widths > 1365 (iPad Pro) */
+body {
+    background-color:#FFE3E2;
+    height: 100%;
+    font-family: Verdana, Geneva, sans-serif
+}
+
+h1 {
+    margin: 30px;
+    text-align: center;
+    font-size: 35pt;
+}
+
+button {
+    font-size: 25pt;
+    background-color: #FFFEFE;
+    height: 80px;
+    text-align: center;
+    border-radius: 10px;
+    border: 2px solid #FF483E;
+    padding: 6px;
+    margin: 2px;
+}
+
+button:hover {
+    background-color: #FFC9C3;
+}
+
+button:focus {
+    background-color: #FF483E;
+    border: 2px solid #FF483E;
+    border-radius: 10px;
+    height: 70px;
+    padding: 6px;
+    outline: none;
+}
+
+#variable_options {
+    height: 600px;
+    width: 90%;
+    padding: 5px;
+    border-radius: 10px;
+    text-align: center;
+    overflow-y: scroll;
+    margin: 0 auto;
+}
+
+#variable_options button {
+    width: 95%;
+    display: inline-block;
+}
+
+#variable_options::-webkit-scrollbar {
+    border: 1px solid #FF756E;
+    background: white;
+    width: 20px;
+    border-radius: inherit;
+    margin: 0;
+}
+
+#variable_options::-webkit-scrollbar-thumb {
+    background: #FF756E;
+    border-radius: inherit;
+}
+
+#pbr_msg {
+    font-size: 30pt;
+    text-align: center;
+    margin: 30px auto;
+    font-style: italic;
+    font-weight: bold;
+}
+
+#fixed_options {
+    height: available;
+    text-align: center;
+    flex-direction: row;
+    margin-top: 50px;
+    margin-right: 20px;
+}
+
+img {
+    height:600px;
+    width: 600px;
+}
+
+/*Media queries for responsiveness */
+@media (min-width: 1280px) and (max-width: 1365px) {
+    h1 {
+        margin: 20px;
+    }
+
+    #variable_options {
+        height: 380px;
+    }
+
+    button {
+        font-size: 23pt;
+        height: 75px;
+    }
+    button:focus {
+        height: 75px;
+    }
+
+    img {
+        height:380px;
+        width: 380px;
+    }
+
+    #pbr_msg{
+        margin-bottom: 20px;
+        font-size: 25pt;
+    }
+}
+
+/* Generic tablets and iPad */
+@media (min-width: 1024px) and (max-width: 1280px) {
+    h1 {
+        font-size: 28pt;
+        margin: 10px;
+    }
+
+    button {
+        font-size: 23pt;
+        height: 70px;
+    }
+
+    button:focus {
+        height: 70px;
+    }
+
+    #variable_options {
+        height: 360px;
+    }
+
+    img {
+        height:360px;
+        width: 360px;
+    }
+}
+
+/* Smaller tablets - iPad Mini */
+@media (max-width: 1023px) {
+    h1 {
+        font-size: 25pt;
+        margin: 5px;
+    }
+
+    button {
+        font-size: 20pt;
+        height: 65px;
+    }
+
+    button:focus {
+        height: 65px;
+    }
+
+    #variable_options {
+        height: 370px;
+    }
+
+    img {
+        height:370px;
+        width: 370px;
+    }
+
+    #pbr_msg{
+        margin-top: 0;
+        font-size: 20pt;
+    }
+
+    #fixed_options {
+        margin-top: 20px;
+    }
+}
+
