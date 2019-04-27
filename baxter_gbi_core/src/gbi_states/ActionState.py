@@ -42,6 +42,11 @@ class ActionState(ExpiringState):
         print("DONE")
         return 'done'
 
+    def numeric_input(self, number, userdata):
+        f = getattr(self, "action_%d" % (number+1), None)
+        if f is not None:
+            return f(userdata)
+
     ## method publish_state
     #
     # override of BlockingState.publish_state
