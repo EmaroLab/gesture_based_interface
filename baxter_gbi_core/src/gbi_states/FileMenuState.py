@@ -40,5 +40,5 @@ class FileMenuState(MenuState):
     def update_variable_options(self, userdata):
         # call a service to ask and receive the data
         # or parameter server or message
-        list = self.list()
-        return list.list_files
+        reply = self.list()
+        return reply.list_files

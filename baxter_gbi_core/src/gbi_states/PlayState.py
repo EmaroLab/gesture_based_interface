@@ -18,7 +18,7 @@ class PlayState(PlaybackState):
                                status='play',
                                output_keys=output_keys,
                                input_keys=input_keys,
-                               fixed_options = ['pause'])
+                               fixed_options=['pause'])
         self.progress = 0
 
     ## method cb_done

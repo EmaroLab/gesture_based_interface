@@ -36,7 +36,6 @@ class BlockingState(smach.State):
     # 
     # @param userdata
     def action_1(self, userdata):
-        ## to override
         return None
 
     ## method action_2
@@ -44,7 +43,6 @@ class BlockingState(smach.State):
     #  
     # @param userdata
     def action_2(self, userdata):
-        ## to override
         return None
 
     ## method action_3
@@ -52,7 +50,6 @@ class BlockingState(smach.State):
     #  
     # @param userdata
     def action_3(self, userdata):
-        ## to override
         return None
 
     ## method action_4
@@ -60,23 +57,9 @@ class BlockingState(smach.State):
     #  
     # @param userdata
     def action_4(self, userdata):
-        ## to override
         return None
 
-    ## method action_5
-    # call back of the trigger "action_5"
-    #  
-    # @param userdata
-    def action_5(self, userdata):
-        ## to override
-        return None
-
-    ## method action_6
-    # call back of the trigger "action_6"
-    #  
-    # @param userdata
-    def action_6(self, userdata):
-        ## to override
+    def numeric_input(self, number, userdata):
         return None
 
     ## method user_detected
@@ -84,7 +67,6 @@ class BlockingState(smach.State):
     #  
     # @param userdata
     def user_detected(self, userdata):
-        ## to override
         return None
 
     ## method user_left
@@ -92,7 +74,6 @@ class BlockingState(smach.State):
     #  
     # callback of the trigger "user_left"
     def user_left(self, userdata):
-        ## to override
         return None
 
     ## method config
@@ -100,7 +81,6 @@ class BlockingState(smach.State):
     #  
     # @param userdata
     def config(self, userdata):
-        # to override 
         return None
 
     ## method done
@@ -135,18 +115,16 @@ class BlockingState(smach.State):
 
             ret = None
 
-            if event_id == 'action_1':
-                ret = self.action_1(userdata)
-            elif event_id == 'action_2': 
-                ret = self.action_2(userdata)
-            elif event_id == 'action_3': 
-                ret = self.action_3(userdata)
-            elif event_id == 'action_4': 
-                ret = self.action_4(userdata)
-            elif event_id == 'action_5': 
-                ret = self.action_5(userdata)
-            elif event_id == 'action_6': 
-                ret = self.action_6(userdata)
+            if event_id.startswith("action_"):
+                f = getattr(self, event_id, None)
+                if f is not None:
+                    ret = f(userdata)
+            elif event_id.startswith("number_"):
+                try:
+                    n = int(event_id[7:])
+                    ret = self.numeric_input(n, userdata)
+                finally:
+                    pass
             elif event_id == 'user_detected':
                 ret = self.user_detected(userdata)
             elif event_id == 'user_left':
@@ -178,5 +156,6 @@ class BlockingState(smach.State):
     def is_running(self):
         return self.running
 
-    def inhibit_update(self):
+    @staticmethod
+    def inhibit_update():
         BlockingState.status_update_inhibited = True

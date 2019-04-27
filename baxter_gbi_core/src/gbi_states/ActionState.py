@@ -27,7 +27,7 @@ class ActionState(ExpiringState):
         self.status = status
 
     ## method action_5
-    # override of BlockingState.action_5
+    # override of BlockingState.action_1
     # where action_5 is assumed to be "done"
     #
     # @param userdata
@@ -50,7 +50,6 @@ class ActionState(ExpiringState):
         self.msg.pbr_action = self.status
         self.msg.pbr_msg = self.set_status()
         self.msg.action_options = self.fixed_options
-        #rospy.loginfo(self.msg)
         self.pub.publish(self.msg)
 
     ## method set_status

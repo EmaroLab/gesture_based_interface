@@ -30,24 +30,22 @@ class MenuState(ExpiringState):
 
     ## method action_1
     # override of BlockingState.action_1 where
-    # action_1 is assumed to be "go up in menu"
+    # action_1 is assumed to be "go down in menu"
     #  
     # @param userdata
     def action_1(self, userdata):
-        max_selection = len(self.variable_options) + len(self.fixed_options)
-        if self.selection < max_selection - 1:
-            self.selection += 1
+        self.selection = (self.selection + 1) % (len(self.fixed_options) + len(self.variable_options))
         return None
 
     ## method action_2
     # override of BlockingState.action_2 where
-    # action_2 is assume to be "go down in menu"
+    # action_2 is assume to be "go up in menu"
     #  
     # @param userdata
     def action_2(self, userdata):
-        if self.selection > 0:
-            self.selection -= 1
+        self.selection = (self.selection - 1) % (len(self.fixed_options) + len(self.variable_options))
         return None
+
 
     ## method action_3
     # override of BlockingState.action_3
@@ -55,12 +53,21 @@ class MenuState(ExpiringState):
     #  
     # @param userdata
     def action_3(self, userdata):
+        return self.confirm(userdata)
+
+    def numeric_input(self, number, userdata):
+        self.selection = number
+        return self.confirm(userdata)
+
+    def confirm(self, userdata):
         if self.selection < len(self.variable_options):
             item = self.variable_options[self.selection]
             return self.on_variable_selection(self.selection, item, userdata)
         else:
             item = self.fixed_options[self.selection - len(self.variable_options)]
             return self.on_fixed_selection(self.selection - len(self.variable_options), item, userdata)
+
+
 
     ## method execute
     # override of BlockingState.execute
