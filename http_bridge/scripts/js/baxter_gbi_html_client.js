@@ -64,10 +64,15 @@
     }
   });
 
+var previous_action = "";
 
 function renderMenu(msg){
     document.getElementById("menu_title").innerHTML = msg.m_title;
 
+    document.getElementById("variable_options").innerHTML="";
+    document.getElementById("fixed_options").innerHTML="";
+    document.getElementById("pbr_msg").innerHTML="";
+    previous_action = "";
     for(let i = 0; i < msg.m_options.length; i++){
         let variable_btn = document.createElement("Button")
         let v_op = document.createTextNode(msg.m_options[i]);
@@ -86,13 +91,23 @@ function renderMenu(msg){
 function renderAction(msg){
     // Hide the scroll bar used for the menu
     document.getElementById("variable_options").style.overflow = 'hidden';
+    console.log(previous_action)
+    console.log(msg.pbr_action === previous_action)
+    if (msg.pbr_action === previous_action) {
+      document.getElementById("pbr_msg").innerHTML = msg.pbr_msg;
+    }
+    else{
+      document.getElementById("variable_options").innerHTML="";
+      document.getElementById("fixed_options").innerHTML="";
+      document.getElementById("pbr_msg").innerHTML="";
+      previous_action = msg.pbr_action;
+      let string = "images/" + msg.pbr_action + ".png";
+      document.getElementById("variable_options").innerHTML = "<img alt=figure src="+string+" />";
 
-    let string = "images/" + msg.pbr_action + ".png";
-    document.getElementById("variable_options").innerHTML = "<img alt=figure src="+string+" />";
+      document.getElementById("pbr_msg").innerHTML = msg.pbr_msg;
 
-    document.getElementById("pbr_msg").innerHTML = msg.pbr_msg;
-
-    fixedOptions(msg, 0);
+      fixedOptions(msg.action_options, 0);
+    }
 }
 
 function fixedOptions(f_ops, offset){
@@ -100,9 +115,11 @@ function fixedOptions(f_ops, offset){
         let fixed_btn = document.createElement("Button");
         let f_op = document.createTextNode(f_ops[j]);
         fixed_btn.appendChild(f_op);
+
         fixed_btn.addEventListener('click', function(){
             send_ros(offset + j);
         } );
+
         // Adjust fixed button width wrt their amount
         let width = 85/f_ops.length;
         fixed_btn.style.width = width + "%";

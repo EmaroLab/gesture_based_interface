@@ -17,7 +17,7 @@ DEVICE_ID = 1
 
 #Mirror client -> publish data on a topic
 def main(port_bridge, port_server):
-    rospy.init_node('server_html', anonymous=True)
+    rospy.init_node('server_http', anonymous=True)
     
     web_dir = os.path.dirname(__file__)
     os.chdir(web_dir)
@@ -86,6 +86,8 @@ def main(port_bridge, port_server):
     server.daemon_threads = True
     server.server_bind()
     server.server_activate()
+
+    rospy.loginfo("Start Server on %s:%s" %(str(IP), str(SERVER_PORT)))
 
     def shutdown_hook():
        server.server_close()
