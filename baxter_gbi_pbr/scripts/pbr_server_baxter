@@ -28,9 +28,10 @@ from baxter_gbi_pbr import *
 
 global pb, playbacking, starting_pause, pause_state
 global file_playback, line_executed #Information for recording after playback
-global folder_path, extension
+global folder_path, extension, init_folder_path
 rospack = rospkg.RosPack()
 folder_path = rospack.get_path('baxter_gbi_pbr')+"/../../PBR_storage/"
+init_folder_path = rospack.get_path('baxter_gbi_pbr')+"/.PBR_storage_init/"
 extension = ".baxter"
 
 line_executed = 0
@@ -52,6 +53,7 @@ def playback_handler(req):
 
     global folder_path, extension, service1
     
+
     service1.accept_new_goal()
     #Check if the file exists
     file_path_string = folder_path+req.msg.filename+extension
@@ -60,6 +62,9 @@ def playback_handler(req):
         global pb, playbacking, file_playback
         playbacking = True
         file_playback = file_path_string
+
+        rospy.logwarn(str(file_path_string)+"   "+str(req.msg.scale_vel))
+        rospy.logwarn(str(req.msg.loops))
         pb.map_file(file_path_string, req.msg.loops, req.msg.scale_vel, service1)
 
         playbacking = False
@@ -235,15 +240,33 @@ def pause_resume_handler(req):
     else:
         rospy.logwarn("Playback is stop running!")
         return 1
+        
+        
+def acquire_initial(req):
+    left_arm = Limb("left")
+    right_arm = Limb("right")
+    
+    global init_folder_path, extension
+    
+    f = open(init_folder_path+"Start_position"+extension,"w+")
+    
+    f.write(','.join([j for j in left_arm.joint_names()])+'\n')
+    f.write(','.join([str(left_arm.joint_angle(x)) for x in left_arm.joint_names()])+'\n')
+    f.write(','.join([j for j in right_arm.joint_names()])+'\n')
+    f.write(','.join([str(right_arm.joint_angle(x)) for x in right_arm.joint_names()])+'\n')
+    
+    return 0
+
 
 def go_to_start_position(req):
     
+    global init_folder_path
     rospy.loginfo("Go To Start Position Service Called!!")
 
     left_arm = Limb("left")
     right_arm = Limb("right")
     
-    start_pos = open(folder_path+"Start_position.baxter", "r")
+    start_pos = open(init_folder_path+"Start_position.baxter", "r")
 
     lines = start_pos.readlines()
     
@@ -255,6 +278,7 @@ def go_to_start_position(req):
     left_arm.move_to_joint_positions(dict(zip(lines[0],lines[1])))
     right_arm.move_to_joint_positions(dict(zip(lines[2],lines[3])))
     
+    rospy.loginfo("Inital postion reached!")
     return 0
 
 ## Main of the node. It makes available the services and wait for requests.
@@ -278,6 +302,11 @@ def pbr_server_baxter():
     rospy.loginfo("Enabling robot... ")
     rs.enable()
 
+    global init_folder_path
+    
+    if not os.path.isdir(init_folder_path):
+        os.mkdir(init_folder_path)
+    
     global service1
     #service1 = rospy.Service('playback', Playback, playback_handler)
     service1 = actionlib.simple_action_server.SimpleActionServer('playback', playbackAction, playback_handler,False)
@@ -288,6 +317,7 @@ def pbr_server_baxter():
     service5 = rospy.Service('reach_goal', ReachGoal, reach_goal_handler)
     service6 = rospy.Service('pause_resume', PauseResume, pause_resume_handler)
     service7 = rospy.Service('go_to_start_pos', GoToStart, go_to_start_position)
+    service8 = rospy.Service('acquire_init_pose', InitPose, acquire_initial)
     rospy.loginfo("PBR node executed -> providing playback/record services.")
 
     def clean_shutdown():

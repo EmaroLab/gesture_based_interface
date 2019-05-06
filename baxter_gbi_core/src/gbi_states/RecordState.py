@@ -5,6 +5,7 @@ from ActionState import ActionState
 
 import rospy
 from baxter_gbi_pbr_srvs.srv import RecordStart, RecordStop, Gripper
+from baxter_core_msgs.msg import DigitalIOState
 
 import os
 debug = os.environ.get('BGI_DEBUG')
@@ -33,6 +34,11 @@ class RecordState(ActionState):
         self.gripper = rospy.ServiceProxy('gripper', Gripper)
         self.left_grip = True
         self.right_grip = True
+        self.go_left = 1
+        self.go_right = 1
+
+        rospy.Subscriber("/robot/digital_io/left_lower_cuff/state", DigitalIOState, self.callback_button_left, callback_args=[self])
+        rospy.Subscriber("/robot/digital_io/right_lower_cuff/state", DigitalIOState, self.callback_button_right, callback_args=[self])
 
     ## method user_left
     # called when the user leaves
@@ -64,8 +70,17 @@ class RecordState(ActionState):
         return None
 
     def action_1(self, userdata):
-        self.record_stop()
-        return 'done'
+        if self.go_left == 0 and self.go_right == 0:
+            self.record_stop()
+            return 'done'
+
+
+    def callback_button_left(self, data, params):
+        self.go_left = data.state
+
+
+    def callback_button_right(self, data, params):
+        self.go_right = data.state
 
     ## method execute
     # starts recording

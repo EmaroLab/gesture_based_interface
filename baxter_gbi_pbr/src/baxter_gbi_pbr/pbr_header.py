@@ -108,7 +108,7 @@ class PlaybackObj(object):
             while ((number_lines < len(lines)-1) and self.stop == 0):
                 if service and service.is_preempt_requested(): break
                 feedback.percent_complete = (number_lines/float((len(lines)-1))*100.0)/float(loops - l + 1)
-                rospy.loginfo("Complete:"+str(feedback.percent_complete))
+                #rospy.loginfo("Complete:"+str(feedback.percent_complete))
                 service.publish_feedback(feedback)
 
                 if self.pause_state == 0:
@@ -117,20 +117,22 @@ class PlaybackObj(object):
                     values = lines[(number_lines)]
                  
                     i += 1
-                    loopstr = str(loops) if loops > 0 else "forever"
-                    sys.stdout.write("\r Record %d of %d, loop %d of %s" %
-                                     (i, len(lines)-1, l, loopstr))
-                    sys.stdout.flush()
 
                     cmd, lcmd, rcmd, values = self.clean_line(values, keys)
                     #command this set of commands until the next frame
                     while (rospy.get_time() - start_time - self.paused_time) < values[0]*(100.0/scale_vel):
-                        if service and service.is_preempt_requested(): break
+                        if service and service.is_preempt_requested(): 
+                            break
                         if rospy.is_shutdown():
                             rospy.loginfo("\n Aborting - ROS shutdown")
                             return False
+
                         if len(lcmd):
                             left.set_joint_positions(lcmd)
+                            loopstr = str(loops) if loops > 0 else "forever"
+                            sys.stdout.write("\r Record %d of %d, loop %d of %s" %
+                                     (i, len(lines)-1, l, loopstr))
+                            sys.stdout.flush()
                         if len(rcmd):
                             right.set_joint_positions(rcmd)
                         if ('left_gripper' in cmd and
@@ -140,7 +142,7 @@ class PlaybackObj(object):
                             grip_right.type() != 'custom'):
                             grip_right.command_position(cmd['right_gripper'])
                         rate.sleep()
-                    rospy.loginfo("-- "+str(rospy.get_time()))
+                    #rospy.loginfo("-- "+str(rospy.get_time()))
                     
                     self.line_executed = number_lines                   
  
@@ -148,7 +150,6 @@ class PlaybackObj(object):
 
         feedback.percent_complete = -1
         service.publish_feedback(feedback)
-        _cmd, lcmd_start, rcmd_start, _raw = self.clean_line(lines[len(lines)-1], keys)
         left.move_to_joint_positions(lcmd_start)
         right.move_to_joint_positions(rcmd_start)
         feedback.percent_complete = 100
