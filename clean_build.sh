@@ -4,7 +4,7 @@ rm -rf build devel apk_release
 mkdir apk_release
 find . -name "*.apk" -exec rm -f {} \;
 catkin_make -DCATKIN_WHITELIST_PACKAGES="rosjava_messages;genjava;rosjava_build_tools"  | tee last_build.log
-catkin_make -DCATKIN_WHITELIST_PACKAGES="imu_wear;beacons_proximity" -j1 | tee -a last_build.log
+catkin_make -DCATKIN_WHITELIST_PACKAGES="imu_wear;beacons_proximity" | tee -a last_build.log
 yes | sdkmanager --licenses
 catkin_make -DCATKIN_WHITELIST_PACKAGES=""  -j1 | tee -a last_build.log
 exec bash
