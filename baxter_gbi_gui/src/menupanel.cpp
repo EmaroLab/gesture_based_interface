@@ -52,5 +52,7 @@ void MenuPanel::update(QString &title,
   optionsButtons.at(selection % optionsButtons.size())
                 ->setObjectName("selection");
   qApp->processEvents();
+  ui->scrollArea->setWidgetResizable(1);
   ui->scrollArea->ensureWidgetVisible(optionsButtons.at(selection),5,5);
+  qApp->processEvents();
 }

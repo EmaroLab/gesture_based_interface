@@ -10,6 +10,7 @@ import baxter_gbi_input_msgs.msg as bgi_io
 import smach
 from std_srvs.srv import Trigger, TriggerResponse
 from sensor_msgs.msg import Image as RosImage
+from http_bridge_msgs.msg import selection as NumSelection
 import threading
 from graphviz import Digraph
 import std_msgs
@@ -42,6 +43,7 @@ class FSMThread(threading.Thread):
 
         smach.set_loggers(smach.loginfo, smach.logwarn, self.logdebug, smach.logerr)
         self.subscr = rospy.Subscriber("/presence", std_msgs.msg.Header, self.presence_cb, callback_args=[self])
+        self.subscr_2 = rospy.Subscriber("/http_server_selection", NumSelection, self.num_cb, callback_args=[self])
         ## attribute to manage the graph in graphviz
 
         self.event = FsmEvent()
@@ -97,6 +99,10 @@ class FSMThread(threading.Thread):
     #  @param params list of parameters
     def presence_cb(self, msg, params):
         self.event.signal('user_detected')
+
+    def num_cb(self, msg, params):
+        print "NUM %d" % msg.selection
+        self.event.signal('number_%d' % msg.selection)
 
     ## method config_cb
     #  @param req request from service
