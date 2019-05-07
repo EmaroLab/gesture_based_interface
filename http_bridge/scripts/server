@@ -54,6 +54,7 @@ def main(port_bridge, port_server):
         <head>
         <meta charset="utf-8"/>
         <title>Baxter GUI</title>
+        <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,target-densitydpi=device-dpi, user-scalable=no" />
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <script type="text/javascript" src="js/eventemitter2.min.js"></script>
         <script type="text/javascript" src="js/roslib.min.js"></script>

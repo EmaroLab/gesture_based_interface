@@ -72,6 +72,7 @@ function renderMenu(msg){
     document.getElementById("variable_options").innerHTML="";
     document.getElementById("fixed_options").innerHTML="";
     document.getElementById("pbr_msg").innerHTML="";
+    document.getElementById("variable_options").style.overflow = 'auto';
     previous_action = "";
     for(let i = 0; i < msg.m_options.length; i++){
         let variable_btn = document.createElement("Button")

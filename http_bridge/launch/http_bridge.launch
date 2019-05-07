@@ -1,6 +1,6 @@
 <launch>
-  <arg name="bridge_port" value="9000"/>
-  <arg name="server_port" value="8080"/>
+  <arg name="bridge_port" value="9090"/>
+  <arg name="server_port" value="8000"/>
   
   <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"> 
      <arg name="port" value="$(arg bridge_port)"/>

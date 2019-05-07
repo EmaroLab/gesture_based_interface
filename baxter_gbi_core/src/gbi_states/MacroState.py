@@ -14,7 +14,8 @@ class MacroState(ActionState):
                              trigger_event=trigger_event,
                              status='wait',
                              output_keys=output_keys,
-                             input_keys=input_keys)
+                             input_keys=input_keys,
+                             fixed_options = ['1','2','3'])
 
     ## method set_status
     #

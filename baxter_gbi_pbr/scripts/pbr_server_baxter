@@ -114,6 +114,7 @@ def record_start_handler(req):
     else:
         rospy.loginfo("Called !!!")
          
+        go_to_start_position(None)
         msg = record_status()
         
         msg.filename = folder_path+req.filename+extension
@@ -131,7 +132,6 @@ def record_start_handler(req):
 #
 # @returns isError: 0 on success, 1 on errors
 def record_stop_handler(req):
-    
     rospy.loginfo("Record Stop Service Called !!!")
     msg = record_status()
     msg.filename = " "
@@ -261,6 +261,7 @@ def acquire_initial(req):
 def go_to_start_position(req):
     
     global init_folder_path
+    global left_gripper, right_gripper
     rospy.loginfo("Go To Start Position Service Called!!")
 
     left_arm = Limb("left")
@@ -277,6 +278,9 @@ def go_to_start_position(req):
 
     left_arm.move_to_joint_positions(dict(zip(lines[0],lines[1])))
     right_arm.move_to_joint_positions(dict(zip(lines[2],lines[3])))
+
+    left_gripper.command_position(100)
+    right_gripper.command_position(100)
     
     rospy.loginfo("Inital postion reached!")
     return 0
@@ -302,10 +306,14 @@ def pbr_server_baxter():
     rospy.loginfo("Enabling robot... ")
     rs.enable()
 
-    global init_folder_path
+    global init_folder_path, folder_path
     
     if not os.path.isdir(init_folder_path):
         os.mkdir(init_folder_path)
+
+
+    if not os.path.isdir(folder_path):
+        os.mkdir(folder_path)
     
     global service1
     #service1 = rospy.Service('playback', Playback, playback_handler)
