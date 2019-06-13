@@ -93,7 +93,7 @@ public class SendingWearActivity extends RosWearActivity implements SensorEventL
   @Override
   public void onAccuracyChanged(Sensor sensor, int i) {
   }
-    
+
   @Override
   protected void init(NodeMainExecutor nodeMainExecutor) {
 
