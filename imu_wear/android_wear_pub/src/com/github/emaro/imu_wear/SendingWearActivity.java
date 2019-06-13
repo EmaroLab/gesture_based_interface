@@ -93,13 +93,13 @@ public class SendingWearActivity extends RosWearActivity implements SensorEventL
   @Override
   public void onAccuracyChanged(Sensor sensor, int i) {
   }
-
+    
   @Override
   protected void init(NodeMainExecutor nodeMainExecutor) {
 
     NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(getRosHostname());
     nodeConfiguration.setMasterUri(getMasterUri());
-    nodeConfiguration.setNodeName("IMU");
+    nodeConfiguration.setNodeName(deviceName+"_IMU");
     nodeMainExecutor.execute(pub, nodeConfiguration);
 
     senSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
