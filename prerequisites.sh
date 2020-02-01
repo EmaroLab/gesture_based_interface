@@ -32,8 +32,8 @@ export PATH=$PATH:$ANDROID_HOME/tools/bin
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 export JAVA_OPTS="-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee"
-export ROS_IP="$(hostname -I | tr -d " ")"
-export ROS_HOSTNAME="$(hostname -I | tr -d " ")"
+a=$(hostname -I);b=($a);export ROS_IP="${b[0]}";
+a=$(hostname -I);b=($a);export ROS_HOSTNAME="${b[0]}";
 ' > ~/sofar_ws/.gbi_env
 
 echo '
